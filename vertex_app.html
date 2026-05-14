@@ -469,6 +469,88 @@
     /* ── WATERMARK ── */
     .watermark { position: fixed; bottom: -80px; right: -80px; width: 380px; height: 380px; opacity: 0.025; pointer-events: none; z-index: 0; }
 
+    /* ── NAV BUTTONS ── */
+    .results-nav-btns { display: flex; gap: 8px; align-items: center; }
+    .btn-nav {
+      border-radius: 4px; padding: 7px 14px;
+      font-family: inherit; font-size: 11px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .btn-nav-prev {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn-nav-prev:hover { border-color: var(--border-hard); color: var(--text); }
+    .btn-nav-next {
+      background: linear-gradient(135deg, var(--dark-3), var(--dark-2));
+      border: 1px solid var(--border-hard); color: var(--gold);
+    }
+    .btn-nav-next:hover { background: rgba(201,168,76,0.1); }
+    .btn-nav-report {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      border: none; color: #0d0b08;
+    }
+    .btn-nav-report:hover { filter: brightness(1.1); box-shadow: 0 2px 12px rgba(201,168,76,0.3); }
+
+    /* ── REPORT PHASE ── */
+    .report-actions-bar { position: sticky; top: 0; z-index: 10; background: var(--dark-2); }
+    .report-main { max-width: 960px; margin: 0 auto; padding: 32px 28px 100px; position: relative; z-index: 1; }
+    .report-cover {
+      background: linear-gradient(160deg, #1a1408, #0d0b08);
+      border-bottom: 1px solid var(--border-hard);
+      padding: 52px 48px 40px;
+      position: relative; overflow: hidden;
+      text-align: center;
+    }
+    .report-cover::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
+    }
+    .report-cover-logo { margin-bottom: 24px; }
+    .report-cover-title {
+      font-size: 2.2rem; font-weight: 300; color: var(--text);
+      letter-spacing: 4px; text-transform: uppercase; line-height: 1.2;
+    }
+    .report-cover-title strong {
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .report-cover-sub { color: var(--text-muted); font-size: 13px; letter-spacing: 1px; margin-top: 10px; }
+    .report-cover-meta { margin-top: 28px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+    .report-pilar-section { margin-bottom: 56px; }
+    .report-pilar-header {
+      display: flex; align-items: center; gap: 20px;
+      padding: 20px 24px;
+      background: linear-gradient(160deg, #1a1408, #0d0b08);
+      border: 1px solid var(--border-hard);
+      border-radius: 4px 4px 0 0;
+      border-bottom: none;
+    }
+    .report-pilar-letter {
+      font-size: 3rem; font-weight: 900; line-height: 1;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold-dim));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      filter: drop-shadow(0 0 12px rgba(201,168,76,0.25));
+    }
+    .report-pilar-name { font-size: 1rem; font-weight: 700; color: var(--text); letter-spacing: 1px; text-transform: uppercase; }
+    .report-pilar-meta { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+    .report-pilar-body {
+      background: var(--dark-2); border: 1px solid var(--border);
+      border-radius: 0 0 4px 4px; padding: 24px;
+    }
+    .report-missing {
+      background: var(--dark-2); border: 1px solid var(--border);
+      border-radius: 0 0 4px 4px; padding: 28px; text-align: center;
+      color: var(--text-muted); font-size: 13px; font-style: italic;
+    }
+    .report-progress-bar {
+      display: flex; align-items: center; gap: 0;
+      background: rgba(0,0,0,0.3); border-bottom: 1px solid var(--border);
+      padding: 14px 48px;
+    }
+
     /* ── PDF BUTTON ── */
     .btn-pdf {
       background: linear-gradient(135deg, var(--gold-light), var(--gold));
@@ -598,6 +680,31 @@
       .app-footer::before { display: none !important; }
       .footer-text { color: #888 !important; }
       .footer-text strong { color: #a07830 !important; }
+
+      /* ── RELATÓRIO COMPLETO PRINT ── */
+      .report-actions-bar { display: none !important; }
+      .report-cover {
+        background: white !important;
+        border-bottom: 2px solid #c9a84c !important;
+        padding: 32px 20px 28px !important;
+      }
+      .report-cover-title { color: #111 !important; }
+      .report-cover-title strong { -webkit-text-fill-color: #c9a84c !important; }
+      .report-cover-sub { color: #666 !important; }
+      .report-pilar-section { break-before: page; margin-bottom: 0 !important; }
+      .report-pilar-section:first-of-type { break-before: auto; }
+      .report-pilar-header {
+        background: white !important;
+        border-color: #ddd !important;
+        border-bottom: 2px solid #c9a84c !important;
+      }
+      .report-pilar-letter { -webkit-text-fill-color: #c9a84c !important; filter: none !important; }
+      .report-pilar-name { color: #111 !important; }
+      .report-pilar-meta { color: #666 !important; }
+      .report-pilar-body { background: white !important; border-color: #ddd !important; }
+      .report-missing { background: #f9f9f9 !important; border-color: #ddd !important; }
+      .report-progress-bar { background: #f5f5f5 !important; border-color: #ddd !important; }
+      .report-main { padding: 0 !important; max-width: 100% !important; }
     }
 
     @media (max-width: 768px) {
@@ -739,9 +846,22 @@
   <div class="results-header-actions">
     <button class="btn-back" onclick="showPhase('input')">← Nova Análise</button>
     <span class="results-nav-label" id="results-nav-label"></span>
-    <button class="btn-pdf" onclick="window.print()">⬇ Baixar PDF</button>
+    <div class="results-nav-btns" id="results-nav-btns"></div>
+    <button class="btn-pdf" onclick="window.print()">⬇ PDF</button>
   </div>
   <div id="results-content"></div>
+</div>
+
+<!-- ══════════════════════════════════
+     PHASE: REPORT (todos os pilares)
+══════════════════════════════════ -->
+<div id="phase-report" class="phase">
+  <div class="results-header-actions report-actions-bar">
+    <button class="btn-back" onclick="showPhase('results')">← Voltar</button>
+    <span class="results-nav-label">Relatório Completo VERTEX</span>
+    <button class="btn-pdf" onclick="window.print()">⬇ Imprimir Relatório</button>
+  </div>
+  <div id="report-content"></div>
 </div>
 
 
@@ -898,7 +1018,8 @@ Retorne APENAS um JSON válido, sem markdown, sem texto fora do JSON:
 {"score":{"abordados":0,"total":5,"forcas":0,"alertas":0},"diagnostico":[{"topico":"","status":"ok|part|miss","excerpt":"","insight":""}],"sintese":{"forcas":[],"alertas":[]},"perguntas":[{"texto":"","contexto":""}],"acoes":[{"num":"01","titulo":"","descricao":"","prioridade":"alta|media|baixa","prazo":""}]}`;
 
 /* ─── STATE ─── */
-let selectedPilarIndex = -1;
+let selectedPilarIndex    = -1;
+let currentViewedPilar    = -1;
 
 /* ─── INIT ─── */
 document.addEventListener('DOMContentLoaded', () => {
@@ -1022,6 +1143,7 @@ INPUT: ${inputText}`;
     const analysis = JSON.parse(raw);
 
     markCompleted(selectedPilarIndex);
+    saveAnalysis(selectedPilarIndex, { nome, empresa, inputText, date, analysis });
     renderResults(analysis, { pilar, nome, empresa, inputText, date });
     showPhase('results');
 
@@ -1033,8 +1155,10 @@ INPUT: ${inputText}`;
 
 /* ─── RENDER RESULTS ─── */
 function renderResults(analysis, { pilar, nome, empresa, inputText, date }) {
+  currentViewedPilar = pilar.num - 1;
   document.getElementById('results-nav-label').textContent =
-    `${pilar.letra} — ${pilar.nome} · ${nome} · ${empresa}`;
+    `${pilar.letra} — ${pilar.nomeKey} · ${nome}`;
+  updateNavButtons(currentViewedPilar);
 
   const initials = nome.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
   const abordados = analysis.score.abordados;
@@ -1227,7 +1351,7 @@ function buildResultsProgress(activeIndex) {
 
 /* ─── PHASE CONTROL ─── */
 function showPhase(name) {
-  ['input','loading','results'].forEach(p => {
+  ['input','loading','results','report'].forEach(p => {
     document.getElementById(`phase-${p}`).classList.toggle('active', p === name);
   });
   if (name === 'input') {
@@ -1247,15 +1371,215 @@ function markCompleted(index) {
   if (!c.includes(index)) { c.push(index); localStorage.setItem('vertex_completed', JSON.stringify(c)); }
 }
 function resetProgress() {
-  if (confirm('Reiniciar todo o progresso VERTEX? Os dados de análise não são apagados.')) {
+  if (confirm('Reiniciar todo o progresso VERTEX?\nTodas as análises salvas serão apagadas.')) {
     localStorage.removeItem('vertex_completed');
+    localStorage.removeItem('vertex_analyses');
     selectedPilarIndex = -1;
+    currentViewedPilar = -1;
     renderPilarGrid();
     renderProgressBar('vp-steps-input', -1);
     document.querySelectorAll('.pilar-card').forEach(el => el.classList.remove('selected'));
     document.getElementById('pilar-desc').classList.remove('visible');
     validateForm();
+    showPhase('input');
   }
+}
+
+/* ─── STORED ANALYSES ─── */
+function getStoredAnalyses() {
+  try { return JSON.parse(localStorage.getItem('vertex_analyses') || '[]'); }
+  catch { return []; }
+}
+function saveAnalysis(index, data) {
+  const arr = getStoredAnalyses();
+  while (arr.length <= index) arr.push(null);
+  arr[index] = data;
+  localStorage.setItem('vertex_analyses', JSON.stringify(arr));
+}
+
+/* ─── NAV BUTTONS ─── */
+function updateNavButtons(idx) {
+  const stored   = getStoredAnalyses();
+  const completed = getCompleted();
+  const container = document.getElementById('results-nav-btns');
+  let html = '';
+
+  if (idx > 0) {
+    const p = PILARES[idx - 1];
+    html += `<button class="btn-nav btn-nav-prev" onclick="navigateToPilar(${idx - 1})">← ${p.nomeKey}</button>`;
+  }
+  if (idx < 5) {
+    const p    = PILARES[idx + 1];
+    const done = stored[idx + 1];
+    html += `<button class="btn-nav btn-nav-next" onclick="navigateToPilar(${idx + 1})">${done ? p.nomeKey : 'Iniciar '+p.nomeKey} →</button>`;
+  }
+  const totalDone = stored.filter(Boolean).length;
+  if (totalDone > 0) {
+    const all6 = totalDone === 6;
+    html += `<button class="btn-nav btn-nav-report" onclick="showReport()">${all6 ? '📋 Relatório Completo' : `📋 Relatório (${totalDone}/6)`}</button>`;
+  }
+  container.innerHTML = html;
+}
+
+function navigateToPilar(idx) {
+  const stored = getStoredAnalyses();
+  const saved  = stored[idx];
+  if (saved) {
+    renderResults(saved.analysis, {
+      pilar: PILARES[idx],
+      nome: saved.nome, empresa: saved.empresa,
+      inputText: saved.inputText, date: saved.date
+    });
+    showPhase('results');
+  } else {
+    showPhase('input');
+    selectPilar(idx);
+    window.scrollTo(0, 0);
+  }
+}
+
+/* ─── REPORT ─── */
+function showReport() {
+  const stored = getStoredAnalyses();
+  const completed = stored.filter(Boolean);
+  if (!completed.length) return;
+
+  const first  = completed[0];
+  const nome   = first.nome;
+  const empresa = first.empresa;
+  const date   = first.date;
+
+  // Cover
+  let html = `
+    <div class="report-cover">
+      <div class="report-cover-logo">
+        <svg width="52" height="52" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
+          <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
+          <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="report-cover-title">Relatório <strong>VERTEX</strong></div>
+      <div class="report-cover-sub">Advisors Club · Método Caroline Calaça</div>
+      <div class="report-cover-meta">
+        <div class="meta-chip">Mentorado: <strong>${escHtml(nome)}</strong></div>
+        <div class="meta-chip">Empresa: <strong>${escHtml(empresa)}</strong></div>
+        <div class="meta-chip">Gerado em: <strong>${escHtml(date)}</strong></div>
+        <div class="meta-chip">Pilares: <strong>${stored.filter(Boolean).length}/6 concluídos</strong></div>
+      </div>
+    </div>`;
+
+  // Progress bar
+  html += `<div class="report-progress-bar"><div class="vp-label">Progresso</div><div class="vp-steps">${buildResultsProgress(-1)}</div></div>`;
+
+  // Each pilar section
+  html += `<div class="report-main">`;
+  PILARES.forEach((p, i) => {
+    const saved = stored[i];
+    html += `<div class="report-pilar-section">
+      <div class="report-pilar-header">
+        <div class="report-pilar-letter">${p.letra}</div>
+        <div>
+          <div class="report-pilar-name">${p.nome}</div>
+          <div class="report-pilar-meta">Pilar ${p.num} de 6${saved ? ` · ${escHtml(saved.nome)} · ${escHtml(saved.date)}` : ''}</div>
+        </div>
+      </div>`;
+
+    if (!saved) {
+      html += `<div class="report-missing">Este pilar ainda não foi analisado.</div>`;
+    } else {
+      const a = saved.analysis;
+      const initials = saved.nome.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+
+      // Score
+      html += `<div class="report-pilar-body">
+        <div class="score-row" style="margin-bottom:20px;">
+          <div class="score-card s-gold"><div class="score-num gold">${a.score.abordados}/${a.score.total}</div><div class="score-label">Tópicos abordados</div></div>
+          <div class="score-card s-green"><div class="score-num green">${a.score.forcas}</div><div class="score-label">Pontos de força</div></div>
+          <div class="score-card s-red"><div class="score-num red">${a.score.alertas}</div><div class="score-label">Alertas</div></div>
+        </div>`;
+
+      // Input
+      html += `<div class="section-title">Input</div>
+        <div class="input-block" style="margin-bottom:20px;">
+          <div class="input-quote-icon">"</div>
+          <div class="input-text">${escHtml(saved.inputText)}</div>
+          <div class="input-meta">
+            <div class="input-avatar">${initials}</div>
+            <div class="input-meta-text"><strong>${escHtml(saved.nome)}</strong> · ${escHtml(saved.empresa)}</div>
+          </div>
+        </div>`;
+
+      // Diagnóstico
+      html += `<div class="section-title">Diagnóstico</div>`;
+      a.diagnostico.forEach(d => {
+        const sc = d.status==='ok'?'status-ok':d.status==='part'?'status-part':'status-miss';
+        const sl = d.status==='ok'?'✓ Abordado':d.status==='part'?'⚠ Parcial':'— Não abordado';
+        html += `<div class="diag-item">
+          <div class="diag-status"><span class="status-badge ${sc}">${sl}</span></div>
+          <div class="diag-content">
+            <div class="diag-topic">${escHtml(d.topico)}</div>
+            ${d.excerpt?`<div class="diag-excerpt">"${escHtml(d.excerpt)}"</div>`:''}
+            <div class="diag-insight">${d.insight}</div>
+          </div>
+        </div>`;
+      });
+
+      // Síntese
+      html += `<div class="section-title" style="margin-top:20px;">Síntese</div>
+        <div class="sintese-block" style="margin-bottom:20px;">
+          <div class="sintese-card card-forte">
+            <div class="sintese-label forte">Pontos de Força</div>
+            <ul class="list-items forte">${a.sintese.forcas.map(f=>`<li>${f}</li>`).join('')}</ul>
+          </div>
+          <div class="sintese-card card-alerta">
+            <div class="sintese-label alerta">Alertas Estratégicos</div>
+            <ul class="list-items alerta">${a.sintese.alertas.map(al=>`<li>${al}</li>`).join('')}</ul>
+          </div>
+        </div>`;
+
+      // Perguntas
+      html += `<div class="section-title">Perguntas de Aprofundamento</div>`;
+      a.perguntas.forEach((q,qi) => {
+        html += `<div class="pergunta-item">
+          <div class="pergunta-num">${qi+1}</div>
+          <div><div class="pergunta-text">${escHtml(q.texto)}</div>
+          <div class="pergunta-context">${escHtml(q.contexto)}</div></div>
+        </div>`;
+      });
+
+      // Ações
+      html += `<div class="section-title" style="margin-top:20px;">Plano de Ação</div>`;
+      a.acoes.forEach(ac => {
+        const pc = ac.prioridade==='alta'?'prio-alta':ac.prioridade==='media'?'prio-media':'prio-baixa';
+        const pl = ac.prioridade==='alta'?'Alta':ac.prioridade==='media'?'Média':'Baixa';
+        html += `<div class="acao-item">
+          <div class="acao-prioridade"><div class="acao-num">${escHtml(ac.num)}</div><span class="prio-badge ${pc}">${pl}</span></div>
+          <div class="acao-content"><div class="acao-title">${escHtml(ac.titulo)}</div><div class="acao-desc">${ac.descricao}</div></div>
+          <div class="acao-prazo"><strong>Prazo</strong>${escHtml(ac.prazo)}</div>
+        </div>`;
+      });
+
+      html += `</div>`; // report-pilar-body
+    }
+    html += `</div>`; // report-pilar-section
+  });
+
+  html += `</div>`; // report-main
+  html += `<footer class="app-footer">
+    <div class="footer-left">
+      <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
+        <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
+        <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
+      </svg>
+      <span class="footer-text"><strong>VERTEX IA</strong> · Advisors Club · Método Caroline Calaça</span>
+    </div>
+    <div class="footer-text">Relatório gerado em ${escHtml(date)}</div>
+  </footer>`;
+
+  document.getElementById('report-content').innerHTML = html;
+  showPhase('report');
 }
 
 /* ─── API KEY (removida — gerenciada pelo server.js) ─── */
