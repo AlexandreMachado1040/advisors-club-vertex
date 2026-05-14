@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VERTEX — V: Visão de Futuro | Ana Paula Ferreira</title>
+  <style>
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --dark: #0f0f0f;
+      --dark-2: #1a1a1a;
+      --dark-3: #242424;
+      --dark-4: #2e2e2e;
+      --text: #e8e8e8;
+      --text-muted: #999;
+      --border: #333;
+      --green: #4caf82;
+      --red: #e05555;
+      --blue: #5b9bd5;
+      --orange: #e08844;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* ─── HEADER ─── */
+    header {
+      background: linear-gradient(135deg, #0f0f0f 0%, #1c1610 60%, #0f0f0f 100%);
+      border-bottom: 1px solid var(--gold);
+      padding: 48px 40px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 360px; height: 360px;
+      background: radial-gradient(circle, rgba(201,168,76,0.10) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .header-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 32px;
+    }
+    .pilar-letter {
+      font-size: 5rem;
+      font-weight: 900;
+      color: var(--gold);
+      line-height: 1;
+      letter-spacing: -4px;
+      flex-shrink: 0;
+      text-shadow: 0 0 40px rgba(201,168,76,0.25);
+    }
+    .header-content {}
+    .header-badge {
+      display: inline-block;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 3px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    header h1 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+    header h1 span { color: var(--gold); }
+    header p.subtitle {
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-size: 14px;
+    }
+    .header-meta {
+      margin-top: 20px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .meta-chip {
+      background: var(--dark-3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .meta-chip strong { color: var(--text); }
+
+    /* ─── VERTEX PROGRESS ─── */
+    .vertex-progress {
+      background: var(--dark-2);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    .vp-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-right: 20px;
+      flex-shrink: 0;
+    }
+    .vp-steps {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .vp-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .vp-dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+      border: 2px solid var(--border);
+      background: var(--dark-3);
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+    .vp-dot.active {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #000;
+      box-shadow: 0 0 16px rgba(201,168,76,0.35);
+    }
+    .vp-dot.done {
+      background: rgba(76,175,130,0.15);
+      border-color: var(--green);
+      color: var(--green);
+    }
+    .vp-connector {
+      width: 28px;
+      height: 2px;
+      background: var(--border);
+    }
+    .vp-connector.done-line { background: var(--green); opacity: 0.4; }
+    .vp-name {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-left: 2px;
+      max-width: 80px;
+      line-height: 1.2;
+    }
+    .vp-name.active { color: var(--gold); font-weight: 600; }
+
+    /* ─── LAYOUT ─── */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+    section { margin-bottom: 44px; }
+
+    .section-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ─── INPUT DA MENTORADA ─── */
+    .input-block {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 10px 10px 0;
+      padding: 24px 28px;
+      position: relative;
+    }
+    .input-quote-icon {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      font-size: 2.5rem;
+      color: rgba(201,168,76,0.12);
+      font-family: Georgia, serif;
+      line-height: 1;
+    }
+    .input-text {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.8;
+      font-style: italic;
+    }
+    .input-meta {
+      margin-top: 16px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .input-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #7a5c1e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: #000;
+      flex-shrink: 0;
+    }
+    .input-meta-text {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .input-meta-text strong { color: var(--text); }
+
+    /* ─── DIAGNÓSTICO ─── */
+    .diag-item {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 22px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+    }
+    .diag-status {
+      flex-shrink: 0;
+      width: 88px;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .status-ok    { background: rgba(76,175,130,0.15);  color: var(--green); border: 1px solid rgba(76,175,130,0.3); }
+    .status-part  { background: rgba(224,136,68,0.12);  color: var(--orange); border: 1px solid rgba(224,136,68,0.3); }
+    .status-miss  { background: rgba(224,85,85,0.10);   color: var(--red);   border: 1px solid rgba(224,85,85,0.25); }
+
+    .diag-content { flex: 1; }
+    .diag-topic {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .diag-excerpt {
+      font-size: 12px;
+      color: var(--gold-light);
+      font-style: italic;
+      border-left: 2px solid rgba(201,168,76,0.3);
+      padding-left: 10px;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+    .diag-insight {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .diag-insight strong { color: var(--text); }
+
+    /* ─── SÍNTESE ─── */
+    .sintese-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .sintese-card {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .sintese-card.card-forte {
+      border-color: rgba(76,175,130,0.3);
+      background: linear-gradient(135deg, #0f1a12, #1a1a1a);
+    }
+    .sintese-card.card-alerta {
+      border-color: rgba(224,85,85,0.3);
+      background: linear-gradient(135deg, #1a0f0f, #1a1a1a);
+    }
+    .sintese-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .sintese-label.forte { color: var(--green); }
+    .sintese-label.alerta { color: var(--red); }
+    .list-items {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .list-items li {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .list-items li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+    }
+    .list-items.forte li::before { color: var(--green); }
+    .list-items.alerta li::before { color: var(--red); }
+    .list-items li strong { color: var(--text); }
+
+    /* ─── PERGUNTAS ─── */
+    .pergunta-item {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .pergunta-num {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.35);
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .pergunta-text {
+      font-size: 13.5px;
+      color: var(--text);
+      line-height: 1.6;
+      padding-top: 4px;
+    }
+    .pergunta-context {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 5px;
+      line-height: 1.5;
+    }
+
+    /* ─── PLANO DE AÇÃO ─── */
+    .acao-item {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-bottom: 10px;
+      display: grid;
+      grid-template-columns: 70px 1fr auto;
+      gap: 16px;
+      align-items: start;
+    }
+    .acao-prioridade {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .prio-badge {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .prio-alta   { background: rgba(224,85,85,0.15);   color: var(--red);    border: 1px solid rgba(224,85,85,0.3); }
+    .prio-media  { background: rgba(224,136,68,0.12);  color: var(--orange); border: 1px solid rgba(224,136,68,0.3); }
+    .prio-baixa  { background: rgba(91,155,213,0.12);  color: var(--blue);   border: 1px solid rgba(91,155,213,0.3); }
+    .acao-num {
+      font-size: 20px;
+      font-weight: 900;
+      color: rgba(201,168,76,0.2);
+      line-height: 1;
+    }
+    .acao-content {}
+    .acao-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 5px;
+    }
+    .acao-desc {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .acao-desc strong { color: var(--text); }
+    .acao-prazo {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      background: var(--dark-3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      text-align: center;
+    }
+    .acao-prazo strong { color: var(--text); display: block; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+
+    /* ─── SCORE CARD ─── */
+    .score-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+    .score-card {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .score-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+    }
+    .score-card.s-gold::before  { background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+    .score-card.s-green::before { background: linear-gradient(90deg, transparent, var(--green), transparent); }
+    .score-card.s-red::before   { background: linear-gradient(90deg, transparent, var(--red), transparent); }
+    .score-num {
+      font-size: 2.2rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .score-num.gold  { color: var(--gold); }
+    .score-num.green { color: var(--green); }
+    .score-num.red   { color: var(--red); }
+    .score-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    /* ─── NOTA IA ─── */
+    .ia-note {
+      background: linear-gradient(135deg, #0e1018, #1a1a1a);
+      border: 1px solid rgba(91,155,213,0.25);
+      border-radius: 10px;
+      padding: 20px 24px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 32px;
+    }
+    .ia-icon {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      background: rgba(91,155,213,0.12);
+      border: 1px solid rgba(91,155,213,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .ia-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .ia-text strong { color: #a8c8e8; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--dark-2);
+      border-top: 1px solid var(--border);
+      padding: 20px 40px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    footer strong { color: var(--gold); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      header { padding: 32px 20px 24px; }
+      .header-top { gap: 16px; }
+      .pilar-letter { font-size: 3.5rem; }
+      header h1 { font-size: 1.5rem; }
+      .vertex-progress { padding: 12px 20px; overflow-x: auto; }
+      main { padding: 28px 16px 60px; }
+      .sintese-block { grid-template-columns: 1fr; }
+      .acao-item { grid-template-columns: 1fr; }
+      .acao-prazo { justify-self: start; }
+      .score-row { grid-template-columns: 1fr; }
+      .vp-name { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════
+     HEADER
+═══════════════════════════════════ -->
+<header>
+  <div class="header-top">
+    <div class="pilar-letter">V</div>
+    <div class="header-content">
+      <div class="header-badge">Método VERTEX · Pilar 1 de 6</div>
+      <h1>Visão de Futuro <span>Compartilhada</span></h1>
+      <p class="subtitle">Análise estruturada da percepção da mentorada com base no método VERTEX</p>
+      <div class="header-meta">
+        <div class="meta-chip">Mentorada: <strong>Ana Paula Ferreira</strong></div>
+        <div class="meta-chip">Data: <strong>14 de maio de 2026</strong></div>
+        <div class="meta-chip">Advisor: <strong>Caroline Calaça</strong></div>
+        <div class="meta-chip">Empresa: <strong>Contabilidade Ferreira</strong></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════
+     VERTEX PROGRESS BAR
+═══════════════════════════════════ -->
+<div class="vertex-progress">
+  <div class="vp-label">Progresso</div>
+  <div class="vp-steps">
+    <div class="vp-step">
+      <div class="vp-dot active">V</div>
+      <div class="vp-name active">Visão</div>
+    </div>
+    <div class="vp-connector"></div>
+    <div class="vp-step">
+      <div class="vp-dot">E</div>
+      <div class="vp-name">Estratégia</div>
+    </div>
+    <div class="vp-connector"></div>
+    <div class="vp-step">
+      <div class="vp-dot">R</div>
+      <div class="vp-name">Redesenho</div>
+    </div>
+    <div class="vp-connector"></div>
+    <div class="vp-step">
+      <div class="vp-dot">T</div>
+      <div class="vp-name">Tração</div>
+    </div>
+    <div class="vp-connector"></div>
+    <div class="vp-step">
+      <div class="vp-dot">E</div>
+      <div class="vp-name">Execução</div>
+    </div>
+    <div class="vp-connector"></div>
+    <div class="vp-step">
+      <div class="vp-dot">X</div>
+      <div class="vp-name">X-Factor</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     MAIN
+═══════════════════════════════════ -->
+<main>
+
+  <!-- SCORE RESUMO -->
+  <div class="score-row">
+    <div class="score-card s-gold">
+      <div class="score-num gold">3/5</div>
+      <div class="score-label">Tópicos abordados</div>
+    </div>
+    <div class="score-card s-green">
+      <div class="score-num green">1</div>
+      <div class="score-label">Ponto de força identificado</div>
+    </div>
+    <div class="score-card s-red">
+      <div class="score-num red">2</div>
+      <div class="score-label">Alertas estratégicos</div>
+    </div>
+  </div>
+
+  <!-- INPUT DA MENTORADA -->
+  <section>
+    <div class="section-title">Input da Mentorada</div>
+    <div class="input-block">
+      <div class="input-quote-icon">"</div>
+      <div class="input-text">
+        Assisti ao vídeo sobre Visão de Futuro e percebi que nunca senti que minha equipe realmente compartilha minha visão. Falo muito sobre crescer, mas quando o cliente pergunta onde a empresa vai estar em 5 anos, cada sócio responde uma coisa diferente. Acho que o problema é que a visão fica na minha cabeça e não saiu direito para o papel. Meu sócio quer abrir mais filiais, eu quero melhorar a operação primeiro. Não sei se isso é falta de comunicação ou conflito real de direção.
+      </div>
+      <div class="input-meta">
+        <div class="input-avatar">AP</div>
+        <div class="input-meta-text">
+          <strong>Ana Paula Ferreira</strong> · Contabilidade Ferreira · Enviado em 14/05/2026
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTA DA IA -->
+  <div class="ia-note">
+    <div class="ia-icon">✦</div>
+    <div class="ia-text">
+      <strong>Nota da análise:</strong> O input foi mapeado contra os 5 tópicos do pilar V do método VERTEX. Cada tópico foi avaliado com base no que a mentorada explicitou, implicitou ou deixou de abordar. As perguntas e o plano de ação são derivados diretamente dos gaps identificados.
+    </div>
+  </div>
+
+  <!-- DIAGNÓSTICO ESTRUTURADO -->
+  <section>
+    <div class="section-title">Diagnóstico Estruturado — Pilar V</div>
+
+    <!-- Tópico 1: Modelo de negócio atual -->
+    <div class="diag-item">
+      <div class="diag-status">
+        <span class="status-badge status-part">⚠ Parcial</span>
+      </div>
+      <div class="diag-content">
+        <div class="diag-topic">Entendimento do modelo de negócio atual</div>
+        <div class="diag-excerpt">"Falo muito sobre crescer, mas a visão fica na minha cabeça e não saiu direito para o papel."</div>
+        <div class="diag-insight">
+          A mentorada demonstra consciência de que existe uma visão — mas ainda não a formalizou. O modelo de negócio atual é percebido de forma intuitiva, não mapeada. <strong>Ponto de atenção:</strong> sem clareza do ponto de partida documentado, qualquer visão de futuro fica flutuante.
+        </div>
+      </div>
+    </div>
+
+    <!-- Tópico 2: Horizonte 3-5 anos -->
+    <div class="diag-item">
+      <div class="diag-status">
+        <span class="status-badge status-ok">✓ Abordado</span>
+      </div>
+      <div class="diag-content">
+        <div class="diag-topic">Identificação de onde quer chegar (horizonte 3–5 anos)</div>
+        <div class="diag-excerpt">"Eu quero melhorar a operação primeiro antes de abrir filiais."</div>
+        <div class="diag-insight">
+          A mentorada tem uma preferência de caminho clara — priorizar solidez operacional antes de expansão geográfica. Isso é uma posição estratégica válida e <strong>já existe uma visão implícita de médio prazo</strong>. O próximo passo é torná-la explícita e mensurável.
+        </div>
+      </div>
+    </div>
+
+    <!-- Tópico 3: Alinhamento com sócios -->
+    <div class="diag-item">
+      <div class="diag-status">
+        <span class="status-badge status-ok">✓ Abordado</span>
+      </div>
+      <div class="diag-content">
+        <div class="diag-topic">Alinhamento da visão com liderança e sócios</div>
+        <div class="diag-excerpt">"Meu sócio quer abrir mais filiais, eu quero melhorar a operação primeiro. Não sei se isso é falta de comunicação ou conflito real de direção."</div>
+        <div class="diag-insight">
+          Este é o núcleo do problema identificado. Existe um <strong>desalinhamento de visão entre os sócios</strong> — e a mentorada já percebe isso com clareza. A dúvida entre "falta de comunicação" e "conflito real" é relevante: na maioria dos casos é as duas coisas ao mesmo tempo, e precisam de ferramentas distintas para cada dimensão.
+        </div>
+      </div>
+    </div>
+
+    <!-- Tópico 4: Papel do Advisor -->
+    <div class="diag-item">
+      <div class="diag-status">
+        <span class="status-badge status-miss">— Não abordado</span>
+      </div>
+      <div class="diag-content">
+        <div class="diag-topic">Definição do papel do Advisor no processo de visão</div>
+        <div class="diag-insight">
+          A mentorada não mencionou como enxerga o papel do Advisor nesse processo de construção de visão. Isso é natural neste estágio inicial, mas é importante clarificar nas próximas sessões: <strong>o Advisor não cria a visão — ele facilita a emergência de uma visão que já existe mas ainda não foi articulada.</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tópico 5: Norte Verdadeiro -->
+    <div class="diag-item">
+      <div class="diag-status">
+        <span class="status-badge status-miss">— Não abordado</span>
+      </div>
+      <div class="diag-content">
+        <div class="diag-topic">Criação do "Norte Verdadeiro" que guia as decisões</div>
+        <div class="diag-insight">
+          Não há ainda uma declaração de visão consolidada — nem menção a um propósito maior que unifique as escolhas da empresa. O desacordo entre os sócios (operação vs. expansão) é sintoma direto da ausência de um <strong>Norte Verdadeiro compartilhado</strong>. Esse tópico será o trabalho central das próximas sessões de V.
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- SÍNTESE -->
+  <section>
+    <div class="section-title">Síntese do Diagnóstico</div>
+    <div class="sintese-block">
+      <div class="sintese-card card-forte">
+        <div class="sintese-label forte">Pontos de Força</div>
+        <ul class="list-items forte">
+          <li>Alta <strong>autoconsciência</strong> sobre a ausência de visão formalizada — isso é o primeiro passo</li>
+          <li>Preferência estratégica clara: <strong>solidez antes de expansão</strong>, o que demonstra maturidade de gestão</li>
+          <li>Já <strong>identifica o desalinhamento com o sócio</strong> sem minimizá-lo — abertura para trabalhar o tema</li>
+        </ul>
+      </div>
+      <div class="sintese-card card-alerta">
+        <div class="sintese-label alerta">Alertas Estratégicos</div>
+        <ul class="list-items alerta">
+          <li><strong>Visão não documentada:</strong> enquanto ficar apenas na cabeça, não pode ser compartilhada nem cobrada</li>
+          <li><strong>Conflito de direção não resolvido com o sócio</strong> bloqueia qualquer planejamento de crescimento — é urgente</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERGUNTAS DE APROFUNDAMENTO -->
+  <section>
+    <div class="section-title">Perguntas de Aprofundamento</div>
+
+    <div class="pergunta-item">
+      <div class="pergunta-num">1</div>
+      <div>
+        <div class="pergunta-text">Se você tivesse que descrever sua empresa em 3 anos em uma única frase — sem mencionar faturamento — o que você diria?</div>
+        <div class="pergunta-context">Objetivo: forçar a articulação da visão além de métricas financeiras, chegando ao propósito e ao tipo de empresa que se quer ser.</div>
+      </div>
+    </div>
+
+    <div class="pergunta-item">
+      <div class="pergunta-num">2</div>
+      <div>
+        <div class="pergunta-text">Você e seu sócio já sentaram especificamente para conversar sobre "para onde a empresa deve ir" — ou as divergências surgem dentro de outros contextos (reuniões operacionais, decisões do dia a dia)?</div>
+        <div class="pergunta-context">Objetivo: entender se há um fórum dedicado para estratégia entre os sócios, ou se a visão é disputada de forma reativa e fragmentada.</div>
+      </div>
+    </div>
+
+    <div class="pergunta-item">
+      <div class="pergunta-num">3</div>
+      <div>
+        <div class="pergunta-text">Quando você diz "melhorar a operação primeiro", quais são os 2 ou 3 problemas operacionais concretos que precisariam estar resolvidos para você se sentir pronta para crescer?</div>
+        <div class="pergunta-context">Objetivo: transformar uma intenção vaga ("melhorar a operação") em critérios objetivos de maturidade — o que torna a visão alcançável.</div>
+      </div>
+    </div>
+
+    <div class="pergunta-item">
+      <div class="pergunta-num">4</div>
+      <div>
+        <div class="pergunta-text">Sua equipe — além do sócio — sabe para onde a empresa está indo? Se você pedisse para três funcionários descreverem o futuro da empresa, o que eles diriam?</div>
+        <div class="pergunta-context">Objetivo: ampliar a percepção de desalinhamento para além dos sócios, medindo o nível de visão compartilhada com o time operacional.</div>
+      </div>
+    </div>
+
+    <div class="pergunta-item">
+      <div class="pergunta-num">5</div>
+      <div>
+        <div class="pergunta-text">Existe algum valor inegociável para você — uma linha que a empresa nunca cruzaria, mesmo que trouxesse crescimento rápido?</div>
+        <div class="pergunta-context">Objetivo: identificar os limites da visão, que muitas vezes revelam o propósito mais profundo da empresa e do fundador.</div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- PLANO DE AÇÃO -->
+  <section>
+    <div class="section-title">Plano de Ação — Pilar V</div>
+
+    <div class="acao-item">
+      <div class="acao-prioridade">
+        <div class="acao-num">01</div>
+        <span class="prio-badge prio-alta">Alta</span>
+      </div>
+      <div class="acao-content">
+        <div class="acao-title">Sessão de alinhamento de visão com o sócio</div>
+        <div class="acao-desc">
+          Agendar uma reunião dedicada exclusivamente a estratégia — fora do contexto operacional. Usar o framework <strong>Onde estamos / Onde queremos estar / O que nos impede</strong> como estrutura. O objetivo não é resolver tudo, mas mapear os pontos de convergência e os de divergência real.
+        </div>
+      </div>
+      <div class="acao-prazo">
+        <strong>Prazo</strong>
+        7 dias
+      </div>
+    </div>
+
+    <div class="acao-item">
+      <div class="acao-prioridade">
+        <div class="acao-num">02</div>
+        <span class="prio-badge prio-alta">Alta</span>
+      </div>
+      <div class="acao-content">
+        <div class="acao-title">Rascunhar a Declaração de Visão pessoal</div>
+        <div class="acao-desc">
+          Escrever em 3–5 linhas onde você quer que a Contabilidade Ferreira esteja em 3 anos — tipo de empresa, tipo de cliente, tipo de equipe, posição no mercado. Não precisa ser perfeito; precisa ser <strong>honesto e concreto</strong>. Esse rascunho será a base do trabalho da próxima sessão.
+        </div>
+      </div>
+      <div class="acao-prazo">
+        <strong>Prazo</strong>
+        3 dias
+      </div>
+    </div>
+
+    <div class="acao-item">
+      <div class="acao-prioridade">
+        <div class="acao-num">03</div>
+        <span class="prio-badge prio-media">Média</span>
+      </div>
+      <div class="acao-content">
+        <div class="acao-title">Listar os critérios de prontidão operacional</div>
+        <div class="acao-desc">
+          Documentar quais são as 3 condições operacionais que precisam estar resolvidas antes de expandir. Isso transforma a posição "quero melhorar a operação primeiro" em um <strong>critério mensurável</strong>, evitando que vire um argumento vago em futuras conversas com o sócio.
+        </div>
+      </div>
+      <div class="acao-prazo">
+        <strong>Prazo</strong>
+        15 dias
+      </div>
+    </div>
+
+    <div class="acao-item">
+      <div class="acao-prioridade">
+        <div class="acao-num">04</div>
+        <span class="prio-badge prio-media">Média</span>
+      </div>
+      <div class="acao-content">
+        <div class="acao-title">Aplicar o teste de visão com a equipe</div>
+        <div class="acao-desc">
+          Perguntar informalmente a 3 pessoas da equipe: <em>"Para onde você acha que a empresa está indo nos próximos anos?"</em> e registrar as respostas. Não é pesquisa formal — é diagnóstico rápido do nível de <strong>visão compartilhada</strong> que já existe na organização.
+        </div>
+      </div>
+      <div class="acao-prazo">
+        <strong>Prazo</strong>
+        30 dias
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  Gerado pelo sistema <strong>VERTEX IA</strong> &mdash; Método Caroline Calaça &mdash; Uso exclusivo da mentorada &mdash; 14/05/2026
+</footer>
+
+</body>
+</html>

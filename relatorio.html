@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relatório — Caroline Calaça</title>
+  <style>
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --dark: #0f0f0f;
+      --dark-2: #1a1a1a;
+      --dark-3: #242424;
+      --dark-4: #2e2e2e;
+      --text: #e8e8e8;
+      --text-muted: #999;
+      --border: #333;
+      --green: #4caf82;
+      --red: #e05555;
+      --blue: #5b9bd5;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #0f0f0f 0%, #1c1610 60%, #0f0f0f 100%);
+      border-bottom: 1px solid var(--gold);
+      padding: 48px 40px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+    header h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+    header h1 span { color: var(--gold); }
+    header p.subtitle {
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-size: 14px;
+    }
+    .header-meta {
+      margin-top: 24px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .meta-chip {
+      background: var(--dark-3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .meta-chip strong { color: var(--text); }
+
+    /* LAYOUT */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* SECTION */
+    section { margin-bottom: 48px; }
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* CARDS GRID */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      header h1 { font-size: 1.8rem; }
+    }
+
+    .card {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    /* STAT CARDS */
+    .stat-card {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* PROFILE */
+    .profile-block {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+    }
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #7a5c1e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #000;
+      flex-shrink: 0;
+    }
+    .profile-info h2 { font-size: 1.3rem; font-weight: 700; color: #fff; }
+    .profile-info p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .tag {
+      background: rgba(201,168,76,0.1);
+      border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold-light);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* PRODUTO CARDS */
+    .produto-card {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px;
+      transition: border-color 0.2s;
+    }
+    .produto-card:hover { border-color: var(--gold); }
+    .produto-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .produto-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .produto-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .badge-premium { background: rgba(201,168,76,0.2); color: var(--gold); }
+    .badge-formacao { background: rgba(91,155,213,0.2); color: var(--blue); }
+    .badge-metodologia { background: rgba(76,175,130,0.2); color: var(--green); }
+    .badge-programa { background: rgba(224,85,85,0.15); color: var(--red); }
+
+    .produto-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .modulos-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .modulos-list li {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding-left: 16px;
+      position: relative;
+    }
+    .modulos-list li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+    }
+    .modulos-list li strong { color: var(--text); }
+
+    /* TABELA */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead tr {
+      background: var(--dark-3);
+    }
+    th {
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+    td a {
+      color: var(--gold);
+      text-decoration: none;
+      font-family: monospace;
+      font-size: 12px;
+    }
+    td a:hover { text-decoration: underline; }
+
+    .dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .dot-green { background: var(--green); }
+    .dot-blue  { background: var(--blue); }
+    .dot-gold  { background: var(--gold); }
+
+    /* PUBLICO */
+    .publico-card {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .publico-card h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .publico-card p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .publico-icon {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    /* POSICIONAMENTO */
+    .pos-block {
+      background: linear-gradient(135deg, #1a160a, #1a1a1a);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 10px;
+      padding: 28px;
+    }
+    .pos-quote {
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--gold-light);
+      border-left: 3px solid var(--gold);
+      padding-left: 18px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .pilar-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+    @media (max-width: 768px) { .pilar-grid { grid-template-columns: repeat(2, 1fr); } }
+    .pilar {
+      background: var(--dark-3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pilar-num {
+      background: var(--gold);
+      color: #000;
+      font-weight: 800;
+      font-size: 10px;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* TOM */
+    .tom-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .tom-item:last-child { border-bottom: none; }
+    .tom-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: rgba(201,168,76,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .tom-text strong { font-size: 13px; color: #fff; display: block; }
+    .tom-text span { font-size: 12px; color: var(--text-muted); }
+
+    /* INFRA */
+    .infra-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .infra-item:last-child { border-bottom: none; }
+    .infra-label { color: var(--text-muted); }
+    .infra-value {
+      color: var(--text);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    /* ALERT BOX */
+    .alert {
+      background: rgba(224,85,85,0.08);
+      border: 1px solid rgba(224,85,85,0.3);
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: #e8b4b4;
+      margin-top: 16px;
+    }
+    .alert strong { color: var(--red); }
+
+    /* FOOTER */
+    footer {
+      background: var(--dark-2);
+      border-top: 1px solid var(--border);
+      padding: 20px 40px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    footer strong { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-badge">Relatório de Levantamento</div>
+  <h1>Caroline <span>Calaça</span></h1>
+  <p class="subtitle">Análise completa de posicionamento, produtos, público-alvo e infraestrutura digital</p>
+  <div class="header-meta">
+    <div class="meta-chip">Data: <strong>10 de maio de 2026</strong></div>
+    <div class="meta-chip">Fontes: <strong>Sites, Hotmart, LinkedIn, Web Search</strong></div>
+    <div class="meta-chip">Status: <strong>Concluído</strong></div>
+  </div>
+</header>
+
+<main>
+
+  <!-- PERFIL -->
+  <section>
+    <div class="section-title">Perfil Profissional</div>
+    <div class="profile-block">
+      <div class="profile-avatar">CC</div>
+      <div class="profile-info">
+        <h2>Caroline Calaça</h2>
+        <p>Coach Executiva · Advisor de Negócios · Empresária · Palestrante · Professora</p>
+        <div class="tags">
+          <span class="tag">Business Coaching</span>
+          <span class="tag">Coaching Executivo</span>
+          <span class="tag">Advisory de Negócios</span>
+          <span class="tag">Alta Performance</span>
+          <span class="tag">Liderança</span>
+          <span class="tag">Estratégia Empresarial</span>
+          <span class="tag">FGV</span>
+          <span class="tag">Alcalá (Espanha)</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;" class="grid-2">
+      <div class="card">
+        <div class="card-title">Formação Acadêmica</div>
+        <div class="modulos-list" style="margin-top:0;">
+          <ul class="modulos-list">
+            <li><strong>Doutoranda</strong> em Psicologia Organizacional</li>
+            <li><strong>Mestre</strong> em Negócios Internacionais — Universidade de Alcalá, Madri</li>
+            <li><strong>Professora</strong> de graduação e pós-graduação — FGV e outras instituições</li>
+            <li>Pioneira no Brasil em mensuração financeira de resultados em treinamentos (desde 2011)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Grandes Clientes Atendidos</div>
+        <div class="tags" style="margin-top:0; margin-bottom:0;">
+          <span class="tag">Fiat</span>
+          <span class="tag">JBS</span>
+          <span class="tag">TOTVS</span>
+          <span class="tag">+1.000 empresas</span>
+        </div>
+        <p style="font-size:13px; color:var(--text-muted); margin-top:14px;">
+          Atende empresas de diversos portes e segmentos, do empreendedor individual a grandes corporações, com presença em 15 países.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- NÚMEROS -->
+  <section>
+    <div class="section-title">Prova Social — Números</div>
+    <div class="grid-4">
+      <div class="stat-card">
+        <div class="stat-number">16+</div>
+        <div class="stat-label">Anos de experiência no mercado</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">10k+</div>
+        <div class="stat-label">Empresários e líderes treinados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">1k+</div>
+        <div class="stat-label">Empresas desenvolvidas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">15</div>
+        <div class="stat-label">Países com clientes ativos</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUTOS -->
+  <section>
+    <div class="section-title">Portfólio de Produtos e Programas</div>
+    <div class="grid-2">
+
+      <div class="produto-card">
+        <div class="produto-header">
+          <div class="produto-name">Team Shapers</div>
+          <span class="produto-badge badge-programa">Programa</span>
+        </div>
+        <p class="produto-desc">Programa online para líderes que querem construir e liderar equipes de alta performance. Entregue em 7 módulos de videoaulas curtas, liberados semanalmente.</p>
+        <ul class="modulos-list">
+          <li>Gestão de conflitos e comunicação assertiva</li>
+          <li>Definição clara de objetivos e OKRs</li>
+          <li>Monitoramento de performance do time</li>
+          <li>Identificação de forças e fraquezas individuais</li>
+          <li>Criação de ambiente colaborativo e positivo</li>
+          <li><strong>Garantia:</strong> 15 dias com reembolso total</li>
+          <li><strong>Resultado:</strong> +5.000 profissionais treinados</li>
+        </ul>
+      </div>
+
+      <div class="produto-card">
+        <div class="produto-header">
+          <div class="produto-name">Formação Advisor de Negócios</div>
+          <span class="produto-badge badge-formacao">Formação</span>
+        </div>
+        <p class="produto-desc">Habilitação profissional para atuar como Advisor de Negócios. Disponível também na versão Club Exclusivo (premium). Entregue via Memberkit.</p>
+        <ul class="modulos-list">
+          <li><strong>Módulo 0:</strong> Análise Holística — diagnóstico estratégico</li>
+          <li><strong>Módulo 1:</strong> Plano de Crescimento personalizado</li>
+          <li><strong>Módulo 2:</strong> Avaliação de Riscos e Contingência</li>
+          <li><strong>Módulo 3:</strong> Tomada de Decisões e Mudanças Organizacionais</li>
+          <li><strong>Módulo 4:</strong> Design Organizacional para crescimento</li>
+          <li><strong>Módulo Inovação:</strong> Diferenciação estratégica</li>
+          <li><strong>Módulo 11:</strong> Sócios, Parceiros e Investidores</li>
+        </ul>
+      </div>
+
+      <div class="produto-card">
+        <div class="produto-header">
+          <div class="produto-name">Método Black / FGE</div>
+          <span class="produto-badge badge-metodologia">Metodologia</span>
+        </div>
+        <p class="produto-desc">Formação em Gestão Estratégica baseada em 12 pilares de consultoria empresarial. Abordagem completa do negócio, do comercial ao plano de escalonamento.</p>
+        <div class="pilar-grid">
+          <div class="pilar"><span class="pilar-num">1</span>Estratégia</div>
+          <div class="pilar"><span class="pilar-num">2</span>Métricas</div>
+          <div class="pilar"><span class="pilar-num">3</span>Modelo de Negócio</div>
+          <div class="pilar"><span class="pilar-num">4</span>Pessoas</div>
+          <div class="pilar"><span class="pilar-num">5</span>Processos</div>
+          <div class="pilar"><span class="pilar-num">6</span>Comercial</div>
+          <div class="pilar"><span class="pilar-num">7</span>Financeiro</div>
+          <div class="pilar"><span class="pilar-num">8</span>Projetos</div>
+          <div class="pilar"><span class="pilar-num">9</span>Inovação</div>
+          <div class="pilar"><span class="pilar-num">10</span>Riscos</div>
+          <div class="pilar"><span class="pilar-num">11</span>Escalonamento</div>
+          <div class="pilar"><span class="pilar-num">12</span>Estratégia de Saída</div>
+        </div>
+      </div>
+
+      <div class="produto-card">
+        <div class="produto-header">
+          <div class="produto-name">Master Coaching Executivo</div>
+          <span class="produto-badge badge-premium">Premium</span>
+        </div>
+        <p class="produto-desc">Formação completa para coaches que desejam atuar no contexto executivo e empresarial. Certificação dupla reconhecida.</p>
+        <ul class="modulos-list">
+          <li><strong>Certificado 1:</strong> Executive & Business Coaching</li>
+          <li><strong>Certificado 2:</strong> Master Coaching</li>
+          <li>Público: coaches que querem se especializar</li>
+        </ul>
+        <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
+          <div class="card-title" style="margin-bottom:8px;">Outros Produtos</div>
+          <ul class="modulos-list">
+            <li><strong>Coaches Black:</strong> formação de coaches de alta performance</li>
+            <li><strong>110 Ferramentas de Coach:</strong> material prático aplicável</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SITES -->
+  <section>
+    <div class="section-title">Infraestrutura Digital</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Sites e URLs</div>
+        <table>
+          <thead>
+            <tr>
+              <th>URL</th>
+              <th>Finalidade</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://carolcalaca.com.br" target="_blank">carolcalaca.com.br</a></td>
+              <td><span class="dot dot-gold"></span>Landing page — Team Shapers</td>
+            </tr>
+            <tr>
+              <td><a href="https://carolinecalaca.com.br" target="_blank">carolinecalaca.com.br</a></td>
+              <td><span class="dot dot-green"></span>Site institucional completo</td>
+            </tr>
+            <tr>
+              <td><a href="https://blog.carolinecalaca.com.br" target="_blank">blog.carolinecalaca.com.br</a></td>
+              <td><span class="dot dot-blue"></span>Blog — conteúdo educativo</td>
+            </tr>
+            <tr>
+              <td><a href="https://membros.carolcalaca.com.br" target="_blank">membros.carolcalaca.com.br</a></td>
+              <td><span class="dot dot-gold"></span>Área de membros (Memberkit)</td>
+            </tr>
+            <tr>
+              <td><a href="https://instagram.com/carolinecalaca" target="_blank">@carolinecalaca</a></td>
+              <td><span class="dot dot-blue"></span>Instagram</td>
+            </tr>
+            <tr>
+              <td><a href="https://linkedin.com/in/carolinecalaca" target="_blank">in/carolinecalaca</a></td>
+              <td><span class="dot dot-blue"></span>LinkedIn</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="alert">
+          <strong>Nota técnica:</strong> Todos os sites usam proteção Cloudflare ativa (bot protection), bloqueando scrapers automáticos.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Stack Tecnológica</div>
+        <div class="infra-item">
+          <span class="infra-label">Plataforma de membros</span>
+          <span class="infra-value">Memberkit</span>
+        </div>
+        <div class="infra-item">
+          <span class="infra-label">Marketplace de cursos</span>
+          <span class="infra-value">Hotmart</span>
+        </div>
+        <div class="infra-item">
+          <span class="infra-label">Proteção de sites</span>
+          <span class="infra-value">Cloudflare</span>
+        </div>
+        <div class="infra-item">
+          <span class="infra-label">Domínio produto (Team Shapers)</span>
+          <span class="infra-value">carolcalaca.com.br</span>
+        </div>
+        <div class="infra-item">
+          <span class="infra-label">Domínio institucional</span>
+          <span class="infra-value">carolinecalaca.com.br</span>
+        </div>
+        <div class="infra-item">
+          <span class="infra-label">Área de membros — Formação Advisor</span>
+          <span class="infra-value">/179191-formacao-advisor</span>
+        </div>
+        <div class="infra-item">
+          <span class="infra-label">CMS / Blog</span>
+          <span class="infra-value">blog.carolinecalaca.com.br</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PÚBLICO-ALVO -->
+  <section>
+    <div class="section-title">Público-Alvo</div>
+    <div class="grid-3">
+      <div class="publico-card">
+        <div class="publico-icon">🏢</div>
+        <h4>Empresários e Donos de Negócio</h4>
+        <p>Buscam crescimento, estruturação e escala. Principal público da Formação Advisor e do Método Black.</p>
+      </div>
+      <div class="publico-card">
+        <div class="publico-icon">👥</div>
+        <h4>Líderes e Gestores</h4>
+        <p>Querem construir equipes de alta performance. Principal público do Team Shapers.</p>
+      </div>
+      <div class="publico-card">
+        <div class="publico-icon">🎯</div>
+        <h4>Coaches e Consultores</h4>
+        <p>Querem se especializar em coaching executivo ou migrar para advisory de negócios. Público do Master Coaching e Formação Advisor.</p>
+      </div>
+      <div class="publico-card">
+        <div class="publico-icon">📊</div>
+        <h4>Executivos C-Level</h4>
+        <p>Diretores e executivos de empresas médias e grandes que buscam desenvolvimento estratégico.</p>
+      </div>
+      <div class="publico-card">
+        <div class="publico-icon">🌍</div>
+        <h4>Mercado Internacional</h4>
+        <p>Presença em 15 países. Perfil com alcance além do Brasil, especialmente América Latina.</p>
+      </div>
+      <div class="publico-card">
+        <div class="publico-icon">🎓</div>
+        <h4>Profissionais em Transição</h4>
+        <p>Pessoas migrando do modelo CLT/executivo para consultoria independente ou coaching.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- POSICIONAMENTO -->
+  <section>
+    <div class="section-title">Posicionamento e Proposta de Valor</div>
+    <div class="pos-block">
+      <div class="pos-quote">
+        "Conselharia Estratégica Real — uma mudança no mercado onde empresários estão buscando profissionais que atuem com eles no campo de batalha, em vez de conselhos formais tradicionais."
+      </div>
+      <div class="grid-2">
+        <div>
+          <div class="card-title">Diferenciais Competitivos</div>
+          <ul class="modulos-list" style="margin-top:8px;">
+            <li>Pioneira no Brasil em Business Coaching</li>
+            <li>Mensuração financeira de resultados desde 2011</li>
+            <li>Metodologia própria (Método Black — 12 pilares)</li>
+            <li>Presença acadêmica (FGV, Alcalá)</li>
+            <li>Ecossistema completo: blog, membros, Hotmart, Instagram, LinkedIn</li>
+          </ul>
+        </div>
+        <div>
+          <div class="card-title">Tom de Comunicação</div>
+          <div style="margin-top:8px;">
+            <div class="tom-item">
+              <div class="tom-icon">💬</div>
+              <div class="tom-text">
+                <strong>Autoridade com resultados</strong>
+                <span>Usa dados e prova social concretos (números, clientes, países)</span>
+              </div>
+            </div>
+            <div class="tom-item">
+              <div class="tom-icon">⚡</div>
+              <div class="tom-text">
+                <strong>Direta e orientada a resultados</strong>
+                <span>Comunicação objetiva, sem enrolação, foco em aplicação prática</span>
+              </div>
+            </div>
+            <div class="tom-item">
+              <div class="tom-icon">🛠</div>
+              <div class="tom-text">
+                <strong>Metodológica e ferramental</strong>
+                <span>Ferramentas, módulos e frameworks como entrega central</span>
+              </div>
+            </div>
+            <div class="tom-item">
+              <div class="tom-icon">🤝</div>
+              <div class="tom-text">
+                <strong>Profissional e acessível</strong>
+                <span>Linguagem de negócios sem distanciamento excessivo do público</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Relatório gerado em <strong>10 de maio de 2026</strong> &mdash; Projeto IA / Caroline Calaça &mdash; Uso interno
+</footer>
+
+</body>
+</html>

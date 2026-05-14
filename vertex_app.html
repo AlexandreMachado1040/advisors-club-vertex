@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VERTEX IA — Advisors Club</title>
+  <style>
+    :root {
+      --gold:        #c9a84c;
+      --gold-light:  #e8c97a;
+      --gold-dim:    #a07830;
+      --dark:        #0d0b08;
+      --dark-2:      #141008;
+      --dark-3:      #1e1810;
+      --dark-4:      #2a2210;
+      --text:        #f0ece4;
+      --text-muted:  #8a8070;
+      --border:      rgba(201,168,76,0.18);
+      --border-hard: rgba(201,168,76,0.38);
+      --green:       #4caf82;
+      --red:         #e05555;
+      --blue:        #5b9bd5;
+      --orange:      #e08844;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: -20%; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 600px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.07) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── PHASES ── */
+    .phase { display: none; }
+    .phase.active { display: block; }
+
+    /* ── SHARED HEADER ── */
+    .app-header {
+      background: linear-gradient(160deg, #1a1408 0%, #0d0b08 55%, #121008 100%);
+      border-bottom: 1px solid var(--border-hard);
+      padding: 28px 48px 24px;
+      position: relative;
+      z-index: 1;
+    }
+    .app-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
+    }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 0;
+    }
+    .brand-name  { font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-dim); }
+    .brand-sep   { width: 1px; height: 14px; background: var(--border-hard); }
+    .brand-sub   { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
+    .brand-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+
+    /* ── LOGO SVG ── */
+    .logo-svg { flex-shrink: 0; }
+
+    /* ── PROGRESS BAR ── */
+    .vertex-progress {
+      background: rgba(0,0,0,0.4);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 48px;
+      display: flex;
+      align-items: center;
+      position: relative; z-index: 1;
+    }
+    .vp-label { font-size: 9px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); margin-right: 24px; flex-shrink: 0; }
+    .vp-steps { display: flex; gap: 4px; align-items: center; }
+    .vp-step  { display: flex; align-items: center; gap: 6px; }
+    .vp-dot {
+      width: 34px; height: 34px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800;
+      border: 1px solid var(--border);
+      background: var(--dark-2); color: var(--text-muted);
+      transition: all 0.3s;
+    }
+    .vp-dot.active {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      border-color: var(--gold); color: #0d0b08;
+      box-shadow: 0 0 20px rgba(201,168,76,0.4);
+    }
+    .vp-dot.done { background: rgba(76,175,130,0.1); border-color: rgba(76,175,130,0.5); color: var(--green); }
+    .vp-connector { width: 28px; height: 1px; background: var(--border); }
+    .vp-connector.done-line { background: rgba(76,175,130,0.3); }
+    .vp-name { font-size: 10px; color: var(--text-muted); max-width: 72px; line-height: 1.2; letter-spacing: 0.3px; }
+    .vp-name.active { color: var(--gold); font-weight: 600; }
+
+    /* ── LAYOUT ── */
+    .app-main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 40px 28px 100px;
+      position: relative; z-index: 1;
+    }
+    section { margin-bottom: 36px; }
+    .section-title {
+      font-size: 9px; font-weight: 700; letter-spacing: 4px;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border-hard), transparent); }
+
+    /* ── PILAR CARDS ── */
+    .pilar-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+    .pilar-card {
+      background: linear-gradient(160deg, var(--dark-3), var(--dark-2));
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 18px 10px 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .pilar-card:hover { border-color: var(--border-hard); }
+    .pilar-card.selected {
+      background: linear-gradient(160deg, #2a1e08, #1e1408);
+      border-color: var(--gold);
+      box-shadow: 0 0 20px rgba(201,168,76,0.15);
+    }
+    .pc-letter {
+      font-size: 2rem; font-weight: 900; line-height: 1;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold-dim));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      opacity: 0.4;
+      transition: opacity 0.2s;
+    }
+    .pilar-card.selected .pc-letter { opacity: 1; }
+    .pc-name { font-size: 9px; color: var(--text-muted); letter-spacing: 0.5px; margin-top: 6px; line-height: 1.3; }
+    .pilar-card.selected .pc-name { color: var(--gold); }
+    .pilar-card.done { border-color: rgba(76,175,130,0.35); }
+    .pilar-card.done .pc-letter { opacity: 0.7; background: linear-gradient(135deg, var(--green), #2e7d52); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .pilar-card.done .pc-name { color: var(--green); }
+    .pc-done-badge { font-size: 9px; color: var(--green); margin-top: 4px; letter-spacing: 0.5px; }
+
+    /* ── PILAR DESCRIPTION ── */
+    .pilar-desc-block {
+      background: linear-gradient(160deg, #1e1808, var(--dark-2));
+      border: 1px solid var(--border-hard);
+      border-radius: 4px;
+      padding: 20px 22px;
+      margin-top: 14px;
+      display: none;
+    }
+    .pilar-desc-block.visible { display: block; }
+    .pd-title { font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+    .pd-topics { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .pd-topics li { font-size: 12.5px; color: var(--text-muted); padding-left: 16px; position: relative; }
+    .pd-topics li::before { content: '▸'; position: absolute; left: 0; color: var(--gold); }
+
+    /* ── FORM ── */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .input-field {
+      background: linear-gradient(160deg, var(--dark-3), var(--dark-2));
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      width: 100%;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .input-field::placeholder { color: var(--text-muted); }
+    .input-field:focus { border-color: var(--border-hard); }
+
+    .textarea-wrapper { position: relative; }
+    .input-textarea {
+      background: linear-gradient(160deg, var(--dark-3), var(--dark-2));
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 16px 18px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.8;
+      width: 100%;
+      min-height: 180px;
+      resize: vertical;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .input-textarea::placeholder { color: var(--text-muted); }
+    .input-textarea:focus { border-color: var(--border-hard); }
+    .char-count { font-size: 11px; color: var(--text-muted); text-align: right; margin-top: 6px; letter-spacing: 0.3px; }
+    .char-count.min-ok { color: var(--green); }
+
+    .input-helper {
+      font-size: 12px; color: var(--text-muted);
+      background: rgba(201,168,76,0.04);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+    .input-helper strong { color: var(--gold-light); }
+
+    /* ── SUBMIT BUTTON ── */
+    .btn-analisar {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      border: none;
+      border-radius: 4px;
+      color: #0d0b08;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+    }
+    .btn-analisar:hover:not(:disabled) { filter: brightness(1.1); box-shadow: 0 4px 24px rgba(201,168,76,0.3); }
+    .btn-analisar:disabled {
+      background: var(--dark-3);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      border: 1px solid var(--border);
+    }
+
+    /* ── API KEY BAR ── */
+    .apikey-bar {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .apikey-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.3px; flex-shrink: 0; }
+    .apikey-input {
+      flex: 1;
+      min-width: 200px;
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 7px 12px;
+      color: var(--text);
+      font-family: monospace;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .apikey-input:focus { border-color: var(--border-hard); }
+    .apikey-status { font-size: 11px; }
+    .apikey-status.ok  { color: var(--green); }
+    .apikey-status.err { color: var(--red); }
+
+    /* ── ERROR BOX ── */
+    .error-box {
+      background: rgba(224,85,85,0.08);
+      border: 1px solid rgba(224,85,85,0.3);
+      border-radius: 4px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: #e8b4b4;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .error-box.visible { display: block; }
+    .error-box strong { color: var(--red); }
+
+    /* ── LOADING PHASE ── */
+    #phase-loading {
+      display: none;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 28px;
+      position: relative; z-index: 1;
+    }
+    #phase-loading.active { display: flex; }
+    .loading-logo {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { filter: drop-shadow(0 0 12px rgba(201,168,76,0.3)); transform: scale(1); }
+      50%       { filter: drop-shadow(0 0 32px rgba(201,168,76,0.7)); transform: scale(1.05); }
+    }
+    .loading-text { font-size: 11px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: var(--text-muted); }
+    .loading-dots::after {
+      content: '';
+      animation: dots 1.5s steps(4, end) infinite;
+    }
+    @keyframes dots { 0%{content:''} 25%{content:'.'} 50%{content:'..'} 75%{content:'...'} 100%{content:''} }
+    .loading-sub { font-size: 12px; color: var(--text-muted); opacity: 0.6; }
+
+    /* ── RESULTS PHASE ── */
+    .results-header-actions {
+      background: var(--dark-2);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 48px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative; z-index: 1;
+    }
+    .btn-back {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 7px 16px;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
+    .btn-back:hover { border-color: var(--border-hard); color: var(--text); }
+    .results-nav-label { font-size: 11px; color: var(--text-muted); letter-spacing: 1px; }
+
+    /* ── RESULTS CONTENT ── */
+    .results-header {
+      background: linear-gradient(160deg, #1a1408 0%, #0d0b08 55%, #121008 100%);
+      border-bottom: 1px solid var(--border-hard);
+      padding: 40px 48px 32px;
+      position: relative; overflow: hidden; z-index: 1;
+    }
+    .results-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
+    }
+    .rh-top { display: flex; align-items: flex-start; gap: 24px; }
+    .rh-letter {
+      font-size: 5rem; font-weight: 900; line-height: 0.9; letter-spacing: -4px; flex-shrink: 0;
+      background: linear-gradient(160deg, var(--gold-light) 0%, var(--gold) 40%, var(--gold-dim) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      filter: drop-shadow(0 0 24px rgba(201,168,76,0.3));
+    }
+    .rh-badge {
+      display: inline-block;
+      background: rgba(201,168,76,0.08); border: 1px solid var(--border-hard);
+      color: var(--gold); font-size: 9px; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; padding: 3px 14px; border-radius: 2px; margin-bottom: 12px;
+    }
+    .rh-title { font-size: 1.9rem; font-weight: 300; color: var(--text); letter-spacing: 2px; text-transform: uppercase; line-height: 1.2; }
+    .rh-title strong { font-weight: 800; background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .rh-subtitle { color: var(--text-muted); margin-top: 6px; font-size: 13px; letter-spacing: 0.3px; }
+    .rh-meta { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .meta-chip { background: rgba(201,168,76,0.05); border: 1px solid var(--border); border-radius: 2px; padding: 5px 14px; font-size: 11px; color: var(--text-muted); }
+    .meta-chip strong { color: var(--text); font-weight: 600; }
+
+    .results-main { max-width: 960px; margin: 0 auto; padding: 40px 28px 100px; position: relative; z-index: 1; }
+    .results-section { margin-bottom: 44px; }
+
+    /* ── SCORE CARDS ── */
+    .score-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 36px; }
+    .score-card { background: linear-gradient(160deg, var(--dark-3), var(--dark-2)); border: 1px solid var(--border); border-radius: 4px; padding: 22px 18px; text-align: center; position: relative; overflow: hidden; }
+    .score-card::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; }
+    .score-card.s-gold::before  { background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+    .score-card.s-green::before { background: linear-gradient(90deg, transparent, var(--green), transparent); }
+    .score-card.s-red::before   { background: linear-gradient(90deg, transparent, var(--red), transparent); }
+    .score-num { font-size: 2.2rem; font-weight: 900; line-height: 1; }
+    .score-num.gold  { background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .score-num.green { color: var(--green); }
+    .score-num.red   { color: var(--red); }
+    .score-label { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+    /* ── INPUT BLOCK ── */
+    .input-block { background: linear-gradient(160deg, var(--dark-3), var(--dark-2)); border: 1px solid var(--border-hard); border-left: 2px solid var(--gold); border-radius: 0 4px 4px 0; padding: 24px 28px; position: relative; }
+    .input-quote-icon { position: absolute; top: 14px; right: 22px; font-size: 3rem; color: rgba(201,168,76,0.08); font-family: Georgia, serif; line-height: 1; }
+    .input-text { font-size: 14px; color: var(--text); line-height: 1.9; font-style: italic; }
+    .input-meta { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; gap: 14px; align-items: center; }
+    .input-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--gold-dim)); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #0d0b08; flex-shrink: 0; }
+    .input-meta-text { font-size: 12px; color: var(--text-muted); }
+    .input-meta-text strong { color: var(--text); }
+
+    /* ── IA NOTE ── */
+    .ia-note { background: rgba(91,155,213,0.04); border: 1px solid rgba(91,155,213,0.2); border-radius: 4px; padding: 16px 20px; display: flex; gap: 14px; align-items: flex-start; margin-bottom: 36px; }
+    .ia-icon { width: 30px; height: 30px; border-radius: 4px; background: rgba(91,155,213,0.08); border: 1px solid rgba(91,155,213,0.25); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; color: var(--blue); }
+    .ia-text { font-size: 12.5px; color: var(--text-muted); line-height: 1.65; }
+    .ia-text strong { color: #a8c8e8; }
+
+    /* ── DIAGNOSTIC ITEMS ── */
+    .diag-item { background: linear-gradient(160deg, var(--dark-3), var(--dark-2)); border: 1px solid var(--border); border-radius: 4px; padding: 20px 22px; margin-bottom: 10px; display: flex; gap: 20px; align-items: flex-start; transition: border-color 0.2s; }
+    .diag-item:hover { border-color: var(--border-hard); }
+    .diag-status { flex-shrink: 0; width: 90px; padding-top: 2px; }
+    .status-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; white-space: nowrap; }
+    .status-ok   { background: rgba(76,175,130,0.12); color: var(--green); border: 1px solid rgba(76,175,130,0.3); }
+    .status-part { background: rgba(224,136,68,0.10); color: var(--orange); border: 1px solid rgba(224,136,68,0.3); }
+    .status-miss { background: rgba(224,85,85,0.08);  color: var(--red);   border: 1px solid rgba(224,85,85,0.25); }
+    .diag-content { flex: 1; }
+    .diag-topic { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .diag-excerpt { font-size: 12px; color: var(--gold-light); font-style: italic; border-left: 2px solid rgba(201,168,76,0.25); padding-left: 12px; margin-bottom: 10px; line-height: 1.6; }
+    .diag-insight { font-size: 12.5px; color: var(--text-muted); line-height: 1.65; }
+    .diag-insight strong { color: var(--text); }
+
+    /* ── SÍNTESE ── */
+    .sintese-block { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .sintese-card { border-radius: 4px; padding: 22px; }
+    .sintese-card.card-forte { background: linear-gradient(160deg, #0d1a0f, #141008); border: 1px solid rgba(76,175,130,0.25); }
+    .sintese-card.card-alerta { background: linear-gradient(160deg, #1a0d0d, #141008); border: 1px solid rgba(224,85,85,0.25); }
+    .sintese-label { font-size: 9px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .sintese-label::after { content: ''; flex: 1; height: 1px; }
+    .sintese-label.forte  { color: var(--green); }
+    .sintese-label.forte::after  { background: rgba(76,175,130,0.2); }
+    .sintese-label.alerta { color: var(--red); }
+    .sintese-label.alerta::after { background: rgba(224,85,85,0.2); }
+    .list-items { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .list-items li { font-size: 12.5px; color: var(--text-muted); padding-left: 16px; position: relative; line-height: 1.55; }
+    .list-items li::before { content: '▸'; position: absolute; left: 0; }
+    .list-items.forte  li::before { color: var(--green); }
+    .list-items.alerta li::before { color: var(--red); }
+    .list-items li strong { color: var(--text); }
+
+    /* ── PERGUNTAS ── */
+    .pergunta-item { background: linear-gradient(160deg, var(--dark-3), var(--dark-2)); border: 1px solid var(--border); border-radius: 4px; padding: 18px 22px; margin-bottom: 10px; display: flex; gap: 18px; align-items: flex-start; transition: border-color 0.2s; }
+    .pergunta-item:hover { border-color: var(--border-hard); }
+    .pergunta-num { width: 30px; height: 30px; border-radius: 50%; background: rgba(201,168,76,0.08); border: 1px solid var(--border-hard); color: var(--gold); font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .pergunta-text { font-size: 13.5px; color: var(--text); line-height: 1.65; }
+    .pergunta-context { font-size: 11.5px; color: var(--text-muted); margin-top: 6px; line-height: 1.55; }
+
+    /* ── AÇÕES ── */
+    .acao-item { background: linear-gradient(160deg, var(--dark-3), var(--dark-2)); border: 1px solid var(--border); border-radius: 4px; padding: 20px 22px; margin-bottom: 10px; display: grid; grid-template-columns: 70px 1fr auto; gap: 18px; align-items: start; transition: border-color 0.2s; }
+    .acao-item:hover { border-color: var(--border-hard); }
+    .acao-prioridade { display: flex; flex-direction: column; align-items: center; gap: 6px; padding-top: 2px; }
+    .prio-badge { font-size: 8px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; text-align: center; }
+    .prio-alta  { background: rgba(224,85,85,0.12);  color: var(--red);    border: 1px solid rgba(224,85,85,0.3); }
+    .prio-media { background: rgba(224,136,68,0.10); color: var(--orange); border: 1px solid rgba(224,136,68,0.3); }
+    .prio-baixa { background: rgba(91,155,213,0.10); color: var(--blue);   border: 1px solid rgba(91,155,213,0.3); }
+    .acao-num { font-size: 22px; font-weight: 900; line-height: 1; background: linear-gradient(135deg, var(--gold-light), var(--gold-dim)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; opacity: 0.35; }
+    .acao-title { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .acao-desc  { font-size: 12.5px; color: var(--text-muted); line-height: 1.65; }
+    .acao-desc strong { color: var(--text); }
+    .acao-prazo { font-size: 11px; color: var(--text-muted); white-space: nowrap; background: rgba(201,168,76,0.06); border: 1px solid var(--border); border-radius: 2px; padding: 6px 12px; text-align: center; }
+    .acao-prazo strong { color: var(--gold); display: block; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2px; }
+
+    /* ── FOOTER ── */
+    .app-footer { background: var(--dark-2); border-top: 1px solid var(--border); padding: 20px 48px; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
+    .app-footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-dim), transparent); }
+    .footer-left  { display: flex; align-items: center; gap: 10px; }
+    .footer-text  { font-size: 11px; color: var(--text-muted); letter-spacing: 0.3px; }
+    .footer-text strong { color: var(--gold); }
+
+    /* ── WATERMARK ── */
+    .watermark { position: fixed; bottom: -80px; right: -80px; width: 380px; height: 380px; opacity: 0.025; pointer-events: none; z-index: 0; }
+
+    @media (max-width: 768px) {
+      .app-header, .vertex-progress, .results-header { padding-left: 20px; padding-right: 20px; }
+      .app-main, .results-main { padding: 24px 16px 60px; }
+      .pilar-grid { grid-template-columns: repeat(3, 1fr); }
+      .form-row { grid-template-columns: 1fr; }
+      .sintese-block { grid-template-columns: 1fr; }
+      .acao-item { grid-template-columns: 1fr; }
+      .score-row { grid-template-columns: 1fr; }
+      .vp-name { display: none; }
+      .app-footer { flex-direction: column; gap: 8px; padding: 16px 20px; }
+      .results-header-actions { padding: 12px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Watermark -->
+<svg class="watermark" viewBox="0 0 200 200" fill="none">
+  <circle cx="100" cy="100" r="95" stroke="#c9a84c" stroke-width="2"/>
+  <path d="M100 30 L145 155 H128 L100 72 L72 155 H55 Z" fill="#c9a84c"/>
+  <path d="M76 120 H124" stroke="#c9a84c" stroke-width="6"/>
+</svg>
+
+<!-- ══════════════════════════════════
+     PHASE: INPUT
+══════════════════════════════════ -->
+<div id="phase-input" class="phase active">
+
+  <header class="app-header">
+    <div class="header-brand">
+      <svg class="logo-svg" width="26" height="26" viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
+        <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
+        <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
+      </svg>
+      <span class="brand-name">Advisors Club</span>
+      <div class="brand-sep"></div>
+      <span class="brand-sub">Método VERTEX</span>
+    </div>
+  </header>
+
+  <div class="vertex-progress" id="progress-input">
+    <div class="vp-label">Progresso</div>
+    <div class="vp-steps" id="vp-steps-input"></div>
+  </div>
+
+  <main class="app-main">
+
+    <div id="error-box" class="error-box">
+      <strong>Erro:</strong> <span id="error-msg"></span>
+    </div>
+
+    <!-- PILAR SELECTOR -->
+    <section>
+      <div class="section-title">Selecione o Pilar</div>
+      <div class="pilar-grid" id="pilar-grid"></div>
+      <div class="pilar-desc-block" id="pilar-desc"></div>
+    </section>
+
+    <!-- DADOS -->
+    <section>
+      <div class="section-title">Seus Dados</div>
+      <div class="form-row">
+        <input id="nome"    class="input-field" type="text" placeholder="Seu nome completo" autocomplete="off" />
+        <input id="empresa" class="input-field" type="text" placeholder="Nome da empresa"   autocomplete="off" />
+      </div>
+    </section>
+
+    <!-- INPUT TEXT -->
+    <section>
+      <div class="section-title">Sua Percepção</div>
+      <div class="input-helper" id="input-helper">
+        Selecione um pilar acima para ver as orientações de escrita.
+      </div>
+      <div class="textarea-wrapper">
+        <textarea id="input-text" class="input-textarea" rows="7"
+          placeholder="Escreva aqui sua percepção após assistir ao vídeo. Seja específico — use exemplos da sua empresa, situações reais, dúvidas concretas..."></textarea>
+      </div>
+      <div class="char-count" id="char-count">0 caracteres — mínimo 80 para análise</div>
+    </section>
+
+    <button class="btn-analisar" id="btn-analisar" disabled onclick="analyzeInput()">
+      Analisar com IA
+    </button>
+
+    <!-- RESET -->
+    <div style="margin-top:24px; text-align:right;">
+      <button onclick="resetProgress()" style="background:transparent;border:1px solid var(--border);border-radius:4px;padding:6px 14px;color:var(--text-muted);font-family:inherit;font-size:11px;cursor:pointer;letter-spacing:0.5px;">↺ Reiniciar progresso VERTEX</button>
+    </div>
+
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-left">
+      <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
+        <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
+        <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
+      </svg>
+      <span class="footer-text"><strong>VERTEX IA</strong> · Advisors Club · Método Caroline Calaça</span>
+    </div>
+    <div class="footer-text">Ferramenta exclusiva para mentorados</div>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════
+     PHASE: LOADING
+══════════════════════════════════ -->
+<div id="phase-loading" class="phase">
+  <header class="app-header">
+    <div class="header-brand">
+      <svg class="logo-svg" width="26" height="26" viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
+        <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
+        <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
+      </svg>
+      <span class="brand-name">Advisors Club</span>
+      <div class="brand-sep"></div>
+      <span class="brand-sub">Método VERTEX</span>
+    </div>
+  </header>
+  <div style="display:flex; align-items:center; justify-content:center; flex-direction:column; gap:28px; min-height:70vh; position:relative; z-index:1;">
+    <svg class="loading-logo" width="90" height="90" viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
+      <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
+      <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
+    </svg>
+    <div class="loading-text">Analisando seu input<span class="loading-dots"></span></div>
+    <div class="loading-sub">Mapeando sua percepção contra o método VERTEX</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PHASE: RESULTS
+══════════════════════════════════ -->
+<div id="phase-results" class="phase">
+  <div class="results-header-actions">
+    <button class="btn-back" onclick="showPhase('input')">← Nova Análise</button>
+    <span class="results-nav-label" id="results-nav-label"></span>
+  </div>
+  <div id="results-content"></div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════ -->
+<script>
+/* ─── DATA ─── */
+const PILARES = [
+  {
+    letra: 'V', num: 1,
+    nome: 'Visão de Futuro Compartilhada',
+    nomeKey: 'Visão',
+    desc: 'Neste pilar você vai refletir sobre o destino estratégico da sua empresa. Escreva sobre:',
+    topicos: [
+      'Como você enxerga o modelo de negócio atual da sua empresa',
+      'Para onde você quer levar a empresa nos próximos 3 a 5 anos',
+      'Se sua liderança e sócios compartilham essa mesma visão',
+      'Como as decisões do dia a dia se conectam (ou não) com um propósito maior',
+      'O que seria o "Norte Verdadeiro" que guia as escolhas estratégicas'
+    ]
+  },
+  {
+    letra: 'E', num: 2,
+    nome: 'Estratégia de Crescimento Integrado',
+    nomeKey: 'Estratégia',
+    desc: 'Neste pilar você vai refletir sobre como a empresa cresce. Escreva sobre:',
+    topicos: [
+      'Como você enxerga o mercado, seus concorrentes e o posicionamento atual',
+      'Como os clientes chegam até você hoje e por quais canais',
+      'O que você oferece, como está organizado o portfólio e o que mais gera valor',
+      'Onde estão as principais oportunidades de crescimento não exploradas',
+      'Se marketing, vendas e operação trabalham de forma integrada ou em silos'
+    ]
+  },
+  {
+    letra: 'R', num: 3,
+    nome: 'Redesenho da Arquitetura Organizacional',
+    nomeKey: 'Redesenho',
+    desc: 'Neste pilar você vai refletir sobre como a empresa está organizada. Escreva sobre:',
+    topicos: [
+      'Quais são as funções críticas da empresa e onde estão os gaps de liderança',
+      'Como estão definidas as responsabilidades entre os times',
+      'Como as decisões importantes são tomadas — quem decide o quê',
+      'Se existem rotinas e governança que suportam o crescimento',
+      'Onde estão os principais gargalos de produtividade na operação'
+    ]
+  },
+  {
+    letra: 'T', num: 4,
+    nome: 'Tracionamento de Ativos Ocultos',
+    nomeKey: 'Tração',
+    desc: 'Neste pilar você vai refletir sobre o que a empresa tem e não usa. Escreva sobre:',
+    topicos: [
+      'Sua base de clientes — quem compra de novo, quem indica, qual o LTV',
+      'Canais de distribuição ou parcerias que existem mas não são explorados',
+      'Sua reputação e autoridade no mercado — isso está sendo convertido em receita?',
+      'Talentos dentro da equipe que estão mal alocados ou subutilizados',
+      'Ferramentas, tecnologias ou processos que existem mas não geram resultado'
+    ]
+  },
+  {
+    letra: 'E', num: 5,
+    nome: 'Execução com Acompanhamento Estratégico',
+    nomeKey: 'Execução',
+    desc: 'Neste pilar você vai refletir sobre como os planos viram realidade. Escreva sobre:',
+    topicos: [
+      'Como acontece o acompanhamento de resultados com a liderança hoje',
+      'Se existem revisões estratégicas periódicas — ou se o plano some depois que é feito',
+      'Como o plano de ação é ajustado quando o contexto muda',
+      'Se as metas e OKRs são acompanhados de forma consistente',
+      'Momentos recentes em que a empresa precisou de apoio para tomar decisões críticas'
+    ]
+  },
+  {
+    letra: 'X', num: 6,
+    nome: 'X-Factor: Cultura de Crescimento',
+    nomeKey: 'X-Factor',
+    desc: 'Neste pilar você vai refletir sobre a mentalidade e cultura da empresa. Escreva sobre:',
+    topicos: [
+      'Como a liderança pensa estrategicamente — ou se o dia a dia engole a visão',
+      'Se existem rituais de cultura, feedbacks e revisões que reforçam o que importa',
+      'Se os comportamentos da equipe estão alinhados com os valores e a estratégia',
+      'Crenças ou padrões de pensamento que limitam o crescimento da empresa',
+      'Se existe abertura para aprender, errar e ajustar de forma contínua'
+    ]
+  }
+];
+
+const SYSTEM_PROMPT = `Você é o sistema de análise VERTEX, baseado na metodologia de Advisory de Negócios da Caroline Calaça.
+
+Receberá: PILAR ativo (letra, número e nome), dados do mentorado, e um INPUT com a percepção livre do mentorado após assistir ao vídeo daquele pilar.
+
+TÓPICOS DE CADA PILAR:
+
+V — Visão de Futuro Compartilhada:
+1. Entendimento do modelo de negócio atual
+2. Identificação de onde o dono quer chegar (horizonte 3–5 anos)
+3. Alinhamento da visão com liderança e sócios
+4. Definição do papel do Advisor no processo de visão
+5. Criação do "Norte Verdadeiro" que guia as decisões
+
+E (Pilar 2) — Estratégia de Crescimento Integrado:
+1. Mapeamento do mercado, concorrência e posicionamento atual
+2. Definição de canais de vendas prioritários
+3. Revisão e otimização da oferta e portfólio
+4. Identificação de alavancas de crescimento (expansão, upsell, novos mercados)
+5. Integração entre marketing, vendas e operação
+
+R — Redesenho da Arquitetura Organizacional:
+1. Mapeamento das funções críticas e gaps de liderança
+2. Redesenho de times e responsabilidades
+3. Criação ou revisão de processos decisórios
+4. Definição de governança e rotinas de gestão
+5. Diagnóstico de produtividade e gargalos operacionais
+
+T — Tracionamento de Ativos Ocultos:
+1. Análise da base de clientes (recompra, indicação, LTV)
+2. Mapeamento de canais de distribuição não explorados
+3. Identificação de reputação e autoridade não convertidas em receita
+4. Diagnóstico de talentos internos mal posicionados
+5. Levantamento de ativos tecnológicos subutilizados
+
+E (Pilar 5) — Execução com Acompanhamento Estratégico:
+1. Check-ins mensais com a liderança
+2. Reuniões trimestrais de revisão estratégica
+3. Ajuste do plano de ação conforme o contexto muda
+4. Acompanhamento de OKRs ou métricas definidas
+5. Suporte para tomada de decisão em momentos críticos
+
+X — X-Factor: Cultura de Crescimento:
+1. Desenvolvimento da mentalidade estratégica dos líderes
+2. Instalação de rituais de cultura (reuniões, feedbacks, revisões)
+3. Alinhamento de valores e comportamentos com a estratégia
+4. Trabalho com crenças limitantes do empresário/liderança
+5. Construção de ambiente onde aprendizado e ajuste são naturais
+
+CLASSIFICAÇÃO DE CADA TÓPICO:
+- "ok": mentorado abordou com clareza ou com exemplo concreto
+- "part": abordou de forma vaga, tangencial ou incompleta
+- "miss": não mencionou nem implicitou
+
+REGRAS:
+- Para "ok" e "part": inclua em "excerpt" um trecho literal do input (entre aspas simples no JSON)
+- Para "miss": "excerpt" deve ser string vazia
+- "insight": 2-3 linhas analíticas. Use <strong>texto</strong> para ênfase em negrito
+- Gere exatamente 5 perguntas de aprofundamento
+- Gere entre 3 e 5 ações no plano de ação
+- Não invente dados sobre a empresa que não estejam no input
+- Os itens de sintese.forcas e sintese.alertas podem usar <strong>texto</strong>
+- As acao.descricao podem usar <strong>texto</strong>
+
+Retorne APENAS um JSON válido, sem markdown, sem texto fora do JSON:
+{"score":{"abordados":0,"total":5,"forcas":0,"alertas":0},"diagnostico":[{"topico":"","status":"ok|part|miss","excerpt":"","insight":""}],"sintese":{"forcas":[],"alertas":[]},"perguntas":[{"texto":"","contexto":""}],"acoes":[{"num":"01","titulo":"","descricao":"","prioridade":"alta|media|baixa","prazo":""}]}`;
+
+/* ─── STATE ─── */
+let selectedPilarIndex = -1;
+
+/* ─── INIT ─── */
+document.addEventListener('DOMContentLoaded', () => {
+  renderPilarGrid();
+  renderProgressBar('vp-steps-input', -1);
+
+  document.getElementById('nome').addEventListener('input', validateForm);
+  document.getElementById('empresa').addEventListener('input', validateForm);
+  document.getElementById('input-text').addEventListener('input', () => {
+    const len = document.getElementById('input-text').value.trim().length;
+    const el = document.getElementById('char-count');
+    el.textContent = len + ' caracteres' + (len < 80 ? ' — mínimo 80 para análise' : '');
+    el.className = 'char-count' + (len >= 80 ? ' min-ok' : '');
+    validateForm();
+  });
+});
+
+/* ─── PROGRESS BAR ─── */
+function renderProgressBar(containerId, activeIndex) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const completed = getCompleted();
+  let html = '';
+  PILARES.forEach((p, i) => {
+    const isDone   = completed.includes(i) && i !== activeIndex;
+    const isActive = i === activeIndex;
+    const cls      = isActive ? 'active' : isDone ? 'done' : '';
+    const nameCls  = isActive ? 'active' : '';
+    const prevDone = i > 0 && (completed.includes(i - 1) || i - 1 < activeIndex);
+    if (i > 0) {
+      html += `<div class="vp-connector ${prevDone ? 'done-line' : ''}"></div>`;
+    }
+    html += `<div class="vp-step">
+      <div class="vp-dot ${cls}">${isDone ? '✓' : p.letra}</div>
+      <div class="vp-name ${nameCls}">${p.nomeKey}</div>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+/* ─── PILAR GRID ─── */
+function renderPilarGrid() {
+  const grid = document.getElementById('pilar-grid');
+  const completed = getCompleted();
+  grid.innerHTML = PILARES.map((p, i) => {
+    const isDone = completed.includes(i);
+    return `
+    <div class="pilar-card ${isDone ? 'done' : ''}" id="pc-${i}" onclick="selectPilar(${i})">
+      <div class="pc-letter">${p.letra}</div>
+      <div class="pc-name">${p.nomeKey}</div>
+      ${isDone ? '<div class="pc-done-badge">✓ concluído</div>' : ''}
+    </div>`;
+  }).join('');
+}
+
+/* ─── SELECT PILAR ─── */
+function selectPilar(index) {
+  selectedPilarIndex = index;
+  document.querySelectorAll('.pilar-card').forEach((el, i) => {
+    el.classList.toggle('selected', i === index);
+  });
+  renderProgressBar('vp-steps-input', index);
+
+  const p = PILARES[index];
+  const desc = document.getElementById('pilar-desc');
+  desc.innerHTML = `
+    <div class="pd-title">${p.nome} — ${p.desc}</div>
+    <ul class="pd-topics">
+      ${p.topicos.map(t => `<li>${t}</li>`).join('')}
+    </ul>
+  `;
+  desc.classList.add('visible');
+
+  document.getElementById('input-helper').innerHTML =
+    `<strong>Dica:</strong> Use exemplos reais da sua empresa. Não precisa cobrir todos os pontos — escreva o que você genuinamente percebeu após o vídeo.`;
+
+  validateForm();
+}
+
+/* ─── VALIDATE ─── */
+function validateForm() {
+  const ok = selectedPilarIndex >= 0
+    && document.getElementById('nome').value.trim().length > 2
+    && document.getElementById('empresa').value.trim().length > 2
+    && document.getElementById('input-text').value.trim().length >= 80;
+  document.getElementById('btn-analisar').disabled = !ok;
+}
+
+/* ─── ANALYZE ─── */
+async function analyzeInput() {
+  const pilar = PILARES[selectedPilarIndex];
+  const nome      = document.getElementById('nome').value.trim();
+  const empresa   = document.getElementById('empresa').value.trim();
+  const inputText = document.getElementById('input-text').value.trim();
+  const date = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+
+  const userMessage = `PILAR: ${pilar.letra} — ${pilar.nome} (Pilar ${pilar.num} de 6)
+MENTORADO: ${nome}
+EMPRESA: ${empresa}
+DATA: ${date}
+INPUT: ${inputText}`;
+
+  hideError();
+  showPhase('loading');
+
+  try {
+    const res = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ systemPrompt: SYSTEM_PROMPT, userMessage })
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || `HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    let raw = (data.text || '').trim();
+    raw = raw.replace(/^```json?\s*/i, '').replace(/\s*```$/i, '');
+    const analysis = JSON.parse(raw);
+
+    markCompleted(selectedPilarIndex);
+    renderResults(analysis, { pilar, nome, empresa, inputText, date });
+    showPhase('results');
+
+  } catch (err) {
+    showPhase('input');
+    showError(err.message || 'Erro desconhecido. Verifique a API Key e tente novamente.');
+  }
+}
+
+/* ─── RENDER RESULTS ─── */
+function renderResults(analysis, { pilar, nome, empresa, inputText, date }) {
+  document.getElementById('results-nav-label').textContent =
+    `${pilar.letra} — ${pilar.nome} · ${nome} · ${empresa}`;
+
+  const initials = nome.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
+  const abordados = analysis.score.abordados;
+  const total     = analysis.score.total;
+
+  const progressHTML = buildResultsProgress(pilar.num - 1);
+
+  const diagHTML = analysis.diagnostico.map(d => {
+    const statusClass = d.status === 'ok' ? 'status-ok' : d.status === 'part' ? 'status-part' : 'status-miss';
+    const statusLabel = d.status === 'ok' ? '✓ Abordado' : d.status === 'part' ? '⚠ Parcial' : '— Não abordado';
+    const excerptHTML = d.excerpt
+      ? `<div class="diag-excerpt">"${escHtml(d.excerpt)}"</div>`
+      : '';
+    return `
+      <div class="diag-item">
+        <div class="diag-status"><span class="status-badge ${statusClass}">${statusLabel}</span></div>
+        <div class="diag-content">
+          <div class="diag-topic">${escHtml(d.topico)}</div>
+          ${excerptHTML}
+          <div class="diag-insight">${d.insight}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  const forcasHTML  = analysis.sintese.forcas.map(f  => `<li>${f}</li>`).join('');
+  const alertasHTML = analysis.sintese.alertas.map(a => `<li>${a}</li>`).join('');
+
+  const pergsHTML = analysis.perguntas.map((p, i) => `
+    <div class="pergunta-item">
+      <div class="pergunta-num">${i + 1}</div>
+      <div>
+        <div class="pergunta-text">${escHtml(p.texto)}</div>
+        <div class="pergunta-context">${escHtml(p.contexto)}</div>
+      </div>
+    </div>`).join('');
+
+  const acoesHTML = analysis.acoes.map(a => {
+    const prioClass = a.prioridade === 'alta' ? 'prio-alta' : a.prioridade === 'media' ? 'prio-media' : 'prio-baixa';
+    const prioLabel = a.prioridade === 'alta' ? 'Alta' : a.prioridade === 'media' ? 'Média' : 'Baixa';
+    return `
+    <div class="acao-item">
+      <div class="acao-prioridade">
+        <div class="acao-num">${escHtml(a.num)}</div>
+        <span class="prio-badge ${prioClass}">${prioLabel}</span>
+      </div>
+      <div class="acao-content">
+        <div class="acao-title">${escHtml(a.titulo)}</div>
+        <div class="acao-desc">${a.descricao}</div>
+      </div>
+      <div class="acao-prazo"><strong>Prazo</strong>${escHtml(a.prazo)}</div>
+    </div>`;
+  }).join('');
+
+  const html = `
+    <header class="results-header">
+      <div class="header-brand" style="margin-bottom:24px;">
+        <svg class="logo-svg" width="26" height="26" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
+          <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
+          <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
+        </svg>
+        <span class="brand-name">Advisors Club</span>
+        <div class="brand-sep"></div>
+        <span class="brand-sub">Método VERTEX</span>
+      </div>
+      <div class="rh-top">
+        <div class="rh-letter">${pilar.letra}</div>
+        <div>
+          <div class="rh-badge">Método VERTEX · Pilar ${pilar.num} de 6</div>
+          <div class="rh-title">${pilar.nome.split(' ').slice(0,-1).join(' ')} <strong>${pilar.nome.split(' ').slice(-1)[0]}</strong></div>
+          <div class="rh-subtitle">Análise estruturada da percepção do mentorado com base no método VERTEX</div>
+          <div class="rh-meta">
+            <div class="meta-chip">Mentorado: <strong>${escHtml(nome)}</strong></div>
+            <div class="meta-chip">Data: <strong>${escHtml(date)}</strong></div>
+            <div class="meta-chip">Advisor: <strong>Caroline Calaça</strong></div>
+            <div class="meta-chip">Empresa: <strong>${escHtml(empresa)}</strong></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="vertex-progress">
+      <div class="vp-label">Progresso</div>
+      <div class="vp-steps">${progressHTML}</div>
+    </div>
+
+    <main class="results-main">
+
+      <div class="score-row">
+        <div class="score-card s-gold">
+          <div class="score-num gold">${abordados}/${total}</div>
+          <div class="score-label">Tópicos abordados</div>
+        </div>
+        <div class="score-card s-green">
+          <div class="score-num green">${analysis.score.forcas}</div>
+          <div class="score-label">Pontos de força identificados</div>
+        </div>
+        <div class="score-card s-red">
+          <div class="score-num red">${analysis.score.alertas}</div>
+          <div class="score-label">Alertas estratégicos</div>
+        </div>
+      </div>
+
+      <div class="results-section">
+        <div class="section-title">Input do Mentorado</div>
+        <div class="input-block">
+          <div class="input-quote-icon">"</div>
+          <div class="input-text">${escHtml(inputText)}</div>
+          <div class="input-meta">
+            <div class="input-avatar">${initials}</div>
+            <div class="input-meta-text">
+              <strong>${escHtml(nome)}</strong> · ${escHtml(empresa)} · Enviado em ${escHtml(date)}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ia-note">
+        <div class="ia-icon">✦</div>
+        <div class="ia-text">
+          <strong>Nota da análise:</strong> O input foi mapeado contra os 5 tópicos do pilar ${pilar.letra} do método VERTEX. Cada tópico foi avaliado com base no que o mentorado explicitou, implicitou ou deixou de abordar. As perguntas e o plano de ação são derivados diretamente dos gaps identificados.
+        </div>
+      </div>
+
+      <div class="results-section">
+        <div class="section-title">Diagnóstico Estruturado — Pilar ${pilar.letra}</div>
+        ${diagHTML}
+      </div>
+
+      <div class="results-section">
+        <div class="section-title">Síntese do Diagnóstico</div>
+        <div class="sintese-block">
+          <div class="sintese-card card-forte">
+            <div class="sintese-label forte">Pontos de Força</div>
+            <ul class="list-items forte">${forcasHTML}</ul>
+          </div>
+          <div class="sintese-card card-alerta">
+            <div class="sintese-label alerta">Alertas Estratégicos</div>
+            <ul class="list-items alerta">${alertasHTML}</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-section">
+        <div class="section-title">Perguntas de Aprofundamento</div>
+        ${pergsHTML}
+      </div>
+
+      <div class="results-section">
+        <div class="section-title">Plano de Ação — Pilar ${pilar.letra}</div>
+        ${acoesHTML}
+      </div>
+
+    </main>
+
+    <footer class="app-footer">
+      <div class="footer-left">
+        <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
+          <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
+          <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
+        </svg>
+        <span class="footer-text"><strong>VERTEX IA</strong> · Advisors Club · Método Caroline Calaça</span>
+      </div>
+      <div class="footer-text">Uso exclusivo do mentorado · ${escHtml(date)}</div>
+    </footer>`;
+
+  document.getElementById('results-content').innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+/* ─── PROGRESS FOR RESULTS ─── */
+function buildResultsProgress(activeIndex) {
+  const completed = getCompleted();
+  return PILARES.map((p, i) => {
+    const isDone   = completed.includes(i) && i !== activeIndex;
+    const isActive = i === activeIndex;
+    const cls      = isActive ? 'active' : isDone ? 'done' : '';
+    const nameCls  = isActive ? 'active' : '';
+    const prevDone = i > 0 && (completed.includes(i - 1));
+    const conn = i > 0
+      ? `<div class="vp-connector ${prevDone ? 'done-line' : ''}"></div>`
+      : '';
+    return `${conn}<div class="vp-step">
+      <div class="vp-dot ${cls}">${isDone ? '✓' : p.letra}</div>
+      <div class="vp-name ${nameCls}">${p.nomeKey}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ─── PHASE CONTROL ─── */
+function showPhase(name) {
+  ['input','loading','results'].forEach(p => {
+    document.getElementById(`phase-${p}`).classList.toggle('active', p === name);
+  });
+  if (name === 'input') {
+    renderPilarGrid();
+    renderProgressBar('vp-steps-input', selectedPilarIndex);
+  }
+  window.scrollTo(0, 0);
+}
+
+/* ─── PROGRESS PERSISTENCE ─── */
+function getCompleted() {
+  try { return JSON.parse(localStorage.getItem('vertex_completed') || '[]'); }
+  catch { return []; }
+}
+function markCompleted(index) {
+  const c = getCompleted();
+  if (!c.includes(index)) { c.push(index); localStorage.setItem('vertex_completed', JSON.stringify(c)); }
+}
+function resetProgress() {
+  if (confirm('Reiniciar todo o progresso VERTEX? Os dados de análise não são apagados.')) {
+    localStorage.removeItem('vertex_completed');
+    selectedPilarIndex = -1;
+    renderPilarGrid();
+    renderProgressBar('vp-steps-input', -1);
+    document.querySelectorAll('.pilar-card').forEach(el => el.classList.remove('selected'));
+    document.getElementById('pilar-desc').classList.remove('visible');
+    validateForm();
+  }
+}
+
+/* ─── API KEY (removida — gerenciada pelo server.js) ─── */
+
+/* ─── ERROR HANDLING ─── */
+function showError(msg) {
+  document.getElementById('error-msg').textContent = msg;
+  document.getElementById('error-box').classList.add('visible');
+}
+function hideError() {
+  document.getElementById('error-box').classList.remove('visible');
+}
+
+/* ─── UTILS ─── */
+function escHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+</script>
+</body>
+</html>

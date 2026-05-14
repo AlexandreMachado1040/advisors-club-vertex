@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Análise de Concorrentes — Caroline Calaça</title>
+  <style>
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --dark: #0f0f0f;
+      --dark-2: #1a1a1a;
+      --dark-3: #242424;
+      --dark-4: #2e2e2e;
+      --text: #e8e8e8;
+      --text-muted: #999;
+      --border: #333;
+      --green: #4caf82;
+      --red: #e05555;
+      --blue: #5b9bd5;
+      --orange: #e08844;
+      --purple: #9b7ed5;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #0f0f0f 0%, #0e1218 60%, #0f0f0f 100%);
+      border-bottom: 1px solid var(--blue);
+      padding: 48px 40px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(91,155,213,0.10) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(91,155,213,0.15);
+      border: 1px solid var(--blue);
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+    header h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+    header h1 span { color: var(--gold); }
+    header p.subtitle {
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-size: 14px;
+    }
+    .header-meta {
+      margin-top: 24px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .meta-chip {
+      background: var(--dark-3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .meta-chip strong { color: var(--text); }
+
+    /* LAYOUT */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* SECTION */
+    section { margin-bottom: 56px; }
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* GRIDS */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+    @media (max-width: 768px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      header h1 { font-size: 1.8rem; }
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    /* STAT CARDS */
+    .stat-card {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* CONCORRENTE CARD */
+    .concorrente-card {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .concorrente-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .concorrente-card.c-blue::before   { background: var(--blue); }
+    .concorrente-card.c-green::before  { background: var(--green); }
+    .concorrente-card.c-gold::before   { background: var(--gold); }
+    .concorrente-card.c-orange::before { background: var(--orange); }
+    .concorrente-card.c-purple::before { background: var(--purple); }
+
+    .concorrente-card:hover { border-color: #555; }
+
+    .conc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .conc-avatar {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #000;
+      flex-shrink: 0;
+    }
+    .av-blue   { background: var(--blue); }
+    .av-green  { background: var(--green); }
+    .av-gold   { background: linear-gradient(135deg, var(--gold), #7a5c1e); }
+    .av-orange { background: var(--orange); }
+    .av-purple { background: var(--purple); }
+
+    .conc-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 4px;
+    }
+    .badge-franquia  { background: rgba(91,155,213,0.2); color: var(--blue); }
+    .badge-instituto { background: rgba(76,175,130,0.2); color: var(--green); }
+    .badge-coach     { background: rgba(201,168,76,0.2); color: var(--gold); }
+    .badge-empresario{ background: rgba(224,136,68,0.2); color: var(--orange); }
+    .badge-executivo { background: rgba(155,126,213,0.2); color: var(--purple); }
+
+    .conc-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 14px;
+    }
+    .conc-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .conc-pos {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-style: italic;
+      border-left: 2px solid var(--border);
+      padding-left: 12px;
+      margin: 14px 0;
+      line-height: 1.5;
+    }
+
+    .conc-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin: 14px 0 6px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .tag {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 9px;
+      border-radius: 20px;
+    }
+    .tag-blue   { background: rgba(91,155,213,0.1);  border-color: rgba(91,155,213,0.3);  color: var(--blue); }
+    .tag-green  { background: rgba(76,175,130,0.1);  border-color: rgba(76,175,130,0.3);  color: var(--green); }
+    .tag-gold   { background: rgba(201,168,76,0.1);  border-color: rgba(201,168,76,0.3);  color: var(--gold-light); }
+    .tag-orange { background: rgba(224,136,68,0.1);  border-color: rgba(224,136,68,0.3);  color: var(--orange); }
+    .tag-purple { background: rgba(155,126,213,0.1); border-color: rgba(155,126,213,0.3); color: var(--purple); }
+
+    .list-items {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .list-items li {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding-left: 16px;
+      position: relative;
+    }
+    .list-items li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+    }
+    .list-items li strong { color: var(--text); }
+
+    .vs-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .vs-box {
+      flex: 1;
+      background: var(--dark-3);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .vs-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .vs-label.forte { color: var(--green); }
+    .vs-label.fraco { color: var(--red); }
+    .vs-text {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* TABELA COMPARATIVA */
+    .table-wrap {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    thead tr { background: var(--dark-3); }
+    th {
+      text-align: left;
+      padding: 12px 14px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    th.th-caroline { color: var(--gold); }
+    td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+    td.td-caroline { background: rgba(201,168,76,0.04); }
+    td.row-label {
+      font-weight: 600;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .check { color: var(--green); font-weight: 700; }
+    .cross { color: var(--red); }
+    .neutral { color: var(--text-muted); }
+
+    /* PILLS STATUS */
+    .pill {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .pill-high   { background: rgba(76,175,130,0.2);  color: var(--green); }
+    .pill-mid    { background: rgba(201,168,76,0.2);  color: var(--gold);  }
+    .pill-low    { background: rgba(224,85,85,0.15);  color: var(--red);   }
+    .pill-niche  { background: rgba(155,126,213,0.2); color: var(--purple); }
+
+    /* OPORTUNIDADES */
+    .oport-card {
+      background: var(--dark-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px;
+    }
+    .oport-icon {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+    }
+    .oport-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .oport-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .oport-card.destaque {
+      border-color: rgba(201,168,76,0.35);
+      background: linear-gradient(135deg, #1a160a, #1a1a1a);
+    }
+
+    /* ALERT */
+    .alert-info {
+      background: rgba(91,155,213,0.08);
+      border: 1px solid rgba(91,155,213,0.25);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: #a8c8e8;
+      margin-bottom: 20px;
+    }
+    .alert-info strong { color: var(--blue); }
+
+    /* POSIÇÃO CAROLINE */
+    .caroline-box {
+      background: linear-gradient(135deg, #1a160a, #1a1a1a);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 10px;
+      padding: 24px;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--dark-2);
+      border-top: 1px solid var(--border);
+      padding: 20px 40px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    footer strong { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-badge">Inteligência Competitiva</div>
+  <h1>Análise de <span>Concorrentes</span></h1>
+  <p class="subtitle">Mapeamento do mercado de Business Coaching, Coaching Executivo e Advisory de Negócios no Brasil</p>
+  <div class="header-meta">
+    <div class="meta-chip">Data: <strong>10 de maio de 2026</strong></div>
+    <div class="meta-chip">Concorrentes mapeados: <strong>5</strong></div>
+    <div class="meta-chip">Fontes: <strong>Sites oficiais, Web Search</strong></div>
+    <div class="meta-chip">Referência: <strong>Caroline Calaça</strong></div>
+  </div>
+</header>
+
+<main>
+
+  <!-- CONTEXTO -->
+  <section>
+    <div class="section-title">Contexto Competitivo</div>
+    <div class="alert-info">
+      <strong>Metodologia:</strong> Análise baseada em dados coletados via busca web e acesso direto a sites dos concorrentes. Os concorrentes foram selecionados por sobreposição de público, produto ou posicionamento com Caroline Calaça.
+    </div>
+    <div class="grid-3" style="margin-bottom:16px;">
+      <div class="stat-card">
+        <div class="stat-number">5</div>
+        <div class="stat-label">Concorrentes mapeados em profundidade</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Segmentos disputados (coaching, advisory, liderança)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">1</div>
+        <div class="stat-label">Nicho sem concorrência direta identificada (Advisor de Negócios)</div>
+      </div>
+    </div>
+    <div class="caroline-box">
+      <div class="card-title" style="color:var(--gold); margin-bottom:10px;">Posição de Caroline no Mapa Competitivo</div>
+      <p style="font-size:13px; color:var(--text-muted); line-height:1.7;">
+        Caroline ocupa uma posição híbrida e diferenciada: atua com marca pessoal forte (como Paulo Vieira e Flávio Augusto),
+        tem profundidade acadêmica e metodológica (como IBC), e opera no mercado de empresários/PMEs (como ActionCOACH) —
+        mas com o diferencial exclusivo de ter criado o nicho de <strong style="color:var(--text)">Formação em Advisory de Negócios</strong> no Brasil,
+        segmento que nenhum dos concorrentes mapeados explora com a mesma profundidade.
+      </p>
+    </div>
+  </section>
+
+  <!-- PERFIS DOS CONCORRENTES -->
+  <section>
+    <div class="section-title">Perfis dos Concorrentes</div>
+
+    <div class="grid-2" style="gap:20px;">
+
+      <!-- 1. ActionCOACH -->
+      <div class="concorrente-card c-blue">
+        <div class="conc-header">
+          <div class="conc-avatar av-blue">AC</div>
+          <span class="conc-badge badge-franquia">Franquia Global</span>
+        </div>
+        <div class="conc-name">ActionCOACH Brasil</div>
+        <div class="conc-subtitle">Maior rede de coaching de negócios do mundo</div>
+
+        <div class="conc-pos">
+          "A maior e mais premiada empresa de consultoria e coaching de negócios do mundo — ajudando proprietários de PMEs a escalar com estratégias comprovadas."
+        </div>
+
+        <div class="conc-section-label">Principais Programas</div>
+        <ul class="list-items">
+          <li><strong>GrowthCLUB:</strong> planejamento estratégico de 90 dias</li>
+          <li><strong>ActionCLUB:</strong> base sólida com 320+ estratégias de negócio</li>
+          <li><strong>ProfitCLUB:</strong> treinamento em vendas e marketing</li>
+          <li><strong>PlanningCLUB:</strong> plano de negócios de 1 a 5 anos</li>
+          <li><strong>BookCLUB:</strong> evento mensal de desenvolvimento</li>
+          <li>Diagnóstico empresarial gratuito como entrada</li>
+        </ul>
+
+        <div class="conc-section-label">Público-Alvo</div>
+        <div class="tags">
+          <span class="tag tag-blue">Donos de PME</span>
+          <span class="tag tag-blue">Empreendedores</span>
+          <span class="tag tag-blue">Pequenas empresas</span>
+        </div>
+
+        <div class="conc-section-label">Prova Social</div>
+        <ul class="list-items">
+          <li>84 países, 25+ anos de mercado</li>
+          <li>40+ consultores ativos no Brasil</li>
+          <li>1.300+ projetos concluídos (filial SC)</li>
+          <li>Certificação ABF — Excelência em Franchising</li>
+        </ul>
+
+        <div class="vs-row">
+          <div class="vs-box">
+            <div class="vs-label forte">▲ Forte vs Caroline</div>
+            <div class="vs-text">Escala global, presença física via franquias, modelo B2B consolidado, diagnóstico gratuito como funil</div>
+          </div>
+          <div class="vs-box">
+            <div class="vs-label fraco">▼ Fraco vs Caroline</div>
+            <div class="vs-text">Modelo de franquia impessoal; sem marca pessoal forte; não forma coaches nem advisors</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. IBC -->
+      <div class="concorrente-card c-green">
+        <div class="conc-header">
+          <div class="conc-avatar av-green">IBC</div>
+          <span class="conc-badge badge-instituto">Instituto</span>
+        </div>
+        <div class="conc-name">IBC — Instituto Brasileiro de Coaching</div>
+        <div class="conc-subtitle">Jose Roberto Marques · Fundado em 2007</div>
+
+        <div class="conc-pos">
+          "Maior e mais completa plataforma de desenvolvimento pessoal, profissional e empresarial do Brasil — com metodologia patenteada e reconhecimento acadêmico."
+        </div>
+
+        <div class="conc-section-label">Principais Formações</div>
+        <ul class="list-items">
+          <li><strong>PSC Coaching</strong> — metodologia patenteada, carro-chefe</li>
+          <li><strong>Business &amp; Executive Coaching (BEC)</strong></li>
+          <li><strong>Master Coach</strong> e Master Trainer</li>
+          <li><strong>Coaching Ericksoniano</strong></li>
+          <li><strong>MBAs</strong> em Gestão de Pessoas e Gestão Empresarial</li>
+          <li>Practitioner e Master em PNL</li>
+          <li><strong>DSP — Desperte Seu Poder</strong></li>
+        </ul>
+
+        <div class="conc-section-label">Público-Alvo</div>
+        <div class="tags">
+          <span class="tag tag-green">Coaches em formação</span>
+          <span class="tag tag-green">Líderes e gestores</span>
+          <span class="tag tag-green">Profissionais em desenvolvimento</span>
+        </div>
+
+        <div class="conc-section-label">Prova Social</div>
+        <ul class="list-items">
+          <li>5,5 milhões+ de pessoas transformadas</li>
+          <li>97% de satisfação dos alunos</li>
+          <li>96 cidades com turmas presenciais</li>
+          <li>ISO 9001 · Reconhecimento MEC</li>
+          <li>Parceria Ohio University (Top 5 Business Schools)</li>
+          <li>CEO palestrante em Harvard (2×)</li>
+          <li>89+ livros publicados (15M de cópias)</li>
+        </ul>
+
+        <div class="vs-row">
+          <div class="vs-box">
+            <div class="vs-label forte">▲ Forte vs Caroline</div>
+            <div class="vs-text">Escala massiva, credenciais acadêmicas (ISO, MEC, Ohio U.), metodologia patenteada, volume de coaches formados</div>
+          </div>
+          <div class="vs-box">
+            <div class="vs-label fraco">▼ Fraco vs Caroline</div>
+            <div class="vs-text">Foco em formação de coaches, não em advisory; menor foco no empresário/dono de negócio como aluno final</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Paulo Vieira -->
+      <div class="concorrente-card c-gold">
+        <div class="conc-header">
+          <div class="conc-avatar av-gold">PV</div>
+          <span class="conc-badge badge-coach">Coach Executivo</span>
+        </div>
+        <div class="conc-name">Paulo Vieira</div>
+        <div class="conc-subtitle">Coach Executivo · 30+ anos de mercado</div>
+
+        <div class="conc-pos">
+          "Liderança com propósito, valores e alta performance — mais de 30 anos trabalhando com líderes de empresas nacionais e multinacionais."
+        </div>
+
+        <div class="conc-section-label">Posicionamento</div>
+        <ul class="list-items">
+          <li>Coaching executivo de alto nível para C-level</li>
+          <li>Foco em tríade: propósito + valores + performance</li>
+          <li>Forte presença no Instagram como canal de autoridade</li>
+          <li>Palestrante corporativo e keynote speaker</li>
+        </ul>
+
+        <div class="conc-section-label">Público-Alvo</div>
+        <div class="tags">
+          <span class="tag tag-gold">Executivos C-level</span>
+          <span class="tag tag-gold">Líderes de grandes empresas</span>
+          <span class="tag tag-gold">Empresas multinacionais</span>
+        </div>
+
+        <div class="conc-section-label">Presença Digital</div>
+        <ul class="list-items">
+          <li>Alta presença no Instagram (engajamento frequente com posts de liderança)</li>
+          <li>Referenciado como "um dos maiores coaches do Brasil" (Coniex)</li>
+          <li>Posição comparável a Caroline no top of mind do mercado</li>
+        </ul>
+
+        <div class="vs-row">
+          <div class="vs-box">
+            <div class="vs-label forte">▲ Forte vs Caroline</div>
+            <div class="vs-text">Longevidade de marca (30+ anos), acesso a C-level de grandes corporações, reconhecimento de mercado consolidado</div>
+          </div>
+          <div class="vs-box">
+            <div class="vs-label fraco">▼ Fraco vs Caroline</div>
+            <div class="vs-text">Sem formação em Advisory; menos foco em PMEs e infoprodutos em escala; posicionamento mais corporativo/aspiracional</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Flávio Augusto -->
+      <div class="concorrente-card c-orange">
+        <div class="conc-header">
+          <div class="conc-avatar av-orange">FA</div>
+          <span class="conc-badge badge-empresario">Empresário / Mentor</span>
+        </div>
+        <div class="conc-name">Flávio Augusto</div>
+        <div class="conc-subtitle">Fundador WiseUp · Ecossistema MLS</div>
+
+        <div class="conc-pos">
+          "De empresário que construiu e vendeu um negócio bilionário para mentor que ensina outros empresários a fazerem o mesmo — credibilidade de praticante, não de coach."
+        </div>
+
+        <div class="conc-section-label">Principais Produtos</div>
+        <ul class="list-items">
+          <li><strong>MLS (Minha Liberdade de Ser):</strong> maior ecossistema de mentoria para empresários do Brasil</li>
+          <li>Mentoria de alta intensidade presencial e online</li>
+          <li>Livros best-sellers sobre empreendedorismo e mindset</li>
+          <li>Palestras e eventos de alto impacto</li>
+        </ul>
+
+        <div class="conc-section-label">Público-Alvo</div>
+        <div class="tags">
+          <span class="tag tag-orange">Empresários</span>
+          <span class="tag tag-orange">Empreendedores de alto nível</span>
+          <span class="tag tag-orange">Quem busca liberdade financeira</span>
+        </div>
+
+        <div class="conc-section-label">Prova Social</div>
+        <ul class="list-items">
+          <li>Fundou e escalou a WiseUp (maior rede de inglês do Brasil)</li>
+          <li>"Maior ecossistema de mentoria para empresários do Brasil" (MLS)</li>
+          <li>4+ livros best-sellers com milhões de cópias</li>
+          <li>Presença massiva no Instagram, YouTube e podcasts</li>
+        </ul>
+
+        <div class="vs-row">
+          <div class="vs-box">
+            <div class="vs-label forte">▲ Forte vs Caroline</div>
+            <div class="vs-text">Credibilidade de praticante (empresário real), alcance digital massivo, marca aspiracional fortíssima</div>
+          </div>
+          <div class="vs-box">
+            <div class="vs-label fraco">▼ Fraco vs Caroline</div>
+            <div class="vs-text">Foco em mindset e liberdade financeira, não em ferramentas de coaching/advisory; menos técnico e metodológico</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Sulivan França -->
+      <div class="concorrente-card c-purple" style="grid-column: 1 / -1;">
+        <div class="conc-header">
+          <div class="conc-avatar av-purple">SF</div>
+          <span class="conc-badge badge-executivo">Coach Executivo</span>
+        </div>
+        <div class="conc-name">Sulivan França</div>
+        <div class="conc-subtitle">Coach Executivo · Referência em liderança no Brasil</div>
+
+        <div class="conc-pos">
+          Coaching executivo com foco em liderança de alto desempenho. Frequentemente mencionado ao lado de Paulo Vieira como referência nacional no segmento executivo.
+        </div>
+
+        <div class="grid-2" style="gap:16px; margin-top:8px;">
+          <div>
+            <div class="conc-section-label">Posicionamento</div>
+            <ul class="list-items">
+              <li>Coaching executivo para líderes e executivos de alto nível</li>
+              <li>Abordagem de alta performance e desenvolvimento de liderança</li>
+              <li>Atuação como palestrante, autor e mentor</li>
+            </ul>
+            <div class="conc-section-label" style="margin-top:12px;">Público-Alvo</div>
+            <div class="tags">
+              <span class="tag tag-purple">Executivos</span>
+              <span class="tag tag-purple">Líderes corporativos</span>
+              <span class="tag tag-purple">Profissionais de alta performance</span>
+            </div>
+          </div>
+          <div class="vs-row" style="flex-direction:column; margin-top:0; padding-top:0; border-top:none;">
+            <div class="vs-box" style="margin-bottom:8px;">
+              <div class="vs-label forte">▲ Forte vs Caroline</div>
+              <div class="vs-text">Posicionamento consolidado no nicho executivo, reconhecimento de pares no mercado de coaching</div>
+            </div>
+            <div class="vs-box">
+              <div class="vs-label fraco">▼ Fraco vs Caroline</div>
+              <div class="vs-text">Menor diversificação de portfólio; sem nicho próprio de advisory; dados de presença digital limitados nesta análise</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MATRIZ COMPARATIVA -->
+  <section>
+    <div class="section-title">Matriz Comparativa</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:160px;">Critério</th>
+            <th class="th-caroline">Caroline Calaça</th>
+            <th>ActionCOACH</th>
+            <th>IBC / JRM</th>
+            <th>Paulo Vieira</th>
+            <th>Flávio Augusto</th>
+            <th>Sulivan França</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">Modelo principal</td>
+            <td class="td-caroline">Infoprodutos + mentoria</td>
+            <td>Franquia B2B</td>
+            <td>Cursos/formações em volume</td>
+            <td>Infoprodutos + palestras</td>
+            <td>Mentoria premium</td>
+            <td>Coaching individual + palestras</td>
+          </tr>
+          <tr>
+            <td class="row-label">Foco central</td>
+            <td class="td-caroline">Business Coaching + Advisory + Liderança</td>
+            <td>Coaching de negócios para PME</td>
+            <td>Formação de coaches em escala</td>
+            <td>Coaching executivo / liderança</td>
+            <td>Mentoria empresarial / liberdade</td>
+            <td>Coaching executivo</td>
+          </tr>
+          <tr>
+            <td class="row-label">Formação em Advisory</td>
+            <td class="td-caroline"><span class="check">✓ Único nicho próprio</span></td>
+            <td><span class="cross">✗ Não</span></td>
+            <td><span class="cross">✗ Não</span></td>
+            <td><span class="cross">✗ Não</span></td>
+            <td><span class="neutral">— Parcial (MLS)</span></td>
+            <td><span class="cross">✗ Não</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Alcance (prova social)</td>
+            <td class="td-caroline">10k+ líderes, 1k+ empresas, 15 países</td>
+            <td>1.300+ projetos (BR), 84 países</td>
+            <td>5,5M+ pessoas, 96 cidades</td>
+            <td>30+ anos, top of mind</td>
+            <td>Maior ecossistema mentoria BR</td>
+            <td>Reconhecimento de mercado</td>
+          </tr>
+          <tr>
+            <td class="row-label">Credencial acadêmica</td>
+            <td class="td-caroline"><span class="check">✓</span> Alcalá (ES), FGV, Doutoranda</td>
+            <td><span class="neutral">— Franquia certificada ABF</span></td>
+            <td><span class="check">✓</span> ISO 9001, MEC, Ohio U.</td>
+            <td><span class="neutral">— Reconhecimento de mercado</span></td>
+            <td><span class="cross">✗ Empresarial (não acadêmica)</span></td>
+            <td><span class="neutral">— Não mapeado</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Metodologia própria</td>
+            <td class="td-caroline"><span class="check">✓</span> Método Black — 12 pilares</td>
+            <td><span class="check">✓</span> 3.500+ estratégias</td>
+            <td><span class="check">✓</span> PSC Coaching (patenteado)</td>
+            <td><span class="neutral">— Propósito + Valores + Performance</span></td>
+            <td><span class="neutral">— Filosofia MLS</span></td>
+            <td><span class="neutral">— Não mapeado</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Presença digital</td>
+            <td class="td-caroline"><span class="pill pill-high">Alta</span></td>
+            <td><span class="pill pill-mid">Média</span></td>
+            <td><span class="pill pill-high">Alta</span></td>
+            <td><span class="pill pill-high">Alta</span></td>
+            <td><span class="pill pill-high">Muito alta</span></td>
+            <td><span class="pill pill-mid">Média</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Público empresários PME</td>
+            <td class="td-caroline"><span class="check">✓ Primário</span></td>
+            <td><span class="check">✓ Primário</span></td>
+            <td><span class="neutral">— Secundário</span></td>
+            <td><span class="neutral">— Secundário</span></td>
+            <td><span class="check">✓ Primário</span></td>
+            <td><span class="cross">✗ C-level corp.</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Formação de coaches</td>
+            <td class="td-caroline"><span class="check">✓</span> Master Coaching Executivo</td>
+            <td><span class="cross">✗ Não</span></td>
+            <td><span class="check">✓ Carro-chefe</span></td>
+            <td><span class="neutral">— Não mapeado</span></td>
+            <td><span class="cross">✗ Não</span></td>
+            <td><span class="neutral">— Não mapeado</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">Escala global</td>
+            <td class="td-caroline"><span class="pill pill-mid">15 países (clientes)</span></td>
+            <td><span class="pill pill-high">84 países (franquia)</span></td>
+            <td><span class="pill pill-mid">Brasil + expansão</span></td>
+            <td><span class="pill pill-mid">Brasil + internacional</span></td>
+            <td><span class="pill pill-mid">Brasil</span></td>
+            <td><span class="pill pill-low">Brasil</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ANÁLISE DE OPORTUNIDADES -->
+  <section>
+    <div class="section-title">Oportunidades para Caroline Calaça</div>
+    <div class="grid-3">
+
+      <div class="oport-card destaque">
+        <div class="oport-icon">🎯</div>
+        <div class="oport-title">Nicho de Advisory sem Concorrência Direta</div>
+        <div class="oport-desc">
+          Nenhum dos 5 concorrentes mapeados tem um produto dedicado de <strong>Formação em Advisory de Negócios</strong> com a profundidade e marca pessoal de Caroline. É uma categoria que ela criou e lidera sozinha no Brasil — vantagem de pioneirismo raro e defensável.
+        </div>
+      </div>
+
+      <div class="oport-card destaque">
+        <div class="oport-icon">📐</div>
+        <div class="oport-title">Metodologia + Credencial Acadêmica</div>
+        <div class="oport-desc">
+          A combinação <strong>Método Black (12 pilares)</strong> + formação em Alcalá/FGV + doutoranda é um diferencial que poucos concorrem diretamente. ActionCOACH tem metodologia mas não academia; IBC tem academia mas não é personalidade. Caroline tem os dois.
+        </div>
+      </div>
+
+      <div class="oport-card">
+        <div class="oport-icon">🔗</div>
+        <div class="oport-title">Ecossistema Completo de Produtos</div>
+        <div class="oport-desc">
+          Caroline cobre toda a jornada: coach em formação (Master Coaching) → líder (Team Shapers) → consultor/advisor (Formação Advisor) → empresário (Método Black). Nenhum concorrente tem essa cobertura vertical completa com uma única marca pessoal.
+        </div>
+      </div>
+
+      <div class="oport-card">
+        <div class="oport-icon">🌎</div>
+        <div class="oport-title">Expansão Internacional</div>
+        <div class="oport-desc">
+          Com clientes em 15 países e formação em Madri, há espaço para internacionalizar a <strong>Formação Advisor</strong> para mercados hispanófonos (América Latina, Espanha), onde ActionCOACH e IBC são genéricos e sem marca pessoal forte no segmento advisory.
+        </div>
+      </div>
+
+      <div class="oport-card">
+        <div class="oport-icon">⚡</div>
+        <div class="oport-title">Aceleração via Conteúdo Digital</div>
+        <div class="oport-desc">
+          Flávio Augusto domina o mercado de empresários pelo alcance digital massivo, não por metodologia. Caroline tem metodologia superior — o gap é de produção de conteúdo em escala. Replicar a cadência de conteúdo no Instagram/YouTube pode converter a vantagem técnica em alcance.
+        </div>
+      </div>
+
+      <div class="oport-card">
+        <div class="oport-icon">🏢</div>
+        <div class="oport-title">Mercado B2B Corporativo</div>
+        <div class="oport-desc">
+          ActionCOACH domina o B2B por franquia, mas sem marca pessoal. Caroline tem clientes como Fiat, JBS e TOTVS — há espaço para estruturar uma oferta corporativa (in-company) mais agressiva, aproveitando credenciais acadêmicas (FGV) e o Método Black como framework.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PONTOS DE ATENÇÃO -->
+  <section>
+    <div class="section-title">Pontos de Atenção</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Ameaças Competitivas</div>
+        <ul class="list-items" style="margin-top:8px;">
+          <li><strong>IBC:</strong> volume e credencial acadêmica são difíceis de igualar; risco se entrarem no nicho de advisory</li>
+          <li><strong>Flávio Augusto:</strong> MLS cresce rapidamente no público de empresários — sobreposição crescente de público</li>
+          <li><strong>ActionCOACH:</strong> presença física via franquias dá alcance geográfico que infoprodutos não alcançam</li>
+          <li><strong>Novos entrantes:</strong> mercado de advisory está em alta (2026+ segundo Caroline) — atraindo novos players</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Vantagens Defensáveis</div>
+        <ul class="list-items" style="margin-top:8px;">
+          <li><strong>Pioneirismo:</strong> ser a "criadora" da categoria Advisory de Negócios no Brasil é um ativo de posicionamento duradouro</li>
+          <li><strong>Mensuração financeira:</strong> único no mercado a medir resultados financeiros dos treinamentos (desde 2011)</li>
+          <li><strong>Ecossistema completo:</strong> nenhum concorrente cobre coach + líder + advisor + empresário com uma única marca</li>
+          <li><strong>Clientes âncora:</strong> Fiat, JBS, TOTVS servem de prova social irrebatível para o mercado corporativo</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Relatório gerado em <strong>10 de maio de 2026</strong> &mdash; Projeto IA / Caroline Calaça &mdash; Análise de Concorrentes &mdash; Uso interno
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VERTEX — E: Estratégia de Crescimento | Rodrigo Mendonça</title>
+  <style>
+    :root {
+      --gold:        #c9a84c;
+      --gold-light:  #e8c97a;
+      --gold-dim:    #a07830;
+      --dark:        #0d0b08;
+      --dark-2:      #141008;
+      --dark-3:      #1e1810;
+      --dark-4:      #2a2210;
+      --text:        #f0ece4;
+      --text-muted:  #8a8070;
+      --border:      rgba(201,168,76,0.18);
+      --border-hard: rgba(201,168,76,0.35);
+      --green:       #4caf82;
+      --red:         #e05555;
+      --blue:        #5b9bd5;
+      --orange:      #e08844;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.75;
+      min-height: 100vh;
+    }
+
+    /* ─── BACKGROUND GLOW ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -20%; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 600px;
+      background: radial-gradient(ellipse at center, rgba(201,168,76,0.07) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── WATERMARK A ─── */
+    .watermark {
+      position: fixed;
+      bottom: -80px; right: -80px;
+      width: 420px; height: 420px;
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── HEADER ─── */
+    header {
+      position: relative;
+      background: linear-gradient(160deg, #1a1408 0%, #0d0b08 55%, #121008 100%);
+      border-bottom: 1px solid var(--border-hard);
+      padding: 52px 48px 40px;
+      overflow: hidden;
+      z-index: 1;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--gold) 30%, var(--gold-light) 50%, var(--gold) 70%, transparent 100%);
+    }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .brand-logo {
+      width: 28px; height: 28px;
+    }
+    .brand-name {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+    .brand-sep {
+      width: 1px; height: 16px;
+      background: var(--border-hard);
+    }
+    .brand-sub {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .header-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 28px;
+    }
+    .pilar-letter {
+      font-size: 5.5rem;
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: -4px;
+      flex-shrink: 0;
+      background: linear-gradient(160deg, var(--gold-light) 0%, var(--gold) 40%, var(--gold-dim) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 24px rgba(201,168,76,0.3));
+    }
+    .header-content {}
+    .header-badge {
+      display: inline-block;
+      background: rgba(201,168,76,0.08);
+      border: 1px solid var(--border-hard);
+      color: var(--gold);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 3px 14px;
+      border-radius: 2px;
+      margin-bottom: 14px;
+    }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 300;
+      color: var(--text);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+    header h1 strong {
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    header p.subtitle {
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-size: 13px;
+      letter-spacing: 0.3px;
+    }
+    .header-meta {
+      margin-top: 24px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .meta-chip {
+      background: rgba(201,168,76,0.05);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 5px 14px;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+    .meta-chip strong { color: var(--text); font-weight: 600; }
+
+    /* ─── VERTEX PROGRESS ─── */
+    .vertex-progress {
+      background: rgba(0,0,0,0.4);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 48px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .vp-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-right: 24px;
+      flex-shrink: 0;
+    }
+    .vp-steps { display: flex; gap: 4px; align-items: center; }
+    .vp-step  { display: flex; align-items: center; gap: 6px; }
+    .vp-dot {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      border: 1px solid var(--border);
+      background: var(--dark-2);
+      color: var(--text-muted);
+      letter-spacing: 0;
+    }
+    .vp-dot.active {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      border-color: var(--gold);
+      color: #0d0b08;
+      box-shadow: 0 0 20px rgba(201,168,76,0.4);
+    }
+    .vp-dot.done {
+      background: rgba(76,175,130,0.1);
+      border-color: rgba(76,175,130,0.5);
+      color: var(--green);
+    }
+    .vp-connector { width: 28px; height: 1px; background: var(--border); }
+    .vp-connector.done-line { background: rgba(76,175,130,0.3); }
+    .vp-name { font-size: 10px; color: var(--text-muted); max-width: 72px; line-height: 1.2; letter-spacing: 0.3px; }
+    .vp-name.active { color: var(--gold); font-weight: 600; }
+
+    /* ─── LAYOUT ─── */
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 44px 28px 100px;
+      position: relative;
+      z-index: 1;
+    }
+    section { margin-bottom: 48px; }
+
+    .section-title {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border-hard), transparent);
+    }
+
+    /* ─── SCORE ─── */
+    .score-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+    .score-card {
+      background: linear-gradient(160deg, var(--dark-3), var(--dark-2));
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 22px 18px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .score-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+    }
+    .score-card.s-gold::before  { background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+    .score-card.s-green::before { background: linear-gradient(90deg, transparent, var(--green), transparent); }
+    .score-card.s-red::before   { background: linear-gradient(90deg, transparent, var(--red), transparent); }
+    .score-num { font-size: 2.2rem; font-weight: 900; line-height: 1; }
+    .score-num.gold  { background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .score-num.green { color: var(--green); }
+    .score-num.red   { color: var(--red); }
+    .score-label { font-size: 11px; color: var(--text-muted); margin-top: 6px; letter-spacing: 0.3px; }
+
+    /* ─── INPUT ─── */
+    .input-block {
+      background: linear-gradient(160deg, var(--dark-3), var(--dark-2));
+      border: 1px solid var(--border-hard);
+      border-left: 2px solid var(--gold);
+      border-radius: 0 4px 4px 0;
+      padding: 26px 30px;
+      position: relative;
+    }
+    .input-quote-icon {
+      position: absolute;
+      top: 14px; right: 22px;
+      font-size: 3rem;
+      color: rgba(201,168,76,0.08);
+      font-family: Georgia, serif;
+      line-height: 1;
+    }
+    .input-text {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.9;
+      font-style: italic;
+    }
+    .input-meta {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+    .input-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: #0d0b08;
+      flex-shrink: 0;
+    }
+    .input-meta-text { font-size: 12px; color: var(--text-muted); }
+    .input-meta-text strong { color: var(--text); }
+
+    /* ─── IA NOTE ─── */
+    .ia-note {
+      background: rgba(91,155,213,0.04);
+      border: 1px solid rgba(91,155,213,0.2);
+      border-radius: 4px;
+      padding: 18px 22px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 36px;
+    }
+    .ia-icon {
+      width: 32px; height: 32px;
+      border-radius: 4px;
+      background: rgba(91,155,213,0.08);
+      border: 1px solid rgba(91,155,213,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      color: var(--blue);
+    }
+    .ia-text { font-size: 12.5px; color: var(--text-muted); line-height: 1.65; }
+    .ia-text strong { color: #a8c8e8; }
+
+    /* ─── DIAGNÓSTICO ─── */
+    .diag-item {
+      background: linear-gradient(160deg, var(--dark-3), var(--dark-2));
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 20px 22px;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .diag-item:hover { border-color: var(--border-hard); }
+    .diag-status { flex-shrink: 0; width: 90px; padding-top: 2px; }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 2px;
+      white-space: nowrap;
+    }
+    .status-ok   { background: rgba(76,175,130,0.12); color: var(--green); border: 1px solid rgba(76,175,130,0.3); }
+    .status-part { background: rgba(224,136,68,0.10); color: var(--orange); border: 1px solid rgba(224,136,68,0.3); }
+    .status-miss { background: rgba(224,85,85,0.08);  color: var(--red);   border: 1px solid rgba(224,85,85,0.25); }
+    .diag-content { flex: 1; }
+    .diag-topic { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 8px; letter-spacing: 0.2px; }
+    .diag-excerpt {
+      font-size: 12px;
+      color: var(--gold-light);
+      font-style: italic;
+      border-left: 2px solid rgba(201,168,76,0.25);
+      padding-left: 12px;
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+    .diag-insight { font-size: 12.5px; color: var(--text-muted); line-height: 1.65; }
+    .diag-insight strong { color: var(--text); }
+
+    /* ─── SÍNTESE ─── */
+    .sintese-block { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .sintese-card {
+      border-radius: 4px;
+      padding: 22px;
+    }
+    .sintese-card.card-forte {
+      background: linear-gradient(160deg, #0d1a0f, #141008);
+      border: 1px solid rgba(76,175,130,0.25);
+    }
+    .sintese-card.card-alerta {
+      background: linear-gradient(160deg, #1a0d0d, #141008);
+      border: 1px solid rgba(224,85,85,0.25);
+    }
+    .sintese-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sintese-label::after { content: ''; flex: 1; height: 1px; }
+    .sintese-label.forte { color: var(--green); }
+    .sintese-label.forte::after { background: rgba(76,175,130,0.2); }
+    .sintese-label.alerta { color: var(--red); }
+    .sintese-label.alerta::after { background: rgba(224,85,85,0.2); }
+    .list-items { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .list-items li {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.55;
+    }
+    .list-items li::before { content: '▸'; position: absolute; left: 0; }
+    .list-items.forte li::before  { color: var(--green); }
+    .list-items.alerta li::before { color: var(--red); }
+    .list-items li strong { color: var(--text); }
+
+    /* ─── PERGUNTAS ─── */
+    .pergunta-item {
+      background: linear-gradient(160deg, var(--dark-3), var(--dark-2));
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 18px 22px;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .pergunta-item:hover { border-color: var(--border-hard); }
+    .pergunta-num {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.08);
+      border: 1px solid var(--border-hard);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .pergunta-text { font-size: 13.5px; color: var(--text); line-height: 1.65; }
+    .pergunta-context { font-size: 11.5px; color: var(--text-muted); margin-top: 6px; line-height: 1.55; }
+
+    /* ─── PLANO DE AÇÃO ─── */
+    .acao-item {
+      background: linear-gradient(160deg, var(--dark-3), var(--dark-2));
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 20px 22px;
+      margin-bottom: 10px;
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      gap: 18px;
+      align-items: start;
+      transition: border-color 0.2s;
+    }
+    .acao-item:hover { border-color: var(--border-hard); }
+    .acao-prioridade { display: flex; flex-direction: column; align-items: center; gap: 6px; padding-top: 2px; }
+    .prio-badge {
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 2px;
+      text-align: center;
+    }
+    .prio-alta  { background: rgba(224,85,85,0.12);   color: var(--red);    border: 1px solid rgba(224,85,85,0.3); }
+    .prio-media { background: rgba(224,136,68,0.10);  color: var(--orange); border: 1px solid rgba(224,136,68,0.3); }
+    .prio-baixa { background: rgba(91,155,213,0.10);  color: var(--blue);   border: 1px solid rgba(91,155,213,0.3); }
+    .acao-num {
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold-dim));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0.35;
+    }
+    .acao-title { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 6px; letter-spacing: 0.2px; }
+    .acao-desc  { font-size: 12.5px; color: var(--text-muted); line-height: 1.65; }
+    .acao-desc strong { color: var(--text); }
+    .acao-prazo {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      background: rgba(201,168,76,0.06);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 6px 12px;
+      text-align: center;
+    }
+    .acao-prazo strong { color: var(--gold); display: block; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2px; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--dark-2);
+      border-top: 1px solid var(--border);
+      padding: 22px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1;
+    }
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    }
+    .footer-brand { display: flex; align-items: center; gap: 10px; }
+    .footer-text { font-size: 11px; color: var(--text-muted); letter-spacing: 0.3px; }
+    .footer-text strong { color: var(--gold); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      header { padding: 32px 20px 28px; }
+      .header-top { gap: 16px; }
+      .pilar-letter { font-size: 4rem; }
+      header h1 { font-size: 1.5rem; }
+      .vertex-progress { padding: 14px 20px; overflow-x: auto; }
+      main { padding: 28px 16px 60px; }
+      .sintese-block { grid-template-columns: 1fr; }
+      .acao-item { grid-template-columns: 1fr; }
+      .score-row { grid-template-columns: 1fr; }
+      .vp-name { display: none; }
+      footer { flex-direction: column; gap: 8px; text-align: center; padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Watermark A -->
+<svg class="watermark" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="100" cy="100" r="95" stroke="#c9a84c" stroke-width="2"/>
+  <path d="M100 30 L145 150 H130 L100 75 L70 150 H55 Z" fill="#c9a84c"/>
+  <path d="M78 118 H122" stroke="#c9a84c" stroke-width="6"/>
+</svg>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header>
+  <div class="header-brand">
+    <svg class="brand-logo" viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
+      <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
+      <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
+    </svg>
+    <span class="brand-name">Advisors Club</span>
+    <div class="brand-sep"></div>
+    <span class="brand-sub">Private Strategic Members</span>
+  </div>
+
+  <div class="header-top">
+    <div class="pilar-letter">E</div>
+    <div class="header-content">
+      <div class="header-badge">Método VERTEX · Pilar 2 de 6</div>
+      <h1>Estratégia de <strong>Crescimento Integrado</strong></h1>
+      <p class="subtitle">Análise estruturada da percepção do mentorado com base no método VERTEX</p>
+      <div class="header-meta">
+        <div class="meta-chip">Mentorado: <strong>Rodrigo Mendonça</strong></div>
+        <div class="meta-chip">Data: <strong>14 de maio de 2026</strong></div>
+        <div class="meta-chip">Advisor: <strong>Caroline Calaça</strong></div>
+        <div class="meta-chip">Empresa: <strong>TechFix Soluções em TI</strong></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════ PROGRESS ═══════════ -->
+<div class="vertex-progress">
+  <div class="vp-label">Progresso</div>
+  <div class="vp-steps">
+    <div class="vp-step">
+      <div class="vp-dot done">V</div>
+      <div class="vp-name">Visão</div>
+    </div>
+    <div class="vp-connector done-line"></div>
+    <div class="vp-step">
+      <div class="vp-dot active">E</div>
+      <div class="vp-name active">Estratégia</div>
+    </div>
+    <div class="vp-connector"></div>
+    <div class="vp-step">
+      <div class="vp-dot">R</div>
+      <div class="vp-name">Redesenho</div>
+    </div>
+    <div class="vp-connector"></div>
+    <div class="vp-step">
+      <div class="vp-dot">T</div>
+      <div class="vp-name">Tração</div>
+    </div>
+    <div class="vp-connector"></div>
+    <div class="vp-step">
+      <div class="vp-dot">E</div>
+      <div class="vp-name">Execução</div>
+    </div>
+    <div class="vp-connector"></div>
+    <div class="vp-step">
+      <div class="vp-dot">X</div>
+      <div class="vp-name">X-Factor</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main>
+
+  <!-- SCORE -->
+  <div class="score-row">
+    <div class="score-card s-gold">
+      <div class="score-num gold">2/5</div>
+      <div class="score-label">Tópicos abordados</div>
+    </div>
+    <div class="score-card s-green">
+      <div class="score-num green">2</div>
+      <div class="score-label">Pontos de força identificados</div>
+    </div>
+    <div class="score-card s-red">
+      <div class="score-num red">3</div>
+      <div class="score-label">Alertas estratégicos</div>
+    </div>
+  </div>
+
+  <!-- INPUT -->
+  <section>
+    <div class="section-title">Input do Mentorado</div>
+    <div class="input-block">
+      <div class="input-quote-icon">"</div>
+      <div class="input-text">
+        Depois de assistir ao vídeo de Estratégia, percebi que a gente cresce por indicação quase que exclusivamente. Nunca montamos uma estratégia de aquisição de clientes de verdade. Temos clientes de manutenção, suporte e projetos pontuais, mas não sei qual desses nos traz mais lucro de verdade — nunca calculamos isso direito. O que eu sei é que o concorrente principal da cidade está crescendo rápido e começou a atacar nossa base de clientes com preço mais baixo. Estou preocupado porque nosso diferencial sempre foi o atendimento rápido e a confiança, mas nunca soubemos transformar isso em argumento de venda de verdade.
+      </div>
+      <div class="input-meta">
+        <div class="input-avatar">RM</div>
+        <div class="input-meta-text">
+          <strong>Rodrigo Mendonça</strong> · TechFix Soluções em TI · Enviado em 14/05/2026
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTA IA -->
+  <div class="ia-note">
+    <div class="ia-icon">✦</div>
+    <div class="ia-text">
+      <strong>Nota da análise:</strong> O input foi mapeado contra os 5 tópicos do pilar E do método VERTEX. Cada tópico foi avaliado com base no que o mentorado explicitou, implicitou ou deixou de abordar. As perguntas e o plano de ação são derivados diretamente dos gaps identificados.
+    </div>
+  </div>
+
+  <!-- DIAGNÓSTICO -->
+  <section>
+    <div class="section-title">Diagnóstico Estruturado — Pilar E</div>
+
+    <div class="diag-item">
+      <div class="diag-status"><span class="status-badge status-ok">✓ Abordado</span></div>
+      <div class="diag-content">
+        <div class="diag-topic">Mapeamento do mercado, concorrência e posicionamento atual</div>
+        <div class="diag-excerpt">"O concorrente principal da cidade está crescendo rápido e começou a atacar nossa base de clientes com preço mais baixo."</div>
+        <div class="diag-insight">Rodrigo demonstra consciência do movimento competitivo local e identifica a estratégia do concorrente (guerra de preço). O posicionamento atual da TechFix também foi nomeado com clareza — atendimento rápido e confiança. <strong>O problema não é falta de percepção do mercado, mas ausência de resposta estratégica a esse movimento.</strong></div>
+      </div>
+    </div>
+
+    <div class="diag-item">
+      <div class="diag-status"><span class="status-badge status-ok">✓ Abordado</span></div>
+      <div class="diag-content">
+        <div class="diag-topic">Definição de canais de vendas prioritários</div>
+        <div class="diag-excerpt">"A gente cresce por indicação quase que exclusivamente. Nunca montamos uma estratégia de aquisição de clientes de verdade."</div>
+        <div class="diag-insight">Canal único, passivo e não escalável. Crescimento por indicação é saudável como sinal de satisfação, mas <strong>crítico como canal exclusivo</strong> — a empresa não controla o ritmo de crescimento e não consegue reagir quando um concorrente agressivo entra no mercado.</div>
+      </div>
+    </div>
+
+    <div class="diag-item">
+      <div class="diag-status"><span class="status-badge status-part">⚠ Parcial</span></div>
+      <div class="diag-content">
+        <div class="diag-topic">Revisão e otimização da oferta e portfólio de produtos/serviços</div>
+        <div class="diag-excerpt">"Temos clientes de manutenção, suporte e projetos pontuais, mas não sei qual desses nos traz mais lucro — nunca calculamos isso direito."</div>
+        <div class="diag-insight">O portfólio existe e foi nomeado (3 linhas), mas a análise de rentabilidade nunca foi feita. Decisões de alocação de tempo, equipe e energia comercial estão sendo tomadas <strong>sem dados</strong>. É possível que a linha mais trabalhosa seja também a menos lucrativa — e a empresa não saiba.</div>
+      </div>
+    </div>
+
+    <div class="diag-item">
+      <div class="diag-status"><span class="status-badge status-miss">— Não abordado</span></div>
+      <div class="diag-content">
+        <div class="diag-topic">Identificação de alavancas de crescimento (expansão, upsell, novos mercados)</div>
+        <div class="diag-insight">Nenhuma menção a oportunidades de expansão, upsell ou novos segmentos. A preocupação com o concorrente domina o input — compreensível — mas a ausência de pensamento ofensivo é um sinal importante. <strong>Reagir à ameaça é diferente de identificar alavancas de crescimento.</strong> A base atual da TechFix provavelmente esconde receita recorrente ainda não explorada.</div>
+      </div>
+    </div>
+
+    <div class="diag-item">
+      <div class="diag-status"><span class="status-badge status-part">⚠ Parcial</span></div>
+      <div class="diag-content">
+        <div class="diag-topic">Integração entre marketing, vendas e operação</div>
+        <div class="diag-excerpt">"Nosso diferencial sempre foi o atendimento rápido e a confiança, mas nunca soubemos transformar isso em argumento de venda de verdade."</div>
+        <div class="diag-insight">O diferencial operacional existe e é genuíno, mas nunca foi integrado à comunicação e ao processo de vendas. Isso revela uma desconexão clássica: <strong>a operação entrega valor que o comercial não sabe articular.</strong> Enquanto isso não mudar, o diferencial competitivo fica invisível para quem ainda não é cliente.</div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- SÍNTESE -->
+  <section>
+    <div class="section-title">Síntese do Diagnóstico</div>
+    <div class="sintese-block">
+      <div class="sintese-card card-forte">
+        <div class="sintese-label forte">Pontos de Força</div>
+        <ul class="list-items forte">
+          <li><strong>Consciência clara do problema central:</strong> Rodrigo já sabe que depende só de indicação — isso é o ponto de partida certo para mudança</li>
+          <li><strong>Diferencial real identificado:</strong> atendimento rápido e confiança são ativos genuínos que só precisam ser ativados comercialmente</li>
+          <li>Portfólio com <strong>3 linhas de serviço</strong> — base para análise de rentabilidade e foco estratégico</li>
+        </ul>
+      </div>
+      <div class="sintese-card card-alerta">
+        <div class="sintese-label alerta">Alertas Estratégicos</div>
+        <ul class="list-items alerta">
+          <li><strong>Canal único e passivo:</strong> dependência de indicação deixa a empresa vulnerável a qualquer variação de mercado</li>
+          <li><strong>Portfólio sem dados de rentabilidade:</strong> recursos alocados sem saber o que de fato gera margem</li>
+          <li><strong>Diferencial operacional invisível no comercial:</strong> o concorrente ataca com preço e a TechFix não tem argumentação estruturada para defender sua proposta de valor</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERGUNTAS -->
+  <section>
+    <div class="section-title">Perguntas de Aprofundamento</div>
+
+    <div class="pergunta-item">
+      <div class="pergunta-num">1</div>
+      <div>
+        <div class="pergunta-text">Entre manutenção, suporte e projetos pontuais — qual tipo de cliente dá mais trabalho, qual paga melhor e qual você perderia por último se precisasse escolher?</div>
+        <div class="pergunta-context">Objetivo: forçar uma hierarquia de valor no portfólio sem precisar de planilha — a intuição do gestor já contém dados que precisam ser explicitados antes de qualquer análise financeira formal.</div>
+      </div>
+    </div>
+
+    <div class="pergunta-item">
+      <div class="pergunta-num">2</div>
+      <div>
+        <div class="pergunta-text">Quando você diz "atendimento rápido" — qual é o tempo médio de resposta da TechFix hoje? E o que acontece quando um cliente entra em contato fora do horário comercial?</div>
+        <div class="pergunta-context">Objetivo: transformar o diferencial de "rápido" em um número concreto e defensável. "Respondemos em até 2 horas" é vendável; "somos rápidos" não é.</div>
+      </div>
+    </div>
+
+    <div class="pergunta-item">
+      <div class="pergunta-num">3</div>
+      <div>
+        <div class="pergunta-text">Nos últimos 6 meses, quantos clientes novos a TechFix conquistou — e quantos vieram de indicação versus qualquer outra fonte?</div>
+        <div class="pergunta-context">Objetivo: quantificar a dependência do canal. Saber o número exato muda a conversa de percepção para dado — e exige resposta estratégica diferente.</div>
+      </div>
+    </div>
+
+    <div class="pergunta-item">
+      <div class="pergunta-num">4</div>
+      <div>
+        <div class="pergunta-text">Algum cliente de manutenção ou suporte já te pediu um serviço que você não oferece — ou que você oferece mas nunca apresentou proativamente para ele?</div>
+        <div class="pergunta-context">Objetivo: identificar oportunidades de upsell na base atual. Antes de buscar novos clientes, a TechFix provavelmente tem receita escondida dentro dos clientes que já confiam nela.</div>
+      </div>
+    </div>
+
+    <div class="pergunta-item">
+      <div class="pergunta-num">5</div>
+      <div>
+        <div class="pergunta-text">Quando um potencial cliente pergunta "por que devo contratar a TechFix e não o concorrente que cobra mais barato?" — o que sua equipe responde hoje?</div>
+        <div class="pergunta-context">Objetivo: revelar se há ou não um script de posicionamento em uso. A resposta mostra o gap entre o diferencial que existe na operação e o argumento que chega ao mercado.</div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- PLANO DE AÇÃO -->
+  <section>
+    <div class="section-title">Plano de Ação — Pilar E</div>
+
+    <div class="acao-item">
+      <div class="acao-prioridade">
+        <div class="acao-num">01</div>
+        <span class="prio-badge prio-alta">Alta</span>
+      </div>
+      <div class="acao-content">
+        <div class="acao-title">Calcular a margem de cada linha de serviço</div>
+        <div class="acao-desc">Levantar os 3 últimos meses de receita e horas alocadas por linha (manutenção, suporte, projetos). Calcular receita por hora trabalhada em cada uma. Não precisa ser contabilidade formal — uma planilha simples já revela qual linha <strong>sustenta o negócio e qual consome energia sem retorno proporcional.</strong></div>
+      </div>
+      <div class="acao-prazo"><strong>Prazo</strong>10 dias</div>
+    </div>
+
+    <div class="acao-item">
+      <div class="acao-prioridade">
+        <div class="acao-num">02</div>
+        <span class="prio-badge prio-alta">Alta</span>
+      </div>
+      <div class="acao-content">
+        <div class="acao-title">Transformar o diferencial em promessa mensurável</div>
+        <div class="acao-desc">Definir um SLA real com base no histórico (ex: "primeiro contato em até 2 horas úteis"). Documentar em 3 linhas o que isso significa para o cliente. Esse texto se torna o <strong>argumento central contra a concorrência de preço</strong> — porque performance quantificada é difícil de igualar.</div>
+      </div>
+      <div class="acao-prazo"><strong>Prazo</strong>7 dias</div>
+    </div>
+
+    <div class="acao-item">
+      <div class="acao-prioridade">
+        <div class="acao-num">03</div>
+        <span class="prio-badge prio-alta">Alta</span>
+      </div>
+      <div class="acao-content">
+        <div class="acao-title">Ativar um canal de aquisição além da indicação</div>
+        <div class="acao-desc">Escolher um único canal para testar nos próximos 60 dias: LinkedIn com conteúdo técnico voltado a gestores de PMEs, ou parceria com escritório contábil local. <strong>Não diversificar antes de validar um canal</strong> — tentar estar em todos os lugares paralisa a ação.</div>
+      </div>
+      <div class="acao-prazo"><strong>Prazo</strong>15 dias</div>
+    </div>
+
+    <div class="acao-item">
+      <div class="acao-prioridade">
+        <div class="acao-num">04</div>
+        <span class="prio-badge prio-media">Média</span>
+      </div>
+      <div class="acao-content">
+        <div class="acao-title">Mapear oportunidades de upsell na base atual</div>
+        <div class="acao-desc">Listar os 10 maiores clientes e verificar quais serviços da TechFix cada um ainda não contrata. Fazer contato com pretexto de "revisão de contrato" e apresentar proativamente o que faz sentido para aquele perfil. <strong>A base atual é o canal de crescimento mais barato que existe.</strong></div>
+      </div>
+      <div class="acao-prazo"><strong>Prazo</strong>30 dias</div>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-brand">
+    <svg width="22" height="22" viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
+      <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
+      <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
+    </svg>
+    <span class="footer-text"><strong>VERTEX IA</strong> · Advisors Club · Método Caroline Calaça</span>
+  </div>
+  <div class="footer-text">Uso exclusivo do mentorado · 14/05/2026</div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+# Segredos
+.env
+.env.*
+
+# Dependências
+node_modules/
+
+# Arquivos temporários de extração do PDF
+pdf_page_*.png
+extract_pdf.mjs
+render_pdf.mjs
+
+# Sistema
+.claude/
