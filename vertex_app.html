@@ -72,7 +72,7 @@
     .brand-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
 
     /* ── LOGO SVG ── */
-    .logo-svg { flex-shrink: 0; }
+    .logo-svg { flex-shrink: 0; width: 36px; height: 36px; object-fit: contain; }
 
     /* ── PROGRESS BAR ── */
     .vertex-progress {
@@ -737,11 +737,7 @@
 
   <header class="app-header">
     <div class="header-brand">
-      <svg class="logo-svg" width="26" height="26" viewBox="0 0 40 40" fill="none">
-        <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
-        <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
-        <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
-      </svg>
+      <img src="/logo_advisors.png" class="logo-svg" alt="Advisors Club" />
       <span class="brand-name">Advisors Club</span>
       <div class="brand-sep"></div>
       <span class="brand-sub">Método VERTEX</span>
@@ -801,11 +797,7 @@
 
   <footer class="app-footer">
     <div class="footer-left">
-      <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
-        <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
-        <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
-        <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
-      </svg>
+      <img src="/logo_advisors.png" alt="Advisors Club" style="width:32px;height:32px;object-fit:contain;" />
       <span class="footer-text"><strong>VERTEX IA</strong> · Advisors Club · Método Caroline Calaça</span>
     </div>
     <div class="footer-text">Ferramenta exclusiva para mentorados</div>
@@ -818,22 +810,14 @@
 <div id="phase-loading" class="phase">
   <header class="app-header">
     <div class="header-brand">
-      <svg class="logo-svg" width="26" height="26" viewBox="0 0 40 40" fill="none">
-        <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
-        <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
-        <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
-      </svg>
+      <img src="/logo_advisors.png" class="logo-svg" alt="Advisors Club" />
       <span class="brand-name">Advisors Club</span>
       <div class="brand-sep"></div>
       <span class="brand-sub">Método VERTEX</span>
     </div>
   </header>
   <div style="display:flex; align-items:center; justify-content:center; flex-direction:column; gap:28px; min-height:70vh; position:relative; z-index:1;">
-    <svg class="loading-logo" width="90" height="90" viewBox="0 0 40 40" fill="none">
-      <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
-      <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
-      <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
-    </svg>
+    <img src="/logo_advisors.png" class="loading-logo" alt="Advisors Club" style="width:110px;height:110px;object-fit:contain;" />
     <div class="loading-text">Analisando seu input<span class="loading-dots"></span></div>
     <div class="loading-sub">Mapeando sua percepção contra o método VERTEX</div>
   </div>
@@ -1315,11 +1299,7 @@ function renderResults(analysis, { pilar, nome, empresa, inputText, date }) {
 
     <footer class="app-footer">
       <div class="footer-left">
-        <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
-          <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
-          <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
-          <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
-        </svg>
+        <img src="/logo_advisors.png" alt="Advisors Club" style="width:32px;height:32px;object-fit:contain;" />
         <span class="footer-text"><strong>VERTEX IA</strong> · Advisors Club · Método Caroline Calaça</span>
       </div>
       <div class="footer-text">Uso exclusivo do mentorado · ${escHtml(date)}</div>
@@ -1452,11 +1432,7 @@ function showReport() {
   let html = `
     <div class="report-cover">
       <div class="report-cover-logo">
-        <svg width="52" height="52" viewBox="0 0 40 40" fill="none">
-          <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
-          <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
-          <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
-        </svg>
+        <img src="/logo_advisors.png" alt="Advisors Club" style="width:120px;height:120px;object-fit:contain;" />
       </div>
       <div class="report-cover-title">Relatório <strong>VERTEX</strong></div>
       <div class="report-cover-sub">Advisors Club · Método Caroline Calaça</div>
@@ -1567,11 +1543,7 @@ function showReport() {
   html += `</div>`; // report-main
   html += `<footer class="app-footer">
     <div class="footer-left">
-      <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
-        <circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1.5"/>
-        <path d="M20 8 L30 32 H26 L20 18 L14 32 H10 Z" fill="#c9a84c"/>
-        <path d="M13.5 25 H26.5" stroke="#c9a84c" stroke-width="2"/>
-      </svg>
+      <img src="/logo_advisors.png" alt="Advisors Club" style="width:32px;height:32px;object-fit:contain;" />
       <span class="footer-text"><strong>VERTEX IA</strong> · Advisors Club · Método Caroline Calaça</span>
     </div>
     <div class="footer-text">Relatório gerado em ${escHtml(date)}</div>
