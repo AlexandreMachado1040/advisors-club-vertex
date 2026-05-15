@@ -1231,18 +1231,13 @@ INPUT: ${inputText}`;
   showPhase('loading');
 
   try {
-    const res = await fetch('/api/analyze', {
+    const result = await fetchWithRetry('/api/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ systemPrompt: SYSTEM_PROMPT, userMessage })
     });
 
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error || `HTTP ${res.status}`);
-    }
-
-    const data = await res.json();
+    const data = result;
     let raw = (data.text || '').trim();
     raw = raw.replace(/^```json?\s*/i, '').replace(/\s*```$/i, '');
     const analysis = JSON.parse(raw);
@@ -1504,6 +1499,57 @@ function resetProgress() {
     validateForm();
     showPhase('input');
   }
+}
+
+/* ─── FETCH COM TIMEOUT E RETRY NO 429 ─── */
+async function fetchWithRetry(url, options, maxRetries = 3) {
+  let attempt = 0;
+
+  while (attempt <= maxRetries) {
+    // Timeout de 50s por tentativa
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 50000);
+
+    let res;
+    try {
+      res = await fetch(url, { ...options, signal: controller.signal });
+    } catch (e) {
+      clearTimeout(timer);
+      throw new Error('A análise demorou muito. Verifique sua conexão e tente novamente.');
+    }
+    clearTimeout(timer);
+
+    // Sucesso
+    if (res.ok) return res.json();
+
+    const errData = await res.json().catch(() => ({}));
+
+    // Rate limit — countdown visual e retry
+    if (res.status === 429 && attempt < maxRetries) {
+      attempt++;
+      const wait = errData.retryAfter || 20;
+      await loadingCountdown(wait, attempt, maxRetries);
+      continue;
+    }
+
+    throw new Error(errData.error || `Erro ${res.status}`);
+  }
+
+  throw new Error('Limite de tentativas atingido. Aguarde 1 minuto e tente novamente.');
+}
+
+async function loadingCountdown(seconds, attempt, max) {
+  const sub  = document.querySelector('.loading-text');
+  const phrase = document.getElementById('loading-phrase');
+  const original = sub ? sub.innerHTML : '';
+
+  for (let i = seconds; i > 0; i--) {
+    if (sub) sub.innerHTML = `Aguardando limite da API<span class="loading-dots"></span>`;
+    if (phrase) phrase.textContent = `Tentativa ${attempt}/${max} — reiniciando em ${i}s`;
+    await new Promise(r => setTimeout(r, 1000));
+  }
+  if (sub) sub.innerHTML = original;
+  if (phrase) phrase.textContent = 'Retomando análise...';
 }
 
 /* ─── SCORE COUNTER ANIMATION ─── */
