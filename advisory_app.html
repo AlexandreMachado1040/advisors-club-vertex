@@ -3702,7 +3702,11 @@ async function sendReport() {
     const data = await res.json();
 
     if (res.ok && data.success) {
-      alert(`✅ Relatório enviado para ${sess.mentorado_email} e para Caroline!`);
+      if (data.aviso) {
+        alert(`✅ Relatório enviado para Caroline!\n\nℹ️ ${data.aviso}`);
+      } else {
+        alert(`✅ Relatório enviado para ${sess.mentorado_email} e para Caroline!`);
+      }
     } else {
       alert(`❌ Erro ao enviar: ${data.error || 'Verifique a configuração do RESEND_API_KEY.'}`);
     }

@@ -15,27 +15,40 @@ export async function onRequestPost(context) {
     return json({ error: 'E-mail do destinatário inválido.' }, 400);
   }
 
-  const recipients = [to];
-  if (CAROLINE_EMAIL && CAROLINE_EMAIL !== to) recipients.push(CAROLINE_EMAIL);
+  const isTeste  = FROM_EMAIL.includes('resend.dev');
+  const recipients = isTeste
+    ? [CAROLINE_EMAIL]                                           // modo teste: só Caroline
+    : [...new Set([to, CAROLINE_EMAIL].filter(Boolean))];       // produção: mentorado + Caroline
 
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${RESEND_KEY}`,
-      'Content-Type':  'application/json',
-    },
-    body: JSON.stringify({
-      from:    `Advisory Estratégico <${FROM_EMAIL}>`,
-      to:      recipients,
-      subject: `Relatório Advisory — ${empresa}`,
-      html,
-    }),
-  });
+  async function enviar(tos) {
+    const r = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from:    `Advisory Estratégico <${FROM_EMAIL}>`,
+        to:      tos,
+        subject: `Relatório Advisory — ${empresa}`,
+        html,
+      }),
+    });
+    return { r, data: await r.json().catch(() => ({})) };
+  }
 
-  const data = await res.json().catch(() => ({}));
+  let { r, data } = await enviar(recipients);
 
-  if (!res.ok) {
-    return json({ error: data.message || `Resend retornou HTTP ${res.status}` }, 500);
+  // Se falhou por restrição de teste (sender não verificado), tenta só com Caroline
+  if (!r.ok && (data.message || '').includes('testing')) {
+    ({ r, data } = await enviar([CAROLINE_EMAIL]));
+    if (r.ok) {
+      return json({
+        success: true, id: data.id,
+        aviso: `Modo de teste: enviado apenas para Caroline (${CAROLINE_EMAIL}). Para enviar também para a mentorada, verifique um domínio em resend.com/domains.`
+      });
+    }
+  }
+
+  if (!r.ok) {
+    return json({ error: data.message || `Resend HTTP ${r.status}` }, 500);
   }
 
   return json({ success: true, id: data.id });
