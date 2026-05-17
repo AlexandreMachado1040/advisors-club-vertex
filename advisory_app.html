@@ -884,6 +884,83 @@ body::after {
   .grande-pergunta-text { color: #111 !important; }
 }
 
+/* ══════════════════════════════════
+   BETA — M5 APROFUNDAR
+══════════════════════════════════ */
+.beta-wrap { max-width: 780px; margin: 0 auto; padding: 48px 32px 80px; position: relative; z-index:1; }
+.beta-badge { display:inline-flex;align-items:center;gap:8px;font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);border:1px solid var(--border);padding:4px 12px;border-radius:20px;margin-bottom:14px; }
+.hipotese-card { background:var(--dark-2);border:1px solid var(--border);border-radius:12px;padding:22px 24px;margin-bottom:12px;transition:border-color .2s; }
+.hipotese-card.confirmada { border-color:rgba(76,175,130,.35); }
+.hipotese-card.descartada { opacity:.4; }
+.hipotese-dim { font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:7px; }
+.hipotese-texto { font-size:14px;color:var(--text);line-height:1.65;margin-bottom:8px; }
+.hipotese-razao { font-size:12px;color:var(--text-muted);line-height:1.55;border-left:2px solid var(--border);padding-left:10px;margin-bottom:14px; }
+.hipotese-btns { display:flex;gap:8px;flex-wrap:wrap; }
+.hbtn { font-size:10.5px;padding:6px 14px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s; }
+.hbtn:hover { border-color:var(--border-hard);color:var(--text); }
+.hbtn.confirmar.ativo  { border-color:rgba(76,175,130,.5);background:rgba(76,175,130,.1);color:var(--green); }
+.hbtn.ajustar.ativo    { border-color:rgba(201,168,76,.5);background:rgba(201,168,76,.08);color:var(--gold); }
+.hbtn.descartar.ativo  { border-color:rgba(224,85,85,.4);background:rgba(224,85,85,.08);color:var(--red); }
+.hipotese-ajuste { width:100%;margin-top:10px;background:rgba(0,0,0,.2);border:1px solid var(--border);border-radius:7px;padding:10px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;resize:vertical;min-height:70px;outline:none;display:none; }
+.hipotese-ajuste.visible { display:block; }
+
+/* ══════════════════════════════════
+   BETA — M6 MISSÃO E VISÃO
+══════════════════════════════════ */
+.missao-form { display:flex;flex-direction:column;gap:16px;margin-bottom:28px; }
+.missao-field label { display:block;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);margin-bottom:7px; }
+.missao-field input,.missao-field textarea { width:100%;background:var(--dark-2);border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s; }
+.missao-field input:focus,.missao-field textarea:focus { border-color:var(--border-hard); }
+.missao-field input::placeholder,.missao-field textarea::placeholder { color:var(--text-muted); }
+.missao-field textarea { min-height:90px;resize:vertical; }
+.missao-preview { background:var(--dark-3);border:1px solid var(--border-hard);border-radius:12px;padding:24px;margin-bottom:28px; }
+.missao-preview-label { font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px; }
+.missao-preview-text { font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-style:italic;color:var(--text);line-height:1.7; }
+.visao-result { background:linear-gradient(135deg,var(--dark-3),var(--dark-4));border:1px solid var(--border-hard);border-radius:12px;padding:28px;text-align:center;margin-bottom:28px; }
+.visao-result-label { font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:14px; }
+.visao-result-text { font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;font-style:italic;color:#fff;line-height:1.5; }
+
+/* ══════════════════════════════════
+   BETA — M7 IMPLICAÇÕES
+══════════════════════════════════ */
+.impl-proposta-card { background:var(--dark-2);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:20px; }
+.impl-proposta-titulo { font-size:15px;font-weight:600;color:var(--text);margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border); }
+.impl-lentes { display:flex;flex-direction:column;gap:14px; }
+.impl-lente { background:rgba(0,0,0,.2);border-radius:10px;padding:16px 18px; }
+.impl-lente-label { font-size:9px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px;font-weight:600; }
+.impl-lente.clientes .impl-lente-label    { color:#5b9bd5; }
+.impl-lente.empresa .impl-lente-label     { color:var(--gold); }
+.impl-lente.competidores .impl-lente-label{ color:var(--green); }
+.impl-cond-item { display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04); }
+.impl-cond-item:last-child { border-bottom:none; }
+.impl-cond-texto { font-size:12.5px;color:var(--text);line-height:1.55;flex:1; }
+.impl-cond-btns { display:flex;gap:5px;flex-shrink:0; }
+.icbtn { font-size:9px;padding:3px 9px;border-radius:5px;border:1px solid;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;transition:all .15s;white-space:nowrap; }
+.icbtn.essencial { border-color:rgba(201,168,76,.3);color:var(--gold-dim); }
+.icbtn.essencial.ativo { background:rgba(201,168,76,.15);color:var(--gold);border-color:rgba(201,168,76,.5); }
+.icbtn.desejavel { border-color:var(--border);color:var(--text-muted); }
+.icbtn.desejavel.ativo { background:rgba(255,255,255,.06);color:var(--text); }
+
+/* ══════════════════════════════════
+   BETA — M8 PLANO DE FUTURO
+══════════════════════════════════ */
+.plano-ano1 { margin-bottom:40px; }
+.plano-obj-card { background:var(--dark-2);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;padding:20px 22px;margin-bottom:12px; }
+.plano-obj-titulo { font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px; }
+.plano-obj-metrica { font-size:11.5px;color:var(--gold-dim);margin-bottom:10px; }
+.plano-iniciativas { list-style:none;display:flex;flex-direction:column;gap:5px; }
+.plano-iniciativas li { font-size:12.5px;color:var(--text-muted);padding-left:14px;position:relative; }
+.plano-iniciativas li::before { content:'→';position:absolute;left:0;color:var(--gold-dim);font-size:10px;top:2px; }
+.horizonte-timeline { display:flex;flex-direction:column;gap:10px; }
+.horizonte-item { display:flex;gap:16px;align-items:flex-start; }
+.horizonte-ano { font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--gold);flex-shrink:0;width:52px;text-align:right;line-height:1; }
+.horizonte-linha { display:flex;flex-direction:column;gap:2px;padding-top:4px; }
+.horizonte-connector { width:1px;background:var(--border);flex-shrink:0;margin-top:4px; }
+.horizonte-body { background:var(--dark-2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;flex:1; }
+.horizonte-objetivo { font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px; }
+.horizonte-acontece { font-size:12px;color:var(--text-muted);line-height:1.55; }
+.horizonte-sinal { font-size:11px;color:var(--gold-dim);margin-top:6px;font-style:italic; }
+
 /* ── Responsivo ── */
 @media (max-width: 768px) {
   .input-layout { grid-template-columns: 1fr; }
@@ -927,21 +1004,22 @@ body::after {
 
 <!-- ══ MODULE PROGRESS ══ -->
 <nav class="mod-progress" id="mod-progress">
-  <div class="mod-step active" id="step-m1">
-    <div class="mod-step-num">1</div>Entender
-  </div>
+  <span style="font-size:8px;letter-spacing:.2em;color:var(--gold-dim);text-transform:uppercase;white-space:nowrap;padding-right:10px;border-right:1px solid var(--border);margin-right:6px">MVP</span>
+  <div class="mod-step active" id="step-m1"><div class="mod-step-num">1</div>Entender</div>
   <div class="mod-arrow">›</div>
-  <div class="mod-step" id="step-m2">
-    <div class="mod-step-num">2</div>Diagnosticar
-  </div>
+  <div class="mod-step" id="step-m2"><div class="mod-step-num">2</div>Diagnosticar</div>
   <div class="mod-arrow">›</div>
-  <div class="mod-step" id="step-m3">
-    <div class="mod-step-num">3</div>Cenários
-  </div>
+  <div class="mod-step" id="step-m3"><div class="mod-step-num">3</div>Cenários</div>
   <div class="mod-arrow">›</div>
-  <div class="mod-step" id="step-m4">
-    <div class="mod-step-num">4</div>Output
-  </div>
+  <div class="mod-step" id="step-m4"><div class="mod-step-num">4</div>Output</div>
+  <span style="font-size:8px;letter-spacing:.2em;color:var(--gold-dim);text-transform:uppercase;white-space:nowrap;padding:0 10px;border-left:1px solid var(--border);border-right:1px solid var(--border);margin:0 6px">BETA</span>
+  <div class="mod-step" id="step-m5"><div class="mod-step-num">5</div>Aprofundar</div>
+  <div class="mod-arrow">›</div>
+  <div class="mod-step" id="step-m6"><div class="mod-step-num">6</div>Missão</div>
+  <div class="mod-arrow">›</div>
+  <div class="mod-step" id="step-m7"><div class="mod-step-num">7</div>Implicações</div>
+  <div class="mod-arrow">›</div>
+  <div class="mod-step" id="step-m8"><div class="mod-step-num">8</div>Plano</div>
 </nav>
 
 <!-- ══════════════ PHASE: ONBOARDING ══════════════ -->
@@ -1159,6 +1237,88 @@ body::after {
 <!-- ══════════════ PHASE: RESULTS M4 — OUTPUT ══════════════ -->
 <div id="phase-results-m4" class="phase">
   <div class="results-m4-wrap" id="results-m4-content"></div>
+</div>
+
+<!-- ══════════════ PHASE: M5 — APROFUNDAR ══════════════ -->
+<div id="phase-input-m5" class="phase">
+  <div class="beta-wrap">
+    <div class="beta-badge">Beta · Módulo 05</div>
+    <h2 class="dim-title" style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:#fff;margin-bottom:8px">
+      Causas<br><em style="color:var(--gold)">Raiz</em>
+    </h2>
+    <p class="dim-desc" style="margin-bottom:32px">A IA analisou suas dimensões críticas e formulou hipóteses de causa raiz. Confirme, ajuste ou descarte cada uma — isso refinará sua tese de investigação.</p>
+    <div id="m5-hipoteses-list"></div>
+    <div style="display:flex;justify-content:space-between;margin-top:24px;gap:12px;flex-wrap:wrap">
+      <button class="btn btn-outline" onclick="voltarParaResultadosM4()">← Voltar</button>
+      <button class="btn btn-gold" onclick="salvarAprofundar()">Salvar Análise →</button>
+    </div>
+  </div>
+</div>
+<div id="phase-results-m5" class="phase">
+  <div class="beta-wrap" id="results-m5-content"></div>
+</div>
+
+<!-- ══════════════ PHASE: M6 — MISSÃO E VISÃO ══════════════ -->
+<div id="phase-input-m6" class="phase">
+  <div class="beta-wrap">
+    <div class="beta-badge">Beta · Módulo 06</div>
+    <h2 class="dim-title" style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:#fff;margin-bottom:8px">
+      Missão &amp;<br><em style="color:var(--gold)">Visão</em>
+    </h2>
+    <p class="dim-desc" style="margin-bottom:28px">Defina ou reescreva a missão e visão da sua empresa. Clique em "Gerar com IA" para um rascunho baseado em tudo que analisamos — depois edite à vontade.</p>
+
+    <div class="section-title" style="margin-bottom:18px">Missão</div>
+    <div class="missao-form">
+      <div class="missao-field"><label>Somos uma empresa que…</label><input id="mv-somos" type="text" placeholder="tipo de empresa, setor ou segmento"></div>
+      <div class="missao-field"><label>Atuamos no segmento de…</label><input id="mv-atuamos" type="text" placeholder="mercado, público ou contexto de atuação"></div>
+      <div class="missao-field"><label>Valorizamos…</label><input id="mv-valorizamos" type="text" placeholder="princípios, valores ou forma de trabalhar"></div>
+      <div class="missao-field"><label>Nosso principal diferencial é…</label><input id="mv-diferencial" type="text" placeholder="o que nos torna únicos para o cliente"></div>
+    </div>
+
+    <div class="section-title" style="margin-bottom:18px">Visão</div>
+    <div class="missao-field" style="margin-bottom:28px">
+      <label>Onde a empresa estará em 5 anos? (específico e auditável)</label>
+      <textarea id="mv-visao" placeholder="Ex: Ser referência em [segmento] no [região], atendendo X clientes com faturamento de R$ Y, reconhecidos por…"></textarea>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <button class="btn btn-outline" onclick="mostrarResultadosM5()">← Voltar</button>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-outline" id="btn-gerar-mv" onclick="gerarMissaoVisao()">✦ Gerar com IA</button>
+        <button class="btn btn-gold" onclick="salvarMissaoVisao()">Salvar e Continuar →</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="phase-results-m6" class="phase">
+  <div class="beta-wrap" id="results-m6-content"></div>
+</div>
+
+<!-- ══════════════ PHASE: M7 — IMPLICAÇÕES ══════════════ -->
+<div id="phase-input-m7" class="phase">
+  <div class="beta-wrap" style="max-width:900px">
+    <div class="beta-badge">Beta · Módulo 07</div>
+    <h2 class="dim-title" style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:#fff;margin-bottom:8px">
+      O que Precisa<br><em style="color:var(--gold)">ser Verdade</em>
+    </h2>
+    <p class="dim-desc" style="margin-bottom:32px">Para cada proposta estratégica, a IA vai gerar as condições que precisam ser verdade — em 3 lentes: Clientes, Empresa e Competidores. Classifique cada condição como <strong style="color:var(--gold)">essencial</strong> ou apenas <strong style="color:var(--text-muted)">desejável</strong>.</p>
+    <div id="m7-loading-hint" style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:13px">
+      Carregando análise de implicações…
+    </div>
+    <div id="m7-impl-list" style="display:none"></div>
+    <div id="m7-actions" style="display:none;justify-content:space-between;margin-top:28px;gap:12px;flex-wrap:wrap">
+      <button class="btn btn-outline" onclick="mostrarResultadosM6()">← Voltar</button>
+      <button class="btn btn-gold" onclick="salvarImplicacoes()">Salvar e Continuar →</button>
+    </div>
+  </div>
+</div>
+<div id="phase-results-m7" class="phase">
+  <div class="beta-wrap" id="results-m7-content"></div>
+</div>
+
+<!-- ══════════════ PHASE: M8 — PLANO DE FUTURO ══════════════ -->
+<div id="phase-results-m8" class="phase">
+  <div class="beta-wrap" style="max-width:900px" id="results-m8-content"></div>
 </div>
 
 <!-- ══════════════ PHASE: RELATÓRIO COMPLETO ══════════════ -->
@@ -2572,10 +2732,11 @@ function renderResultsOutput(data) {
       <div class="section-title">Propostas de Mudança Estratégica</div>
       ${cards}
     </div>
-    <div class="results-footer">
+    <div class="results-footer" style="flex-wrap:wrap;gap:12px">
       <button class="btn btn-outline" onclick="refazerOutput()">↺ Refazer</button>
-      <button class="btn btn-gold" onclick="gerarRelatorio()">
-        Ver Relatório Completo →
+      <button class="btn btn-outline" onclick="gerarRelatorio()">⎙ Relatório MVP</button>
+      <button class="btn btn-gold" onclick="irParaAprofundar()">
+        Continuar para Beta →
       </button>
     </div>`;
 }
@@ -2746,8 +2907,429 @@ function gerarRelatorio() {
   showPhase('phase-relatorio');
 }
 
+function gerarRelatorioCompleto() {
+  const m1=getM1(),m2=getM2(),m3=getM3(),m4=getM4(),m5=localStorage.getItem(STORAGE_KEY_M5),m6=getM6(),m7=getM3(),m8=getM8();
+  if (!m1||!m2||!m3||!m4) { alert('Complete os 4 módulos MVP antes de gerar o relatório completo.'); return; }
+  // Chama o relatório base e adiciona seções Beta
+  gerarRelatorio();
+  // Após renderizar, append seções Beta
+  setTimeout(()=>{
+    const cont = document.getElementById('relatorio-content');
+    if (!cont) return;
+    let extra = '';
+    // M5
+    if (m5) { try { const d=JSON.parse(m5); const hips=(d.hipoteses||[]).filter(h=>h.status!=='descartada');
+      extra += `<div class="rel-section"><div class="rel-section-header"><div class="rel-section-num">05</div><div class="rel-section-titulo">Aprofundar — Causas Raiz</div></div>${hips.map(h=>`<div class="rel-proposta"><div class="rel-proposta-num" style="font-size:1rem;min-width:auto;color:var(--gold-dim)">●</div><div class="rel-proposta-body"><div class="rel-proposta-titulo">${h.dimensao}</div><p class="rel-proposta-desc">${h.status==='ajustada'&&h.ajuste?h.ajuste:h.hipotese}</p></div></div>`).join('')}</div>`; } catch(e){} }
+    // M6
+    const mv=getM6();
+    if (mv) { extra += `<div class="rel-section"><div class="rel-section-header"><div class="rel-section-num">06</div><div class="rel-section-titulo">Missão e Visão</div></div><div class="missao-preview" style="margin-bottom:16px"><div class="missao-preview-label">Missão</div><p class="missao-preview-text">${mv.missao?.texto_completo||''}</p></div><div class="visao-result"><div class="visao-result-label">Visão — 5 anos</div><p class="visao-result-text">${mv.visao?.texto||''}</p></div></div>`; }
+    // M8
+    const m8d=getM8();
+    if (m8d) {
+      const objs=(m8d.ano1?.objetivos||[]).map(o=>`<div class="rel-proposta"><div class="rel-proposta-num" style="font-size:1rem;min-width:auto;color:var(--gold-dim)">◆</div><div class="rel-proposta-body"><div class="rel-proposta-titulo">${o.titulo}</div><p class="rel-proposta-desc">${o.metrica}</p></div></div>`).join('');
+      const horiz=(m8d.horizonte||[]).map(h=>`<div style="display:flex;gap:12px;margin-bottom:12px;align-items:flex-start"><div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold);min-width:36px">${h.ano}</div><div><div style="font-size:13px;font-weight:600;color:var(--text)">${h.objetivo}</div><p style="font-size:12px;color:var(--text-muted)">${h.o_que_acontece}</p></div></div>`).join('');
+      extra += `<div class="rel-section"><div class="rel-section-header"><div class="rel-section-num">08</div><div class="rel-section-titulo">Plano de Futuro — 1 a 5 anos</div></div><div style="margin-bottom:20px"><div class="rel-section-titulo" style="font-size:1rem;margin-bottom:12px">Mapa Estratégico — Ano 1</div>${objs}</div><div><div class="rel-section-titulo" style="font-size:1rem;margin-bottom:12px">Horizonte 2-5 anos</div>${horiz}</div></div>`;
+    }
+    cont.insertAdjacentHTML('beforeend', extra);
+  }, 200);
+}
+
 function getM3() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY_M3)); } catch(e) { return null; } }
 function getM4() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY_M4)); } catch(e) { return null; } }
+
+/* ═══════════════════════════════════════════════════════
+   MÓDULO 5 — APROFUNDAR (causas raiz)
+═══════════════════════════════════════════════════════ */
+const STORAGE_KEY_M5 = 'advisory_m5';
+let hipotesesState   = []; // { id, dimensao, hipotese, raciocinio, status:'', ajuste:'' }
+
+const SP_APROFUNDAR = `Você é consultora estratégica da metodologia Advisors Club especializada em diagnóstico de causas raiz.
+Com base no diagnóstico das dimensões críticas e no problema real identificado, gere de 3 a 5 hipóteses de causa raiz.
+Para cada hipótese: qual dimensão afeta, a hipótese em si (usando lógica dos 5 Porquês implícito) e por que você acredita nisso com base no relato.
+Regras: SOMENTE JSON. Português brasileiro.
+{"modulo":"aprofundar","versao_schema":"1.0","hipoteses":[{"id":1,"dimensao":"string","hipotese":"string","raciocinio":"string"}]}`;
+
+async function irParaAprofundar() {
+  const m5saved = localStorage.getItem(STORAGE_KEY_M5);
+  if (m5saved) {
+    try { hipotesesState = JSON.parse(m5saved).hipoteses || []; renderResultsM5(); showPhase('phase-results-m5'); updateModProgress('done-m5'); return; } catch(e) {}
+  }
+
+  const m1 = getM1(), m2 = getM2();
+  if (!m1 || !m2) { alert('Dados dos módulos anteriores não encontrados.'); return; }
+
+  const dimsCrit = (m1.dimensoes||[]).filter(d=>d.maturidade==='critico');
+  const userMsg  = `DIMENSÕES CRÍTICAS:\n${dimsCrit.map(d=>`- ${d.nome}: ${d.diagnostico}`).join('\n')}\n\nPROBLEMA REAL: ${m2.problema_real}\nTESE: ${m2.tese_investigacao}`;
+
+  setLoadingModule('Aprofundando o diagnóstico', 'A IA está identificando as causas raiz por trás dos problemas.');
+  showPhase('phase-loading');
+
+  const result = await fetchWithRetry({ systemPrompt: SP_APROFUNDAR, userMessage: userMsg, moduleType: 'diagnosticar' });
+  if (!result.ok) { showPhase('phase-results-m4'); alert(`Erro: ${result.error}`); return; }
+
+  const raw = result.data?.text ?? result.data;
+  let parsed;
+  try { const clean = typeof raw==='string' ? raw.replace(/^```json\n?/,'').replace(/\n?```$/,'').trim() : JSON.stringify(raw); parsed = typeof raw==='object'?raw:JSON.parse(clean); } catch(e) { showPhase('phase-results-m4'); alert('Formato inesperado.'); return; }
+
+  hipotesesState = (parsed.hipoteses||[]).map(h=>({...h, status:'', ajuste:''}));
+  renderHipoteses();
+  showPhase('phase-input-m5');
+  updateModProgress('active-m5');
+}
+
+function renderHipoteses() {
+  const list = document.getElementById('m5-hipoteses-list');
+  if (!list) return;
+  list.innerHTML = hipotesesState.map((h,i) => `
+    <div class="hipotese-card ${h.status}" id="hip-${i}">
+      <div class="hipotese-dim">Dimensão: ${h.dimensao}</div>
+      <p class="hipotese-texto">${h.hipotese}</p>
+      <p class="hipotese-razao">${h.raciocinio}</p>
+      <div class="hipotese-btns">
+        <button class="hbtn confirmar ${h.status==='confirmada'?'ativo':''}" onclick="setHip(${i},'confirmada',this)">✓ Confirmar</button>
+        <button class="hbtn ajustar ${h.status==='ajustada'?'ativo':''}" onclick="setHip(${i},'ajustada',this)">✎ Ajustar</button>
+        <button class="hbtn descartar ${h.status==='descartada'?'ativo':''}" onclick="setHip(${i},'descartada',this)">✕ Descartar</button>
+      </div>
+      <textarea class="hipotese-ajuste ${h.status==='ajustada'?'visible':''}" id="hip-txt-${i}" placeholder="Descreva sua versão ajustada da hipótese…">${h.ajuste||''}</textarea>
+    </div>`).join('');
+}
+
+function setHip(i, status, btn) {
+  hipotesesState[i].status = hipotesesState[i].status === status ? '' : status;
+  const card = document.getElementById(`hip-${i}`);
+  card.className = `hipotese-card ${hipotesesState[i].status}`;
+  card.querySelectorAll('.hbtn').forEach(b=>b.classList.remove('ativo'));
+  if (hipotesesState[i].status) btn.classList.add('ativo');
+  const ta = document.getElementById(`hip-txt-${i}`);
+  if (ta) ta.className = `hipotese-ajuste ${hipotesesState[i].status==='ajustada'?'visible':''}`;
+}
+
+function salvarAprofundar() {
+  // Capturar ajustes
+  hipotesesState.forEach((h,i) => {
+    const ta = document.getElementById(`hip-txt-${i}`);
+    if (ta) h.ajuste = ta.value;
+    if (!h.status) h.status = 'confirmada'; // padrão: confirmar se não marcou
+  });
+  localStorage.setItem(STORAGE_KEY_M5, JSON.stringify({ modulo:'aprofundar', hipoteses: hipotesesState }));
+  renderResultsM5();
+  showPhase('phase-results-m5');
+  updateModProgress('done-m5');
+}
+
+function renderResultsM5() {
+  const m1   = getM1();
+  const nome = m1?.empresa?.nome || empresaNome || 'Empresa';
+  const hips = hipotesesState.filter(h=>h.status!=='descartada');
+  const icons = { confirmada:'✓', ajustada:'✎', '':'✓' };
+
+  document.getElementById('results-m5-content').innerHTML = `
+    <div style="text-align:center;margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--border)">
+      <div class="beta-badge" style="justify-content:center">Beta · Módulo 05 · Aprofundar</div>
+      <h1 class="results-empresa-nome" style="margin-top:12px">${nome}</h1>
+    </div>
+    <div class="section-title" style="margin-bottom:16px">Hipóteses de Causa Raiz Validadas</div>
+    ${hips.map(h=>`
+      <div class="hipotese-card confirmada" style="margin-bottom:12px">
+        <div class="hipotese-dim">${h.dimensao}</div>
+        <p class="hipotese-texto">${h.status==='ajustada'&&h.ajuste ? h.ajuste : h.hipotese}</p>
+        ${h.status==='ajustada'&&h.ajuste ? `<p class="hipotese-razao">Original: ${h.hipotese}</p>` : `<p class="hipotese-razao">${h.raciocinio}</p>`}
+      </div>`).join('')}
+    <div class="results-footer">
+      <button class="btn btn-outline" onclick="refazerAprofundar()">↺ Refazer</button>
+      <button class="btn btn-gold" onclick="irParaMissaoVisao()">Próximo: Missão e Visão →</button>
+    </div>`;
+}
+
+function mostrarResultadosM5() { const m5=localStorage.getItem(STORAGE_KEY_M5); if(m5){renderResultsM5();showPhase('phase-results-m5');}else{showPhase('phase-results-m4');} }
+function refazerAprofundar() { if(!confirm('Apagar análise do Módulo 5?'))return; localStorage.removeItem(STORAGE_KEY_M5); hipotesesState=[]; irParaAprofundar(); }
+
+/* ═══════════════════════════════════════════════════════
+   MÓDULO 6 — MISSÃO E VISÃO
+═══════════════════════════════════════════════════════ */
+const STORAGE_KEY_M6 = 'advisory_m6';
+
+const SP_MISSAO_VISAO = `Você é consultora estratégica da metodologia Advisors Club.
+Com base no diagnóstico, propostas e contexto da empresa, gere um rascunho de Missão e Visão.
+Missão: preencha os 4 campos separadamente (somos, atuamos, valorizamos, diferencial). Depois monte o texto_completo fluido combinando os 4.
+Visão: onde a empresa estará em 5 anos — específico, ambicioso e auditável. Inclua quando_chegamos: como saberão que chegaram lá.
+SOMENTE JSON. Português brasileiro.
+{"modulo":"missao_visao","versao_schema":"1.0","missao":{"somos":"string","atuamos":"string","valorizamos":"string","diferencial":"string","texto_completo":"string"},"visao":{"texto":"string","quando_chegamos":"string"}}`;
+
+async function irParaMissaoVisao() {
+  const m6saved = localStorage.getItem(STORAGE_KEY_M6);
+  if (m6saved) { try { renderResultsM6(JSON.parse(m6saved)); showPhase('phase-results-m6'); updateModProgress('done-m6'); return; } catch(e) {} }
+  const m6partial = localStorage.getItem(STORAGE_KEY_M6+'_draft');
+  if (m6partial) { try { const d=JSON.parse(m6partial); setTimeout(()=>{ ['somos','atuamos','valorizamos','diferencial','visao'].forEach(k=>{ const el=document.getElementById('mv-'+k); if(el&&d[k]) el.value=d[k]; }); },100); } catch(e) {} }
+  showPhase('phase-input-m6');
+  updateModProgress('active-m6');
+}
+
+async function gerarMissaoVisao() {
+  const m1=getM1(), m4=getM4();
+  if (!m1) { alert('Complete o Módulo 1 antes.'); return; }
+  const btn=document.getElementById('btn-gerar-mv');
+  if (btn) { btn.disabled=true; btn.textContent='Gerando…'; }
+  setLoadingModule('Formulando Missão e Visão','A IA está criando os rascunhos com base em todo o diagnóstico.');
+  showPhase('phase-loading');
+  const props = (m4?.propostas||[]).slice(0,3).map(p=>p.titulo).join(', ');
+  const userMsg = `Empresa: ${m1.empresa?.nome} | Segmento: ${m1.empresa?.segmento}
+Síntese do diagnóstico: ${m1.sintese}
+Forças: ${(m1.top3_forcas||[]).map(f=>f.titulo).join(', ')}
+Propostas estratégicas principais: ${props||'(não disponíveis)'}`;
+  const result = await fetchWithRetry({ systemPrompt: SP_MISSAO_VISAO, userMessage: userMsg, moduleType: 'diagnosticar' });
+  if (!result.ok) { showPhase('phase-input-m6'); if(btn){btn.disabled=false;btn.textContent='✦ Gerar com IA';} alert(`Erro: ${result.error}`); return; }
+  const raw=result.data?.text??result.data;
+  let p; try { const c=typeof raw==='string'?raw.replace(/^```json\n?/,'').replace(/\n?```$/,'').trim():JSON.stringify(raw); p=typeof raw==='object'?raw:JSON.parse(c); } catch(e) { showPhase('phase-input-m6'); if(btn){btn.disabled=false;btn.textContent='✦ Gerar com IA';} alert('Formato inesperado.'); return; }
+  setTimeout(()=>{
+    const m=p.missao||{}; const v=p.visao||{};
+    ['somos','atuamos','valorizamos','diferencial'].forEach(k=>{ const el=document.getElementById('mv-'+k); if(el&&m[k]) el.value=m[k]; });
+    const vel=document.getElementById('mv-visao'); if(vel&&v.texto) vel.value=v.texto;
+    if(btn){btn.disabled=false;btn.textContent='✦ Gerar com IA';}
+  },100);
+  showPhase('phase-input-m6');
+}
+
+function salvarMissaoVisao() {
+  const somos       = document.getElementById('mv-somos')?.value?.trim();
+  const atuamos     = document.getElementById('mv-atuamos')?.value?.trim();
+  const valorizamos = document.getElementById('mv-valorizamos')?.value?.trim();
+  const diferencial = document.getElementById('mv-diferencial')?.value?.trim();
+  const visao       = document.getElementById('mv-visao')?.value?.trim();
+  if (!somos||!visao) { alert('Preencha pelo menos "Somos uma empresa que…" e a Visão.'); return; }
+  const texto_completo = [somos&&`Somos ${somos}.`,atuamos&&`Atuamos ${atuamos}.`,valorizamos&&`Valorizamos ${valorizamos}.`,diferencial&&`Nosso principal diferencial é ${diferencial}.`].filter(Boolean).join(' ');
+  const data = { modulo:'missao_visao', versao_schema:'1.0', missao:{somos,atuamos,valorizamos,diferencial,texto_completo}, visao:{texto:visao,quando_chegamos:''} };
+  localStorage.setItem(STORAGE_KEY_M6, JSON.stringify(data));
+  renderResultsM6(data);
+  showPhase('phase-results-m6');
+  updateModProgress('done-m6');
+}
+
+function renderResultsM6(data) {
+  const m1=getM1(); const nome=m1?.empresa?.nome||empresaNome||'Empresa';
+  const m=data.missao||{}; const v=data.visao||{};
+  document.getElementById('results-m6-content').innerHTML = `
+    <div style="text-align:center;margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--border)">
+      <div class="beta-badge" style="justify-content:center">Beta · Módulo 06 · Missão e Visão</div>
+      <h1 class="results-empresa-nome" style="margin-top:12px">${nome}</h1>
+    </div>
+    <div class="results-section">
+      <div class="section-title">Missão</div>
+      <div class="missao-preview"><div class="missao-preview-label">Declaração de Missão</div><p class="missao-preview-text">${m.texto_completo||''}</p></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        ${m.somos?`<div class="diag-full-card"><div class="diag-full-label">Somos</div><p class="diag-full-text">${m.somos}</p></div>`:''}
+        ${m.atuamos?`<div class="diag-full-card"><div class="diag-full-label">Atuamos</div><p class="diag-full-text">${m.atuamos}</p></div>`:''}
+        ${m.valorizamos?`<div class="diag-full-card"><div class="diag-full-label">Valorizamos</div><p class="diag-full-text">${m.valorizamos}</p></div>`:''}
+        ${m.diferencial?`<div class="diag-full-card"><div class="diag-full-label">Diferencial</div><p class="diag-full-text">${m.diferencial}</p></div>`:''}
+      </div>
+    </div>
+    <div class="results-section">
+      <div class="section-title">Visão — 5 anos</div>
+      <div class="visao-result"><div class="visao-result-label">Onde a empresa estará</div><p class="visao-result-text">${v.texto||''}</p></div>
+    </div>
+    <div class="results-footer">
+      <button class="btn btn-outline" onclick="editarMissaoVisao()">✎ Editar</button>
+      <button class="btn btn-gold" onclick="irParaImplicacoes()">Próximo: Implicações →</button>
+    </div>`;
+}
+
+function mostrarResultadosM6() { const m6=localStorage.getItem(STORAGE_KEY_M6); if(m6){renderResultsM6(JSON.parse(m6));showPhase('phase-results-m6');}else{mostrarResultadosM5();} }
+function editarMissaoVisao() {
+  const m6=localStorage.getItem(STORAGE_KEY_M6);
+  if (m6) { try { const d=JSON.parse(m6); const m=d.missao||{}; const v=d.visao||{};
+    setTimeout(()=>{ ['somos','atuamos','valorizamos','diferencial'].forEach(k=>{const el=document.getElementById('mv-'+k);if(el)el.value=m[k]||'';});
+    const vel=document.getElementById('mv-visao'); if(vel) vel.value=v.texto||''; },100); }catch(e){} }
+  showPhase('phase-input-m6');
+}
+
+/* ═══════════════════════════════════════════════════════
+   MÓDULO 7 — IMPLICAÇÕES
+═══════════════════════════════════════════════════════ */
+const STORAGE_KEY_M7      = 'advisory_m7';
+const STORAGE_KEY_M7_EST  = 'advisory_m7_estado';
+let implicacoesEstado     = {}; // { 'proposta_1_clientes_0': 'essencial'|'desejavel' }
+
+const SP_IMPLICACOES = `Você é consultora estratégica da metodologia Advisors Club.
+Para cada proposta estratégica fornecida, aplique as 3 lentes e gere 2 a 4 condições mensuráveis que precisam ser verdade para essa proposta funcionar.
+Lente Clientes: atitudes, comportamentos, disposição a pagar, segmentos.
+Lente Empresa: equipe, talentos, tecnologia, custos internos.
+Lente Competidores: concorrentes diretos, adjacentes, substitutos, novos entrantes.
+As condições devem ser afirmativas e mensuráveis (ex: "Os clientes estariam dispostos a pagar até X% a mais por...").
+SOMENTE JSON. Português brasileiro.
+{"modulo":"implicacoes","versao_schema":"1.0","por_proposta":[{"proposta_num":1,"proposta_titulo":"string","clientes":["string"],"empresa":["string"],"competidores":["string"]}]}`;
+
+async function irParaImplicacoes() {
+  const m7saved = localStorage.getItem(STORAGE_KEY_M7);
+  if (m7saved) { try { const d=JSON.parse(m7saved); implicacoesEstado=JSON.parse(localStorage.getItem(STORAGE_KEY_M7_EST)||'{}'); renderResultsM7(d); showPhase('phase-results-m7'); updateModProgress('done-m7'); return; } catch(e) {} }
+  const m4=getM4();
+  if (!m4) { alert('Complete o Módulo 4 antes.'); return; }
+  const propostas = (m4.propostas||[]).slice(0,4);
+  document.getElementById('m7-loading-hint').style.display='block';
+  document.getElementById('m7-impl-list').style.display='none';
+  document.getElementById('m7-actions').style.display='none';
+  setLoadingModule('Analisando implicações','A IA está aplicando as 3 lentes para cada proposta estratégica.');
+  showPhase('phase-loading');
+  const userMsg = `PROPOSTAS ESTRATÉGICAS:\n${propostas.map(p=>`[${p.numero}] ${p.titulo}: ${p.descricao}`).join('\n\n')}\n\nGere as condições necessárias para cada proposta.`;
+  const result = await fetchWithRetry({ systemPrompt: SP_IMPLICACOES, userMessage: userMsg, moduleType: 'output' });
+  if (!result.ok) { showPhase('phase-results-m6'); alert(`Erro: ${result.error}`); return; }
+  const raw=result.data?.text??result.data;
+  let parsed;
+  try { const c=typeof raw==='string'?raw.replace(/^```json\n?/,'').replace(/\n?```$/,'').trim():JSON.stringify(raw); parsed=typeof raw==='object'?raw:JSON.parse(c); } catch(e) { showPhase('phase-results-m6'); alert('Formato inesperado.'); return; }
+  localStorage.setItem(STORAGE_KEY_M7, JSON.stringify(parsed));
+  implicacoesEstado = {};
+  renderImplicacoesInput(parsed);
+  showPhase('phase-input-m7');
+  updateModProgress('active-m7');
+}
+
+function renderImplicacoesInput(data) {
+  const list = document.getElementById('m7-impl-list');
+  const acts = document.getElementById('m7-actions');
+  if (!list||!acts) return;
+  list.innerHTML = (data.por_proposta||[]).map(pp => `
+    <div class="impl-proposta-card">
+      <div class="impl-proposta-titulo">${pp.proposta_num}. ${pp.proposta_titulo}</div>
+      <div class="impl-lentes">
+        ${['clientes','empresa','competidores'].map(lente=>`
+          <div class="impl-lente ${lente}">
+            <div class="impl-lente-label">${lente.charAt(0).toUpperCase()+lente.slice(1)}</div>
+            ${(pp[lente]||[]).map((cond,ci)=>{
+              const key=`p${pp.proposta_num}_${lente}_${ci}`;
+              const est=implicacoesEstado[key]||'';
+              return `<div class="impl-cond-item">
+                <span class="impl-cond-texto">${cond}</span>
+                <div class="impl-cond-btns">
+                  <button class="icbtn essencial ${est==='essencial'?'ativo':''}" onclick="setImpl('${key}','essencial',this)">Essencial</button>
+                  <button class="icbtn desejavel ${est==='desejavel'?'ativo':''}" onclick="setImpl('${key}','desejavel',this)">Desejável</button>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>`).join('')}
+    </div>`).join('');
+  list.style.display='block';
+  acts.style.display='flex';
+  document.getElementById('m7-loading-hint').style.display='none';
+}
+
+function setImpl(key, val, btn) {
+  implicacoesEstado[key] = implicacoesEstado[key]===val ? '' : val;
+  localStorage.setItem(STORAGE_KEY_M7_EST, JSON.stringify(implicacoesEstado));
+  btn.closest('.impl-cond-btns').querySelectorAll('.icbtn').forEach(b=>b.classList.remove('ativo'));
+  if (implicacoesEstado[key]) btn.classList.add('ativo');
+}
+
+function salvarImplicacoes() {
+  const m7=localStorage.getItem(STORAGE_KEY_M7);
+  if (!m7) return;
+  renderResultsM7(JSON.parse(m7));
+  showPhase('phase-results-m7');
+  updateModProgress('done-m7');
+}
+
+function renderResultsM7(data) {
+  const m1=getM1(); const nome=m1?.empresa?.nome||empresaNome||'Empresa';
+  const resumo = (data.por_proposta||[]).map(pp=>{
+    const ess = ['clientes','empresa','competidores'].flatMap(l=>(pp[l]||[]).map((c,i)=>({lente:l,cond:c,key:`p${pp.proposta_num}_${l}_${i}`}))).filter(x=>implicacoesEstado[x.key]==='essencial');
+    return `<div style="margin-bottom:18px"><div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px">${pp.proposta_num}. ${pp.proposta_titulo}</div>${ess.length?ess.map(x=>`<div style="font-size:12px;color:var(--gold-dim);margin-bottom:4px;padding-left:10px;border-left:2px solid var(--gold-dim)">● [${x.lente}] ${x.cond}</div>`).join(''):'<p style="font-size:12px;color:var(--text-muted)">Nenhuma condição marcada como essencial.</p>'}</div>`;
+  }).join('');
+  document.getElementById('results-m7-content').innerHTML = `
+    <div style="text-align:center;margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--border)">
+      <div class="beta-badge" style="justify-content:center">Beta · Módulo 07 · Implicações</div>
+      <h1 class="results-empresa-nome" style="margin-top:12px">${nome}</h1>
+    </div>
+    <div class="section-title" style="margin-bottom:16px">Condições Essenciais por Proposta</div>
+    ${resumo}
+    <div class="results-footer">
+      <button class="btn btn-outline" onclick="mostrarResultadosM7input()">✎ Revisar</button>
+      <button class="btn btn-gold" onclick="irParaPlanoFuturo()">Próximo: Plano de Futuro →</button>
+    </div>`;
+}
+
+function mostrarResultadosM6() { const m6=localStorage.getItem(STORAGE_KEY_M6); if(m6){renderResultsM6(JSON.parse(m6));showPhase('phase-results-m6');}else{mostrarResultadosM5();} }
+function mostrarResultadosM7input() {
+  const m7=localStorage.getItem(STORAGE_KEY_M7);
+  if (m7) { renderImplicacoesInput(JSON.parse(m7)); showPhase('phase-input-m7'); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   MÓDULO 8 — PLANO DE FUTURO
+═══════════════════════════════════════════════════════ */
+const STORAGE_KEY_M8 = 'advisory_m8';
+
+const SP_PLANO = `Você é consultora estratégica da metodologia Advisors Club.
+Transforme tudo que foi analisado em um plano de futuro estruturado.
+Ano 1: mapa estratégico com 3 a 5 objetivos estratégicos. Cada objetivo: título, métrica de sucesso mensurável e 2 a 3 iniciativas prioritárias.
+Anos 2 a 5: horizonte de crescimento. Para cada ano: objetivo do período, o que estará acontecendo e como saberão que chegaram lá.
+SOMENTE JSON. Português brasileiro.
+{"modulo":"plano_futuro","versao_schema":"1.0","ano1":{"objetivos":[{"titulo":"string","metrica":"string","iniciativas":["string"]}]},"horizonte":[{"ano":2,"objetivo":"string","o_que_acontece":"string","como_saberemos":"string"},{"ano":3,"objetivo":"string","o_que_acontece":"string","como_saberemos":"string"},{"ano":4,"objetivo":"string","o_que_acontece":"string","como_saberemos":"string"},{"ano":5,"objetivo":"string","o_que_acontece":"string","como_saberemos":"string"}]}`;
+
+async function irParaPlanoFuturo() {
+  const m8saved = localStorage.getItem(STORAGE_KEY_M8);
+  if (m8saved) { try { renderResultsM8(JSON.parse(m8saved)); showPhase('phase-results-m8'); updateModProgress('done-m8'); return; } catch(e) {} }
+  const m1=getM1(),m2=getM2(),m4=getM4(),m6=getM6();
+  if (!m1||!m4) { alert('Complete os módulos anteriores.'); return; }
+  setLoadingModule('Construindo o Plano de Futuro','A IA está transformando toda a análise em um mapa estratégico 1-5 anos.');
+  showPhase('phase-loading');
+  const mv = m6?.missao?.texto_completo||'';
+  const vis = m6?.visao?.texto||'';
+  const props = (m4.propostas||[]).slice(0,5).map(p=>`- ${p.titulo}: ${p.descricao}`).join('\n');
+  const userMsg = `EMPRESA: ${m1.empresa?.nome} | ${m1.empresa?.segmento}
+MISSÃO: ${mv||'(não definida)'}
+VISÃO: ${vis||'(não definida)'}
+GRANDE PERGUNTA: ${m2?.grande_pergunta||''}
+PROPOSTAS ESTRATÉGICAS:\n${props}
+Construa o plano de futuro.`;
+  const result = await fetchWithRetry({ systemPrompt: SP_PLANO, userMessage: userMsg, moduleType: 'output' });
+  if (!result.ok) { showPhase('phase-results-m7'); alert(`Erro: ${result.error}`); return; }
+  const raw=result.data?.text??result.data;
+  let parsed;
+  try { const c=typeof raw==='string'?raw.replace(/^```json\n?/,'').replace(/\n?```$/,'').trim():JSON.stringify(raw); parsed=typeof raw==='object'?raw:JSON.parse(c); } catch(e) { showPhase('phase-results-m7'); alert('Formato inesperado.'); return; }
+  localStorage.setItem(STORAGE_KEY_M8, JSON.stringify(parsed));
+  renderResultsM8(parsed);
+  showPhase('phase-results-m8');
+  updateModProgress('done-m8');
+}
+
+function renderResultsM8(data) {
+  const m1=getM1(); const nome=m1?.empresa?.nome||empresaNome||'Empresa';
+  const objs = (data.ano1?.objetivos||[]).map(o=>`
+    <div class="plano-obj-card">
+      <div class="plano-obj-titulo">${o.titulo}</div>
+      <div class="plano-obj-metrica">◆ ${o.metrica}</div>
+      <ul class="plano-iniciativas">${(o.iniciativas||[]).map(i=>`<li>${i}</li>`).join('')}</ul>
+    </div>`).join('');
+  const horiz = (data.horizonte||[]).map(h=>`
+    <div class="horizonte-item">
+      <div class="horizonte-ano">${h.ano}</div>
+      <div class="horizonte-body">
+        <div class="horizonte-objetivo">${h.objetivo}</div>
+        <p class="horizonte-acontece">${h.o_que_acontece}</p>
+        <p class="horizonte-sinal">Como saberemos: ${h.como_saberemos}</p>
+      </div>
+    </div>`).join('');
+  document.getElementById('results-m8-content').innerHTML = `
+    <div style="text-align:center;margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--border)">
+      <div class="beta-badge" style="justify-content:center">Beta · Módulo 08 · Plano de Futuro</div>
+      <h1 class="results-empresa-nome" style="margin-top:12px">${nome}</h1>
+    </div>
+    <div class="results-section">
+      <div class="section-title">Mapa Estratégico — Ano 1</div>
+      <div class="plano-ano1">${objs}</div>
+    </div>
+    <div class="results-section">
+      <div class="section-title">Horizonte de Crescimento — Anos 2 a 5</div>
+      <div class="horizonte-timeline">${horiz}</div>
+    </div>
+    <div class="results-footer">
+      <button class="btn btn-outline" onclick="refazerPlano()">↺ Refazer</button>
+      <button class="btn btn-gold" onclick="gerarRelatorioCompleto()">⎙ Relatório Completo (8 módulos) →</button>
+    </div>`;
+}
+
+function refazerPlano() { if(!confirm('Apagar o Plano de Futuro?'))return; localStorage.removeItem(STORAGE_KEY_M8); irParaPlanoFuturo(); }
+function getM6() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY_M6)); } catch(e) { return null; } }
+function getM7() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY_M7)); } catch(e) { return null; } }
+function getM8() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY_M8)); } catch(e) { return null; } }
 
 function getM2() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY_M2)); } catch(e) { return null; }
@@ -2773,6 +3355,10 @@ function updateModProgress(state) {
 
   const s3 = document.getElementById('step-m3');
   const s4 = document.getElementById('step-m4');
+  const s5 = document.getElementById('step-m5');
+  const s6 = document.getElementById('step-m6');
+  const s7 = document.getElementById('step-m7');
+  const s8 = document.getElementById('step-m8');
   const setDone   = el => { if(!el) return; el.classList.remove('active'); el.classList.add('done');   el.querySelector('.mod-step-num').textContent = '✓'; };
   const setActive = el => { if(!el) return; el.classList.remove('done');  el.classList.add('active');  };
   const setIdle   = el => { if(!el) return; el.classList.remove('done','active'); };
@@ -2782,9 +3368,17 @@ function updateModProgress(state) {
   if (state === 'done-m2')  { setDone(s1); setDone(s2); setIdle(s3); setIdle(s4); }
   if (state === 'active-m3'){ setDone(s1); setDone(s2); setActive(s3); setIdle(s4); }
   if (state === 'done-m3')  { setDone(s1); setDone(s2); setDone(s3); setIdle(s4); }
-  if (state === 'active-m4'){ setDone(s1); setDone(s2); setDone(s3); setActive(s4); }
-  if (state === 'done-m4')  { setDone(s1); setDone(s2); setDone(s3); setDone(s4); }
-  if (state === 'reset')    { setActive(s1); setIdle(s2); setIdle(s3); setIdle(s4); }
+  if (state === 'active-m4'){ setDone(s1);setDone(s2);setDone(s3);setActive(s4);setIdle(s5);setIdle(s6);setIdle(s7);setIdle(s8); }
+  if (state === 'done-m4')  { setDone(s1);setDone(s2);setDone(s3);setDone(s4);setIdle(s5);setIdle(s6);setIdle(s7);setIdle(s8); }
+  if (state === 'active-m5'){ setDone(s1);setDone(s2);setDone(s3);setDone(s4);setActive(s5);setIdle(s6);setIdle(s7);setIdle(s8); }
+  if (state === 'done-m5')  { setDone(s1);setDone(s2);setDone(s3);setDone(s4);setDone(s5);setIdle(s6);setIdle(s7);setIdle(s8); }
+  if (state === 'active-m6'){ setDone(s1);setDone(s2);setDone(s3);setDone(s4);setDone(s5);setActive(s6);setIdle(s7);setIdle(s8); }
+  if (state === 'done-m6')  { setDone(s1);setDone(s2);setDone(s3);setDone(s4);setDone(s5);setDone(s6);setIdle(s7);setIdle(s8); }
+  if (state === 'active-m7'){ setDone(s1);setDone(s2);setDone(s3);setDone(s4);setDone(s5);setDone(s6);setActive(s7);setIdle(s8); }
+  if (state === 'done-m7')  { setDone(s1);setDone(s2);setDone(s3);setDone(s4);setDone(s5);setDone(s6);setDone(s7);setIdle(s8); }
+  if (state === 'active-m8'){ setDone(s1);setDone(s2);setDone(s3);setDone(s4);setDone(s5);setDone(s6);setDone(s7);setActive(s8); }
+  if (state === 'done-m8')  { [s1,s2,s3,s4,s5,s6,s7,s8].forEach(setDone); }
+  if (state === 'reset')    { setActive(s1);[s2,s3,s4,s5,s6,s7,s8].forEach(setIdle); }
 }
 
 /* ─────────────────────────────────────────
@@ -2822,12 +3416,21 @@ function updateModProgress(state) {
   }
 
   // Marcar progresso de módulos já concluídos
-  if      (localStorage.getItem(STORAGE_KEY_M4)) updateModProgress('done-m4');
-  else if (localStorage.getItem(STORAGE_KEY_M3)) updateModProgress('done-m3');
-  else if (localStorage.getItem(STORAGE_KEY_M2)) updateModProgress('done-m2');
-  else if (localStorage.getItem(STORAGE_KEY_M1)) updateModProgress('done-m1');
-  // Restaurar estado de propostas
-  try { propostasEstado = JSON.parse(localStorage.getItem(STORAGE_KEY_M4_ESTADO) || '{}'); } catch(e) {}
+  const detectProgress = () => {
+    if (localStorage.getItem(STORAGE_KEY_M8)) return 'done-m8';
+    if (localStorage.getItem(STORAGE_KEY_M7)) return 'done-m7';
+    if (localStorage.getItem(STORAGE_KEY_M6)) return 'done-m6';
+    if (localStorage.getItem(STORAGE_KEY_M5)) return 'done-m5';
+    if (localStorage.getItem(STORAGE_KEY_M4)) return 'done-m4';
+    if (localStorage.getItem(STORAGE_KEY_M3)) return 'done-m3';
+    if (localStorage.getItem(STORAGE_KEY_M2)) return 'done-m2';
+    if (localStorage.getItem(STORAGE_KEY_M1)) return 'done-m1';
+    return null;
+  };
+  const prog = detectProgress();
+  if (prog) updateModProgress(prog);
+  try { propostasEstado  = JSON.parse(localStorage.getItem(STORAGE_KEY_M4_ESTADO)  || '{}'); } catch(e) {}
+  try { implicacoesEstado = JSON.parse(localStorage.getItem(STORAGE_KEY_M7_EST)    || '{}'); } catch(e) {}
 })();
 
 function restoreResults() {
