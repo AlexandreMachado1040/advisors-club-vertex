@@ -708,6 +708,58 @@ body::after {
 .eixo-polos { font-size: 11.5px; color: var(--text-muted); }
 
 /* ══════════════════════════════════
+   RELATÓRIO — CAPA E SEÇÕES
+══════════════════════════════════ */
+.rel-cover {
+  min-height: 100vh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  background: linear-gradient(160deg, #1a1408, #0d0b08);
+  text-align:center; padding: 60px 48px; position:relative; overflow:hidden;
+}
+.rel-cover::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at 50% 30%, rgba(201,168,76,.12), transparent 70%);
+}
+.rel-cover-logo { width:80px; opacity:.9; margin-bottom:40px; position:relative; }
+.rel-cover-tag {
+  font-size:9px; letter-spacing:.35em; text-transform:uppercase;
+  color:var(--gold-dim); margin-bottom:24px; position:relative;
+}
+.rel-cover-divider {
+  width:60px; height:1px; background:var(--gold); margin:0 auto 32px; position:relative;
+}
+.rel-cover-nome {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2rem,5vw,3.2rem); font-weight:300; color:#fff;
+  margin-bottom:10px; position:relative; line-height:1.1;
+}
+.rel-cover-seg {
+  font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--text-muted); margin-bottom:48px; position:relative;
+}
+.rel-cover-footer {
+  border-top:1px solid rgba(201,168,76,.2); padding-top:24px;
+  display:flex; flex-direction:column; gap:6px; position:relative;
+}
+.rel-cover-by  { font-size:13px; color:var(--gold); font-weight:500; }
+.rel-cover-sub { font-size:11px; color:var(--text-muted); }
+.rel-section-header {
+  display:flex; align-items:flex-start; gap:20px;
+  padding-bottom:16px; margin-bottom:28px;
+  border-bottom:2px solid var(--border-hard);
+}
+.rel-section-num {
+  font-family:'Cormorant Garamond',serif;
+  font-size:3rem; font-weight:300; color:var(--gold);
+  line-height:1; flex-shrink:0;
+}
+.rel-section-titulo {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.6rem; font-weight:300; color:#fff; margin-bottom:4px;
+}
+.rel-section-sub { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); }
+
+/* ══════════════════════════════════
    PHASE — INPUT M4 (OUTPUT)
 ══════════════════════════════════ */
 #phase-input-m4 { min-height: calc(100vh - 130px); position: relative; z-index: 1; }
@@ -866,26 +918,80 @@ body::after {
 
 /* Print */
 @media print {
-  body { background: #fff !important; color: #111 !important; }
+  /* Remover URL/data do Chrome zerando as margens da página */
+  @page { size: A4 portrait; margin: 0; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  body { background: #fff !important; }
   body::before, body::after { display: none !important; }
+
+  /* Esconder tudo exceto o relatório */
   .app-header, .mod-progress, .relatorio-acoes { display: none !important; }
+  .phase { display: none !important; opacity: 1 !important; transform: none !important; }
+  #phase-relatorio { display: block !important; opacity: 1 !important; transform: none !important; }
+
+  /* Wrapper com padding compensando margin: 0 da página */
   .relatorio-wrap { padding: 0 !important; max-width: 100% !important; }
-  .rel-section { break-inside: avoid; }
-  .rel-section-header { border-color: #ddd !important; }
-  .rel-dims-grid, .rel-cens-grid { break-inside: avoid; }
-  .rel-dim-card, .rel-cen-card, .rel-proposta { background: #f9f9f9 !important; border-color: #ddd !important; }
-  .rel-section-num, .rel-proposta-num { color: #a07830 !important; }
-  .rel-section-titulo, .rel-dim-nome, .rel-proposta-titulo { color: #111 !important; }
-  .rel-dim-diag, .rel-cen-narr, .rel-proposta-desc { color: #444 !important; }
+
+  /* Capa — ocupa página inteira */
+  .rel-cover {
+    height: 100vh;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    page-break-after: always;
+    padding: 40mm 30mm;
+    background: #0d0b08 !important;
+    text-align: center;
+  }
+
+  /* Cada seção começa numa nova página */
+  .rel-section { page-break-before: always; padding: 16mm 20mm 12mm; }
+
+  /* Não quebrar cards no meio */
+  .rel-dim-card, .rel-cen-card, .rel-proposta, .plano-obj-card,
+  .horizonte-body, .eixos-info, .grande-pergunta-hero,
+  .diag-card, .diag-full-card, .missao-preview, .visao-result { page-break-inside: avoid; }
+
+  /* Grids */
+  .rel-dims-grid { grid-template-columns: repeat(3,1fr) !important; break-inside: avoid; }
+  .rel-cens-grid { grid-template-columns: repeat(2,1fr) !important; }
+  .diagnosticar-grid { grid-template-columns: repeat(2,1fr) !important; }
+
+  /* Cores para impressão */
+  .rel-section-header { background: #f5f0e8 !important; border-bottom: 2px solid #c9a84c !important; padding: 12px 0 10px; margin-bottom: 20px; }
+  .rel-section-num   { color: #a07830 !important; }
+  .rel-section-titulo { color: #1a1208 !important; }
+  .rel-dim-card, .rel-cen-card { background: #fafafa !important; border: 1px solid #e0d8c8 !important; }
+  .rel-dim-nome, .rel-proposta-titulo, .horizonte-objetivo { color: #111 !important; }
+  .rel-dim-diag, .rel-cen-narr, .rel-proposta-desc, .horizonte-acontece, .horizonte-sinal { color: #444 !important; }
+  .rel-proposta-num { color: #a07830 !important; }
+  .plano-obj-card { background: #fafafa !important; border-left: 3px solid #c9a84c !important; }
+  .plano-obj-titulo { color: #111 !important; }
+  .plano-obj-metrica { color: #8a6b2a !important; }
+  .plano-iniciativas li { color: #444 !important; }
   .maturidade-badge.forte           { background: #e6f4ee !important; color: #2e7d52 !important; }
   .maturidade-badge.em_desenvolvimento { background: #fef3e2 !important; color: #9a5900 !important; }
-  .maturidade-badge.critico         { background: #fee !important; color: #c62828 !important; }
-  .grande-pergunta-hero { background: #f5f0e8 !important; border-color: #a07830 !important; }
-  .grande-pergunta-text { color: #111 !important; }
+  .maturidade-badge.critico         { background: #fff0f0 !important; color: #c62828 !important; }
+  .grande-pergunta-hero { background: #f5f0e8 !important; border: 1px solid #c9a84c !important; }
+  .grande-pergunta-text { color: #1a1208 !important; }
+  .diag-card.sintoma  { background: #f8f8f8 !important; border: 1px solid #ddd !important; }
+  .diag-card.problema { background: #fdf8ee !important; border: 1px solid #c9a84c !important; }
+  .diag-full-card { background: #fafafa !important; border: 1px solid #e0d8c8 !important; }
+  .missao-preview { background: #f5f0e8 !important; border: 1px solid #c9a84c !important; }
+  .visao-result   { background: #f5f0e8 !important; border: 1px solid #c9a84c !important; }
+  .section-title::after { background: #ddd !important; }
+  .horizonte-body { background: #fafafa !important; border: 1px solid #e0d8c8 !important; }
+
+  /* Tipografia */
+  .rel-cover-nome { color: #c9a84c !important; }
+  .rel-cover-tag, .rel-cover-sub { color: #8a7a5a !important; }
+  .rel-cover-by    { color: #c9a84c !important; }
 }
 
 /* ══════════════════════════════════
-   BETA — M5 APROFUNDAR
+   M5 APROFUNDAR
 ══════════════════════════════════ */
 .beta-wrap { max-width: 780px; margin: 0 auto; padding: 48px 32px 80px; position: relative; z-index:1; }
 .beta-badge { display:inline-flex;align-items:center;gap:8px;font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);border:1px solid var(--border);padding:4px 12px;border-radius:20px;margin-bottom:14px; }
@@ -905,7 +1011,7 @@ body::after {
 .hipotese-ajuste.visible { display:block; }
 
 /* ══════════════════════════════════
-   BETA — M6 MISSÃO E VISÃO
+   M6 MISSÃO E VISÃO
 ══════════════════════════════════ */
 .missao-form { display:flex;flex-direction:column;gap:16px;margin-bottom:28px; }
 .missao-field label { display:block;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);margin-bottom:7px; }
@@ -921,7 +1027,7 @@ body::after {
 .visao-result-text { font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;font-style:italic;color:#fff;line-height:1.5; }
 
 /* ══════════════════════════════════
-   BETA — M7 IMPLICAÇÕES
+   M7 IMPLICAÇÕES
 ══════════════════════════════════ */
 .impl-proposta-card { background:var(--dark-2);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:20px; }
 .impl-proposta-titulo { font-size:15px;font-weight:600;color:var(--text);margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border); }
@@ -942,7 +1048,7 @@ body::after {
 .icbtn.desejavel.ativo { background:rgba(255,255,255,.06);color:var(--text); }
 
 /* ══════════════════════════════════
-   BETA — M8 PLANO DE FUTURO
+   M8 PLANO DE FUTURO
 ══════════════════════════════════ */
 .plano-ano1 { margin-bottom:40px; }
 .plano-obj-card { background:var(--dark-2);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;padding:20px 22px;margin-bottom:12px; }
@@ -1012,7 +1118,7 @@ body::after {
   <div class="mod-step" id="step-m3"><div class="mod-step-num">3</div>Cenários</div>
   <div class="mod-arrow">›</div>
   <div class="mod-step" id="step-m4"><div class="mod-step-num">4</div>Output</div>
-  <span style="font-size:8px;letter-spacing:.2em;color:var(--gold-dim);text-transform:uppercase;white-space:nowrap;padding:0 10px;border-left:1px solid var(--border);border-right:1px solid var(--border);margin:0 6px">BETA</span>
+  <span style="width:1px;height:16px;background:var(--border);flex-shrink:0;margin:0 8px;align-self:center"></span>
   <div class="mod-step" id="step-m5"><div class="mod-step-num">5</div>Aprofundar</div>
   <div class="mod-arrow">›</div>
   <div class="mod-step" id="step-m6"><div class="mod-step-num">6</div>Missão</div>
@@ -1048,6 +1154,10 @@ body::after {
     <div class="onboarding-field-group">
       <label>Nome da empresa (opcional)</label>
       <input type="text" id="empresa-nome" class="field-input" placeholder="Ex: Escritório Silva &amp; Associados">
+    </div>
+    <div class="onboarding-field-group">
+      <label>Seu e-mail (para receber o relatório)</label>
+      <input type="email" id="mentorado-email" class="field-input" placeholder="seu@email.com">
     </div>
 
     <button class="btn btn-gold" onclick="startEntender()">
@@ -1242,7 +1352,7 @@ body::after {
 <!-- ══════════════ PHASE: M5 — APROFUNDAR ══════════════ -->
 <div id="phase-input-m5" class="phase">
   <div class="beta-wrap">
-    <div class="beta-badge">Beta · Módulo 05</div>
+    <div class="beta-badge">Módulo 05</div>
     <h2 class="dim-title" style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:#fff;margin-bottom:8px">
       Causas<br><em style="color:var(--gold)">Raiz</em>
     </h2>
@@ -1261,7 +1371,7 @@ body::after {
 <!-- ══════════════ PHASE: M6 — MISSÃO E VISÃO ══════════════ -->
 <div id="phase-input-m6" class="phase">
   <div class="beta-wrap">
-    <div class="beta-badge">Beta · Módulo 06</div>
+    <div class="beta-badge">Módulo 06</div>
     <h2 class="dim-title" style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:#fff;margin-bottom:8px">
       Missão &amp;<br><em style="color:var(--gold)">Visão</em>
     </h2>
@@ -1297,7 +1407,7 @@ body::after {
 <!-- ══════════════ PHASE: M7 — IMPLICAÇÕES ══════════════ -->
 <div id="phase-input-m7" class="phase">
   <div class="beta-wrap" style="max-width:900px">
-    <div class="beta-badge">Beta · Módulo 07</div>
+    <div class="beta-badge">Módulo 07</div>
     <h2 class="dim-title" style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:#fff;margin-bottom:8px">
       O que Precisa<br><em style="color:var(--gold)">ser Verdade</em>
     </h2>
@@ -1327,6 +1437,7 @@ body::after {
     <div class="relatorio-acoes">
       <span class="relatorio-title-bar">Relatório Estratégico Completo</span>
       <button class="btn btn-outline" onclick="voltarParaResultadosM4()">← Voltar</button>
+      <button class="btn btn-outline" id="btn-send-email" onclick="sendReport()">✉ Enviar por E-mail</button>
       <button class="btn btn-gold" onclick="window.print()">⎙ Imprimir / PDF</button>
     </div>
     <div id="relatorio-content"></div>
@@ -1481,6 +1592,12 @@ function showPhase(id) {
 ───────────────────────────────────────── */
 function startEntender() {
   empresaNome = document.getElementById('empresa-nome').value.trim();
+  const emailInput = document.getElementById('mentorado-email');
+  if (emailInput?.value?.trim()) {
+    const sess = JSON.parse(localStorage.getItem(STORAGE_KEY_SESSION) || '{}');
+    sess.mentorado_email = emailInput.value.trim();
+    localStorage.setItem(STORAGE_KEY_SESSION, JSON.stringify(sess));
+  }
 
   // Restaurar respostas salvas
   const saved = localStorage.getItem(STORAGE_KEY_RESPOSTAS);
@@ -2780,157 +2897,233 @@ function refazerOutput() {
 ───────────────────────────────────────── */
 function gerarRelatorio() {
   const m1 = getM1(), m2 = getM2(), m3 = getM3(), m4 = getM4();
-  if (!m1 || !m2 || !m3 || !m4) { alert('Complete os 4 módulos para gerar o relatório.'); return; }
+  if (!m1 || !m2 || !m3 || !m4) { alert('Complete os 4 módulos MVP para gerar o relatório.'); return; }
 
-  const nome     = m1.empresa?.nome || empresaNome || 'Empresa';
-  const segmento = m1.empresa?.segmento || '';
-  const hoje     = new Date().toLocaleDateString('pt-BR');
+  const nome    = m1.empresa?.nome || empresaNome || 'Empresa';
+  const seg     = [m1.empresa?.segmento, m1.empresa?.porte_estimado].filter(Boolean).map(s => s.charAt(0).toUpperCase()+s.slice(1)).join(' · ');
+  const hoje    = new Date().toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' });
 
-  // ── M1: Dimensões ──
-  const dimCards = (m1.dimensoes || []).map(d => `
+  // ── Capa ──
+  const capa = `
+    <div class="rel-cover">
+      <img src="logo_advisors.png" class="rel-cover-logo" alt="Advisors Club" onerror="this.style.display='none'">
+      <div class="rel-cover-tag">Relatório de Advisory Estratégico</div>
+      <div class="rel-cover-divider"></div>
+      <h1 class="rel-cover-nome">${nome}</h1>
+      ${seg ? `<p class="rel-cover-seg">${seg}</p>` : ''}
+      <div class="rel-cover-footer">
+        <div class="rel-cover-by">Caroline Calaça</div>
+        <div class="rel-cover-sub">Advisors Club · ${hoje}</div>
+      </div>
+    </div>`;
+
+  // ── Seção 1: Entender ──
+  const dimCards = (m1.dimensoes||[]).map(d => `
     <div class="rel-dim-card">
-      <div class="rel-dim-nome" style="display:flex;align-items:center;justify-content:space-between">
-        ${DIM_LABELS[d.nome] || d.nome}
+      <div class="rel-dim-nome" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        ${DIM_LABELS[d.nome]||d.nome}
         <span class="maturidade-badge ${d.maturidade}" style="font-size:8px">${MAT_LABELS[d.maturidade]||d.maturidade}</span>
       </div>
       <p class="rel-dim-diag">${d.diagnostico}</p>
     </div>`).join('');
 
-  const forcasHtml = (m1.top3_forcas||[]).map(f => `<li style="margin-bottom:6px;font-size:12.5px;color:var(--text-muted)"><strong style="color:var(--green)">${f.titulo}:</strong> ${f.descricao}</li>`).join('');
-  const alertasHtml = (m1.top3_alertas||[]).map(a => `<li style="margin-bottom:6px;font-size:12.5px;color:var(--text-muted)"><strong style="color:var(--red)">${a.titulo}</strong> [${a.urgencia}]: ${a.descricao}</li>`).join('');
+  const forcasHtml = (m1.top3_forcas||[]).map(f =>
+    `<li style="margin-bottom:8px;font-size:12.5px"><strong style="color:var(--green)">${f.titulo}:</strong> <span style="color:var(--text-muted)">${f.descricao}</span></li>`).join('');
+  const alertasHtml = (m1.top3_alertas||[]).map(a =>
+    `<li style="margin-bottom:8px;font-size:12.5px"><strong style="color:var(--red)">${a.titulo}</strong> <span style="color:var(--text-muted)">[${a.urgencia}] — ${a.descricao}</span></li>`).join('');
 
-  // ── M3: Cenários ──
-  const cenCards = (m3.cenarios||[]).map(c => `
-    <div class="rel-cen-card ${c.id}">
-      <div class="rel-cen-nome">[${c.id}] ${c.nome}</div>
-      <p class="rel-cen-narr">${c.narrativa}</p>
-    </div>`).join('');
-
-  // ── M4: Propostas ──
-  const propostas = (m4.propostas||[]).map(p => `
-    <div class="rel-proposta">
-      <div class="rel-proposta-num">${String(p.numero).padStart(2,'0')}</div>
-      <div class="rel-proposta-body">
-        <div class="rel-proposta-titulo">${p.titulo}
-          <span class="complexidade-badge ${p.complexidade_implementacao}" style="margin-left:8px;font-size:8px">
-            ${p.complexidade_implementacao}
-          </span>
-        </div>
-        <p class="rel-proposta-desc">${p.descricao}</p>
-        <p class="rel-proposta-desc" style="margin-top:6px"><em>Impacto esperado: ${p.impacto_esperado}</em></p>
-      </div>
-    </div>`).join('');
-
-  document.getElementById('relatorio-content').innerHTML = `
-    <!-- Capa -->
-    <div style="text-align:center;padding:48px 0 56px;border-bottom:1px solid var(--border);margin-bottom:56px">
-      <div class="results-tag" style="margin-bottom:16px">Advisory Estratégico · Relatório Completo</div>
-      <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3rem);font-weight:300;color:#fff;margin-bottom:8px">${nome}</h1>
-      ${segmento ? `<p style="font-size:12px;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase">${segmento}</p>` : ''}
-      <p style="font-size:11px;color:var(--text-muted);margin-top:16px">${hoje}</p>
-    </div>
-
-    <!-- M1 -->
+  const secEntender = `
     <div class="rel-section">
       <div class="rel-section-header">
         <div class="rel-section-num">01</div>
-        <div class="rel-section-titulo">Entender — Diagnóstico das 9 Dimensões</div>
+        <div><div class="rel-section-titulo">Entender</div><div class="rel-section-sub">Diagnóstico das 9 Dimensões Estratégicas</div></div>
       </div>
-      <div class="results-sintese" style="margin-bottom:20px">
-        <div class="results-sintese-label">Síntese</div>
+      <div class="results-sintese" style="margin-bottom:24px">
+        <div class="results-sintese-label">Síntese Diagnóstica</div>
         <p class="results-sintese-text">${m1.sintese}</p>
       </div>
-      <div class="rel-dims-grid">${dimCards}</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px">
-        <div><div class="section-title" style="margin-bottom:10px">Principais Forças</div><ul style="list-style:none">${forcasHtml}</ul></div>
-        <div><div class="section-title" style="margin-bottom:10px">Alertas Estratégicos</div><ul style="list-style:none">${alertasHtml}</ul></div>
+      <div class="rel-dims-grid" style="margin-bottom:24px">${dimCards}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div>
+          <div class="section-title" style="margin-bottom:12px">Principais Forças</div>
+          <ul style="list-style:none">${forcasHtml}</ul>
+        </div>
+        <div>
+          <div class="section-title" style="margin-bottom:12px">Alertas Estratégicos</div>
+          <ul style="list-style:none">${alertasHtml}</ul>
+        </div>
       </div>
-    </div>
+    </div>`;
 
-    <!-- M2 -->
+  // ── Seção 2: Diagnosticar ──
+  const secDiagnosticar = `
     <div class="rel-section">
       <div class="rel-section-header">
         <div class="rel-section-num">02</div>
-        <div class="rel-section-titulo">Diagnosticar — A Grande Pergunta</div>
+        <div><div class="rel-section-titulo">Diagnosticar</div><div class="rel-section-sub">A Grande Pergunta Estratégica</div></div>
       </div>
-      <div class="grande-pergunta-hero" style="margin-bottom:20px">
+      <div class="grande-pergunta-hero" style="margin-bottom:24px">
         <div class="grande-pergunta-label">Grande Pergunta Estratégica</div>
         <p class="grande-pergunta-text">${m2.grande_pergunta}</p>
       </div>
-      <div class="diagnosticar-grid">
+      <div class="diagnosticar-grid" style="margin-bottom:16px">
         <div class="diag-card sintoma">
           <div class="diag-card-label">Sintoma declarado</div>
           <p class="diag-card-text">${m2.sintoma_declarado}</p>
         </div>
         <div class="diag-card problema">
-          <div class="diag-card-label">Problema real</div>
+          <div class="diag-card-label">Problema real — causa raiz</div>
           <p class="diag-card-text">${m2.problema_real}</p>
         </div>
       </div>
-      <div class="diag-full-card" style="margin-top:14px">
+      <div class="diag-full-card">
         <div class="diag-full-label">Tese de Investigação</div>
         <p class="diag-full-text">${m2.tese_investigacao}</p>
       </div>
-    </div>
+    </div>`;
 
-    <!-- M3 -->
+  // ── Seção 3: Cenários ──
+  const cenCards = (m3.cenarios||[]).map(c => `
+    <div class="rel-cen-card ${c.id}">
+      <div class="rel-cen-nome">[${c.id}] ${c.nome}</div>
+      <p class="rel-cen-narr">${c.narrativa}</p>
+      <p class="rel-cen-narr" style="margin-top:6px;opacity:.8;font-size:11px">${c.consequencias}</p>
+    </div>`).join('');
+
+  const secCenarios = `
     <div class="rel-section">
       <div class="rel-section-header">
         <div class="rel-section-num">03</div>
-        <div class="rel-section-titulo">Cenários — Matriz Estratégica 2×2</div>
+        <div><div class="rel-section-titulo">Cenários</div><div class="rel-section-sub">Matriz Estratégica 2×2</div></div>
       </div>
       <div class="eixos-info" style="margin-bottom:20px">
         <div class="results-sintese-label">Eixos de Incerteza Crítica</div>
         <div class="eixos-grid">
-          <div class="eixo-item">
-            <div class="eixo-nome">Eixo 1 — ${m3.eixo_1?.nome}</div>
-            <div class="eixo-polos">${m3.eixo_1?.polo_baixo} ←→ ${m3.eixo_1?.polo_alto}</div>
-          </div>
-          <div class="eixo-item">
-            <div class="eixo-nome">Eixo 2 — ${m3.eixo_2?.nome}</div>
-            <div class="eixo-polos">${m3.eixo_2?.polo_baixo} ←→ ${m3.eixo_2?.polo_alto}</div>
-          </div>
+          <div class="eixo-item"><div class="eixo-nome">Eixo 1 — ${m3.eixo_1?.nome}</div><div class="eixo-polos">${m3.eixo_1?.polo_baixo} ←→ ${m3.eixo_1?.polo_alto}</div></div>
+          <div class="eixo-item"><div class="eixo-nome">Eixo 2 — ${m3.eixo_2?.nome}</div><div class="eixo-polos">${m3.eixo_2?.polo_baixo} ←→ ${m3.eixo_2?.polo_alto}</div></div>
         </div>
       </div>
       <div class="rel-cens-grid">${cenCards}</div>
-    </div>
+    </div>`;
 
-    <!-- M4 -->
+  // ── Seção 4: Output ──
+  const propCards = (m4.propostas||[]).map(p => `
+    <div class="rel-proposta">
+      <div class="rel-proposta-num">${String(p.numero).padStart(2,'0')}</div>
+      <div class="rel-proposta-body">
+        <div class="rel-proposta-titulo">
+          ${p.titulo}
+          <span class="complexidade-badge ${p.complexidade_implementacao}" style="margin-left:8px;font-size:8px">${p.complexidade_implementacao}</span>
+        </div>
+        <p class="rel-proposta-desc">${p.descricao}</p>
+        <p class="rel-proposta-desc" style="margin-top:6px;font-style:italic">Impacto esperado: ${p.impacto_esperado}</p>
+      </div>
+    </div>`).join('');
+
+  const secOutput = `
     <div class="rel-section">
       <div class="rel-section-header">
         <div class="rel-section-num">04</div>
-        <div class="rel-section-titulo">Output — Propostas de Mudança Estratégica</div>
+        <div><div class="rel-section-titulo">Output</div><div class="rel-section-sub">Propostas de Mudança Estratégica</div></div>
       </div>
-      ${propostas}
+      ${propCards}
     </div>`;
 
+  document.getElementById('relatorio-content').innerHTML = capa + secEntender + secDiagnosticar + secCenarios + secOutput;
   showPhase('phase-relatorio');
 }
 
 function gerarRelatorioCompleto() {
-  const m1=getM1(),m2=getM2(),m3=getM3(),m4=getM4(),m5=localStorage.getItem(STORAGE_KEY_M5),m6=getM6(),m7=getM3(),m8=getM8();
-  if (!m1||!m2||!m3||!m4) { alert('Complete os 4 módulos MVP antes de gerar o relatório completo.'); return; }
-  // Chama o relatório base e adiciona seções Beta
+  // Renderiza MVP primeiro
   gerarRelatorio();
-  // Após renderizar, append seções Beta
-  setTimeout(()=>{
+
+  // Aguarda render e adiciona seções Beta
+  setTimeout(() => {
     const cont = document.getElementById('relatorio-content');
     if (!cont) return;
-    let extra = '';
-    // M5
-    if (m5) { try { const d=JSON.parse(m5); const hips=(d.hipoteses||[]).filter(h=>h.status!=='descartada');
-      extra += `<div class="rel-section"><div class="rel-section-header"><div class="rel-section-num">05</div><div class="rel-section-titulo">Aprofundar — Causas Raiz</div></div>${hips.map(h=>`<div class="rel-proposta"><div class="rel-proposta-num" style="font-size:1rem;min-width:auto;color:var(--gold-dim)">●</div><div class="rel-proposta-body"><div class="rel-proposta-titulo">${h.dimensao}</div><p class="rel-proposta-desc">${h.status==='ajustada'&&h.ajuste?h.ajuste:h.hipotese}</p></div></div>`).join('')}</div>`; } catch(e){} }
-    // M6
-    const mv=getM6();
-    if (mv) { extra += `<div class="rel-section"><div class="rel-section-header"><div class="rel-section-num">06</div><div class="rel-section-titulo">Missão e Visão</div></div><div class="missao-preview" style="margin-bottom:16px"><div class="missao-preview-label">Missão</div><p class="missao-preview-text">${mv.missao?.texto_completo||''}</p></div><div class="visao-result"><div class="visao-result-label">Visão — 5 anos</div><p class="visao-result-text">${mv.visao?.texto||''}</p></div></div>`; }
-    // M8
-    const m8d=getM8();
-    if (m8d) {
-      const objs=(m8d.ano1?.objetivos||[]).map(o=>`<div class="rel-proposta"><div class="rel-proposta-num" style="font-size:1rem;min-width:auto;color:var(--gold-dim)">◆</div><div class="rel-proposta-body"><div class="rel-proposta-titulo">${o.titulo}</div><p class="rel-proposta-desc">${o.metrica}</p></div></div>`).join('');
-      const horiz=(m8d.horizonte||[]).map(h=>`<div style="display:flex;gap:12px;margin-bottom:12px;align-items:flex-start"><div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold);min-width:36px">${h.ano}</div><div><div style="font-size:13px;font-weight:600;color:var(--text)">${h.objetivo}</div><p style="font-size:12px;color:var(--text-muted)">${h.o_que_acontece}</p></div></div>`).join('');
-      extra += `<div class="rel-section"><div class="rel-section-header"><div class="rel-section-num">08</div><div class="rel-section-titulo">Plano de Futuro — 1 a 5 anos</div></div><div style="margin-bottom:20px"><div class="rel-section-titulo" style="font-size:1rem;margin-bottom:12px">Mapa Estratégico — Ano 1</div>${objs}</div><div><div class="rel-section-titulo" style="font-size:1rem;margin-bottom:12px">Horizonte 2-5 anos</div>${horiz}</div></div>`;
+
+    // M5 — Aprofundar
+    const m5raw = localStorage.getItem(STORAGE_KEY_M5);
+    if (m5raw) {
+      try {
+        const d = JSON.parse(m5raw);
+        const hips = (d.hipoteses||[]).filter(h => h.status !== 'descartada');
+        if (hips.length) {
+          const cards = hips.map(h => `
+            <div class="rel-proposta">
+              <div class="rel-proposta-num" style="font-size:1rem;min-width:28px;color:var(--gold-dim)">●</div>
+              <div class="rel-proposta-body">
+                <div class="rel-proposta-titulo" style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:4px">${h.dimensao}</div>
+                <p class="rel-proposta-desc" style="font-size:13px;color:var(--text)">${h.status==='ajustada'&&h.ajuste ? h.ajuste : h.hipotese}</p>
+                <p class="rel-proposta-desc" style="margin-top:4px;opacity:.7">${h.raciocinio}</p>
+              </div>
+            </div>`).join('');
+          cont.insertAdjacentHTML('beforeend', `
+            <div class="rel-section">
+              <div class="rel-section-header">
+                <div class="rel-section-num">05</div>
+                <div><div class="rel-section-titulo">Aprofundar</div><div class="rel-section-sub">Hipóteses de Causa Raiz Validadas</div></div>
+              </div>
+              ${cards}
+            </div>`);
+        }
+      } catch(e) {}
     }
-    cont.insertAdjacentHTML('beforeend', extra);
+
+    // M6 — Missão e Visão
+    const mv = getM6();
+    if (mv) {
+      cont.insertAdjacentHTML('beforeend', `
+        <div class="rel-section">
+          <div class="rel-section-header">
+            <div class="rel-section-num">06</div>
+            <div><div class="rel-section-titulo">Missão e Visão</div><div class="rel-section-sub">Identidade Estratégica da Empresa</div></div>
+          </div>
+          <div class="missao-preview" style="margin-bottom:20px">
+            <div class="missao-preview-label">Missão</div>
+            <p class="missao-preview-text">${mv.missao?.texto_completo||''}</p>
+          </div>
+          <div class="visao-result">
+            <div class="visao-result-label">Visão — onde estaremos em 5 anos</div>
+            <p class="visao-result-text">${mv.visao?.texto||''}</p>
+          </div>
+        </div>`);
+    }
+
+    // M8 — Plano de Futuro
+    const m8 = getM8();
+    if (m8) {
+      const objs = (m8.ano1?.objetivos||[]).map(o => `
+        <div class="plano-obj-card">
+          <div class="plano-obj-titulo">${o.titulo}</div>
+          <div class="plano-obj-metrica">◆ ${o.metrica}</div>
+          <ul class="plano-iniciativas">${(o.iniciativas||[]).map(i=>`<li>${i}</li>`).join('')}</ul>
+        </div>`).join('');
+      const horiz = (m8.horizonte||[]).map(h => `
+        <div class="horizonte-item" style="margin-bottom:12px">
+          <div class="horizonte-ano">${h.ano}</div>
+          <div class="horizonte-body">
+            <div class="horizonte-objetivo">${h.objetivo}</div>
+            <p class="horizonte-acontece">${h.o_que_acontece}</p>
+            <p class="horizonte-sinal">Como saberemos: ${h.como_saberemos}</p>
+          </div>
+        </div>`).join('');
+      cont.insertAdjacentHTML('beforeend', `
+        <div class="rel-section">
+          <div class="rel-section-header">
+            <div class="rel-section-num">08</div>
+            <div><div class="rel-section-titulo">Plano de Futuro</div><div class="rel-section-sub">Mapa Estratégico 1–5 Anos</div></div>
+          </div>
+          <div style="margin-bottom:28px">
+            <div class="section-title" style="margin-bottom:16px">Mapa Estratégico — Ano 1</div>
+            <div class="plano-ano1">${objs}</div>
+          </div>
+          <div>
+            <div class="section-title" style="margin-bottom:16px">Horizonte de Crescimento</div>
+            <div class="horizonte-timeline">${horiz}</div>
+          </div>
+        </div>`);
+    }
   }, 200);
 }
 
@@ -3025,7 +3218,7 @@ function renderResultsM5() {
 
   document.getElementById('results-m5-content').innerHTML = `
     <div style="text-align:center;margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--border)">
-      <div class="beta-badge" style="justify-content:center">Beta · Módulo 05 · Aprofundar</div>
+      <div class="beta-badge" style="justify-content:center">Módulo 05 · Aprofundar</div>
       <h1 class="results-empresa-nome" style="margin-top:12px">${nome}</h1>
     </div>
     <div class="section-title" style="margin-bottom:16px">Hipóteses de Causa Raiz Validadas</div>
@@ -3110,7 +3303,7 @@ function renderResultsM6(data) {
   const m=data.missao||{}; const v=data.visao||{};
   document.getElementById('results-m6-content').innerHTML = `
     <div style="text-align:center;margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--border)">
-      <div class="beta-badge" style="justify-content:center">Beta · Módulo 06 · Missão e Visão</div>
+      <div class="beta-badge" style="justify-content:center">Módulo 06 · Missão e Visão</div>
       <h1 class="results-empresa-nome" style="margin-top:12px">${nome}</h1>
     </div>
     <div class="results-section">
@@ -3234,7 +3427,7 @@ function renderResultsM7(data) {
   }).join('');
   document.getElementById('results-m7-content').innerHTML = `
     <div style="text-align:center;margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--border)">
-      <div class="beta-badge" style="justify-content:center">Beta · Módulo 07 · Implicações</div>
+      <div class="beta-badge" style="justify-content:center">Módulo 07 · Implicações</div>
       <h1 class="results-empresa-nome" style="margin-top:12px">${nome}</h1>
     </div>
     <div class="section-title" style="margin-bottom:16px">Condições Essenciais por Proposta</div>
@@ -3309,7 +3502,7 @@ function renderResultsM8(data) {
     </div>`).join('');
   document.getElementById('results-m8-content').innerHTML = `
     <div style="text-align:center;margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--border)">
-      <div class="beta-badge" style="justify-content:center">Beta · Módulo 08 · Plano de Futuro</div>
+      <div class="beta-badge" style="justify-content:center">Módulo 08 · Plano de Futuro</div>
       <h1 class="results-empresa-nome" style="margin-top:12px">${nome}</h1>
     </div>
     <div class="results-section">
@@ -3442,6 +3635,82 @@ function restoreResults() {
     renderResults(data);
     showPhase('phase-results');
   } catch(e) {}
+}
+
+/* ─────────────────────────────────────────
+   ENVIO DE E-MAIL
+───────────────────────────────────────── */
+async function sendReport() {
+  const sess = JSON.parse(localStorage.getItem(STORAGE_KEY_SESSION) || '{}');
+  const emailMentorado = sess.mentorado_email || '';
+
+  if (!emailMentorado) {
+    const entered = prompt('Informe o e-mail para receber o relatório:');
+    if (!entered || !entered.includes('@')) { alert('E-mail inválido.'); return; }
+    sess.mentorado_email = entered.trim();
+    localStorage.setItem(STORAGE_KEY_SESSION, JSON.stringify(sess));
+  }
+
+  const m1   = getM1();
+  const m2   = getM2();
+  const m4   = getM4();
+  const nome = m1?.empresa?.nome || empresaNome || 'Empresa';
+  const btn  = document.getElementById('btn-send-email');
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
+
+  // Montar HTML do email (resumo executivo)
+  const props = (m4?.propostas||[]).slice(0,5).map(p =>
+    `<tr><td style="padding:8px 0;border-bottom:1px solid #f0ece4;font-size:13px;color:#1a1208;font-weight:600;vertical-align:top;width:28px">${String(p.numero).padStart(2,'0')}</td>
+     <td style="padding:8px 0 8px 12px;border-bottom:1px solid #f0ece4"><div style="font-size:13px;font-weight:600;color:#1a1208">${p.titulo}</div><div style="font-size:12px;color:#555;margin-top:3px">${p.descricao?.slice(0,120)}…</div></td></tr>`
+  ).join('');
+
+  const emailHtml = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f5f0e8;font-family:Georgia,serif">
+<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
+<table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.1)">
+  <tr><td style="background:#0d0b08;padding:36px 40px;text-align:center">
+    <div style="font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:#c9a84c;margin-bottom:16px">Relatório de Advisory Estratégico</div>
+    <div style="font-family:Georgia,serif;font-size:2rem;font-weight:300;color:#fff;margin-bottom:6px">${nome}</div>
+    <div style="font-size:11px;color:#8a7a5a;letter-spacing:.1em">${m1?.empresa?.segmento||''}</div>
+  </td></tr>
+  <tr><td style="padding:32px 40px">
+    <div style="background:#f5f0e8;border-left:3px solid #c9a84c;padding:20px 24px;margin-bottom:28px;border-radius:0 8px 8px 0">
+      <div style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#a07830;margin-bottom:10px">Grande Pergunta Estratégica</div>
+      <div style="font-family:Georgia,serif;font-size:1.1rem;font-style:italic;color:#1a1208;line-height:1.6">${m2?.grande_pergunta||''}</div>
+    </div>
+    <div style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#a07830;margin-bottom:14px">Propostas Estratégicas</div>
+    <table width="100%" cellpadding="0" cellspacing="0">${props}</table>
+  </td></tr>
+  <tr><td style="background:#f8f5ef;padding:20px 40px;text-align:center;border-top:1px solid #e8dfc8">
+    <div style="font-size:12px;color:#8a7a5a">Caroline Calaça · Advisors Club</div>
+    <div style="font-size:11px;color:#a09080;margin-top:4px">${new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</div>
+  </td></tr>
+</table></td></tr></table></body></html>`;
+
+  try {
+    const API_EMAIL = window.location.hostname === 'localhost' || window.location.protocol === 'file:'
+      ? 'http://localhost:3000/api/send-email'
+      : '/api/send-email';
+
+    const res = await fetch(API_EMAIL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to: sess.mentorado_email, empresa: nome, html: emailHtml })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      alert(`✅ Relatório enviado para ${sess.mentorado_email} e para Caroline!`);
+    } else {
+      alert(`❌ Erro ao enviar: ${data.error || 'Verifique a configuração do RESEND_API_KEY.'}`);
+    }
+  } catch(e) {
+    alert(`❌ Erro de conexão: ${e.message}`);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '✉ Enviar por E-mail'; }
+  }
 }
 </script>
 </body>
