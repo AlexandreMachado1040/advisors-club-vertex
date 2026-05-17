@@ -13,14 +13,27 @@ if (!KEY) {
 }
 
 app.use(express.json({ limit: '1mb' }));
+
+// CORS — permite chamadas de file:// e localhost durante desenvolvimento
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  next();
+});
+
 app.use(express.static(path.join(__dirname)));
 
-async function callGemini(systemPrompt, userMessage) {
+const TEMPERATURAS = { entender: 0.3, diagnosticar: 0.3, cenarios: 0.5, output: 0.5 };
+
+async function callGemini(systemPrompt, userMessage, moduleType) {
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${KEY}`;
+  const temperature = TEMPERATURAS[moduleType] ?? 0.4;
   const body = JSON.stringify({
     system_instruction: { parts: [{ text: systemPrompt }] },
     contents: [{ role: 'user', parts: [{ text: userMessage }] }],
-    generationConfig: { temperature: 0.4, maxOutputTokens: 8192 }
+    generationConfig: { temperature, maxOutputTokens: 8192, responseMimeType: 'application/json' }
   });
 
   const MAX_RETRIES = 3;
@@ -62,8 +75,8 @@ async function callGemini(systemPrompt, userMessage) {
 /* ── Proxy ── */
 app.post('/api/analyze', async (req, res) => {
   try {
-    const { systemPrompt, userMessage } = req.body;
-    const result = await callGemini(systemPrompt, userMessage);
+    const { systemPrompt, userMessage, moduleType } = req.body;
+    const result = await callGemini(systemPrompt, userMessage, moduleType);
     if (result.error) return res.status(429).json({ error: result.error });
     res.json({ text: result.text });
   } catch (err) {

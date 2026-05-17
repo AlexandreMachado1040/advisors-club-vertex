@@ -10,12 +10,16 @@ export async function onRequestPost(context) {
     });
   }
 
-  const { systemPrompt, userMessage } = await request.json();
+  const { systemPrompt, userMessage, moduleType } = await request.json();
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${KEY}`;
+
+  const temperaturas = { entender: 0.3, diagnosticar: 0.3, cenarios: 0.5, output: 0.5 };
+  const temperature = temperaturas[moduleType] ?? 0.4;
+
   const body = JSON.stringify({
     system_instruction: { parts: [{ text: systemPrompt }] },
     contents: [{ role: 'user', parts: [{ text: userMessage }] }],
-    generationConfig: { temperature: 0.4, maxOutputTokens: 8192 }
+    generationConfig: { temperature, maxOutputTokens: 8192, responseMimeType: 'application/json' }
   });
 
   // Tentativa 1

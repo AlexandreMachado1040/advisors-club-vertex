@@ -1,0 +1,108 @@
+Cenarios potencias 4 Cenários
+
+ETAPA 2 — Separar certezas de incertezas
+
+Tendências relativamente certas
+
+Coisas que provavelmente continuarão acontecendo:
+
+* IA continuará avançando
+* Dados serão mais importantes
+* Automação aumentará
+* Atenção humana continuará escassa
+
+Incertezas críticas
+
+São as variáveis que podem mudar completamente o futuro.
+
+Exemplo:
+
+* IA substituirá ou ampliará empregos?
+* Regulamentação será pesada ou leve?
+* Consumidor aceitará agentes autônomos?
+* Pequenas empresas conseguirão competir?
+
+As incertezas críticas são o coração dos cenários.
+
+⸻
+
+ETAPA 3 — Escolher os eixos críticos
+
+Você escolhe 2 grandes incertezas com maior impacto.
+
+Exemplo:
+
+Eixo 1
+
+Alta regulamentação ←→ Baixa regulamentação
+
+Eixo 2
+
+IA concentrada em big techs ←→ IA democratizada
+
+Isso cria 4 quadrantes.
+
+⸻
+
+ETAPA 4 — Construir os 4 cenários
+
+Agora você transforma lógica em narrativa.
+
+⸻
+
+Exemplo prático
+
+Cenário 1 — “Império das Big Techs”
+
+* IA extremamente poderosa
+* Regulamentação baixa
+* Mercado concentrado
+* Pequenas empresas dependentes de plataformas
+
+Consequências:
+
+* Domínio de ecossistemas
+* Poucos players gigantes
+* Dependência tecnológica alta
+
+⸻
+
+Cenário 2 — “IA para Todos”
+
+* Ferramentas democratizadas
+* Pequenas empresas hipercompetitivas
+* Explosão de microempresas inteligentes
+
+Consequências:
+
+* Mercado fragmentado
+* Diferenciação por marca e comunidade
+* Crescimento da creator economy
+
+⸻
+
+Cenário 3 — “Controle Regulado”
+
+* Governos controlam IA
+* Compliance pesado
+* Barreiras para inovação rápida
+
+Consequências:
+
+* Mercado mais lento
+* Grandes empresas favorecidas
+* Segurança acima de velocidade
+
+⸻
+
+Cenário 4 — “Caos Algorítmico”
+
+* IA descentralizada
+* Pouca regulação
+* Deepfakes, saturação e perda de confiança
+
+Consequências:
+
+* Valor migra para reputação
+* Marcas humanas ganham força
+* Curadoria vira ativo estratégico

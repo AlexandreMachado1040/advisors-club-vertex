@@ -1,0 +1,412 @@
+{
+  "produto": "VERTEX Advisory Platform",
+  "versao_roadmap": "1.0",
+  "data": "2026-05-17",
+  "descricao": "Plataforma de advisory estratégico com IA que guia empresas do diagnóstico até o plano de futuro, cobrindo 8 etapas: Entender → Aprofundar → Diagnosticar → Cenários → Implicações → Sinais → Output → Plano",
+  "metodologia": {
+    "nome": "Advisory Estratégico Completo",
+    "etapas": [
+      { "num": 1, "id": "entender",     "nome": "Entender",     "descricao": "9 dimensões do ponto de partida (Estratégia, Equipes, Liderança, Controles, Cultura, Produtos, Posição competitiva, Modelo de negócio, Desafios)" },
+      { "num": 2, "id": "aprofundar",   "nome": "Aprofundar",   "descricao": "Tese de investigação: descobrir fatores causadores dos principais desafios atuais" },
+      { "num": 3, "id": "diagnosticar", "nome": "Diagnosticar", "descricao": "Definir a grande pergunta estratégica transformando o problema em questão bem formulada" },
+      { "num": 4, "id": "cenarios",     "nome": "Cenários",     "descricao": "Mapear 8 forças (Tecnológicas, Econômicas, Culturais, Sociodemográficas, Políticas, Ambientais, Comportamentais, Competitivas), separar certezas de incertezas e gerar 4 cenários estratégicos" },
+      { "num": 5, "id": "implicacoes",  "nome": "Implicações",  "descricao": "O que precisa ser verdade para cada possibilidade estratégica — 3 lentes: Clientes, Empresa, Competidores" },
+      { "num": 6, "id": "sinais",       "nome": "Sinais",       "descricao": "Identificar sinais antecipatórios que indicam qual cenário está se materializando" },
+      { "num": 7, "id": "output",       "nome": "Output",       "descricao": "Propostas de mudança priorizadas com base em toda a análise anterior" },
+      { "num": 8, "id": "plano",        "nome": "Plano",        "descricao": "Transformar a visão em mapa estratégico: ano 1 vira mapa estratégico, anos 2-5 viram plano de futuro" }
+    ]
+  },
+  "fases": [
+    {
+      "id": "F1",
+      "nome": "Discovery",
+      "objetivo": "Validar a metodologia completa com Caroline, mapear jornadas do usuário (advisor e mentorada), definir escopo exato do MVP e arquitetura técnica antes de escrever código",
+      "duracao_estimada": "3 semanas",
+      "entregaveis": [
+        "Fluxo completo da metodologia de 8 etapas com inputs, outputs e dados trafegados",
+        "User stories priorizadas para advisor (Caroline) e mentorada (empresária)",
+        "Arquitetura técnica decidida: extensão do VERTEX IA (SPA HTML/JS + Cloudflare + Gemini)",
+        "Wireframes low-fi das telas de cada módulo",
+        "System prompts testados no AI Studio para cada uma das 8 etapas",
+        "Schema JSON de output da IA por módulo",
+        "Definition of Done para o MVP"
+      ],
+      "tarefas": [
+        {
+          "id": "F1-T1",
+          "titulo": "Documentar fluxo completo da metodologia",
+          "descricao": "Mapear as 8 etapas com: input do mentorado, processamento IA, output estruturado, critério de conclusão e dados que fluem para a próxima etapa",
+          "responsavel": "Product Manager",
+          "estimativa": "3 dias",
+          "prioridade": "alta",
+          "dependencias": []
+        },
+        {
+          "id": "F1-T2",
+          "titulo": "Definir personas e jornadas",
+          "descricao": "Dois perfis: Advisor (Caroline — visão de todos os mentorados, configuração de metodologia) e Mentorada (empresária — fluxo guiado, relatório ao final). Mapear motivações, contexto de uso e critérios de sucesso de cada uma",
+          "responsavel": "Product Manager",
+          "estimativa": "2 dias",
+          "prioridade": "alta",
+          "dependencias": ["F1-T1"]
+        },
+        {
+          "id": "F1-T3",
+          "titulo": "Decidir arquitetura técnica",
+          "descricao": "Avaliar extensão do VERTEX IA existente (SPA HTML/JS) vs nova app React. Definir estrutura de dados no localStorage (MVP) e Cloudflare D1 (Scale). Mapear quantas chamadas Gemini por sessão completa e custo estimado",
+          "responsavel": "Tech Lead",
+          "estimativa": "2 dias",
+          "prioridade": "alta",
+          "dependencias": ["F1-T1"]
+        },
+        {
+          "id": "F1-T4",
+          "titulo": "Criar wireframes das 8 etapas",
+          "descricao": "Wireframes low-fi das telas principais: onboarding, questionário das 9 dimensões, tese de investigação, grande pergunta, mapeamento de forças, 4 cenários, implicações estratégicas, watchlist de sinais, propostas de mudança, plano de futuro e relatório consolidado",
+          "responsavel": "Designer",
+          "estimativa": "4 dias",
+          "prioridade": "alta",
+          "dependencias": ["F1-T2"]
+        },
+        {
+          "id": "F1-T5",
+          "titulo": "Elaborar e testar system prompts por etapa",
+          "descricao": "Escrever e iterar system prompts no AI Studio para cada módulo. Validar qualidade de output com dados fictícios. Definir schema JSON de resposta da IA para cada etapa (diagnóstico, cenários, implicações, plano). Benchmark de tempo de resposta e tokens",
+          "responsavel": "Product Manager + AI Engineer",
+          "estimativa": "5 dias",
+          "prioridade": "alta",
+          "dependencias": ["F1-T1"]
+        },
+        {
+          "id": "F1-T6",
+          "titulo": "Sessão de validação com Caroline",
+          "descricao": "Apresentar fluxo completo, wireframes e exemplos de output da IA. Coletar feedback sobre: cobertura da metodologia, linguagem adequada para as mentoradas, funcionalidades prioritárias e o que pode ficar para depois",
+          "responsavel": "Product Manager",
+          "estimativa": "1 dia",
+          "prioridade": "alta",
+          "dependencias": ["F1-T4", "F1-T5"]
+        }
+      ]
+    },
+    {
+      "id": "F2",
+      "nome": "MVP",
+      "objetivo": "Entregar versão funcional com as 4 etapas core (Entender → Diagnosticar → Cenários → Output) integrada ao VERTEX IA existente, com relatório completo imprimível e deploy no Cloudflare",
+      "duracao_estimada": "5 semanas",
+      "entregaveis": [
+        "Módulo Entender: formulário interativo com 9 dimensões e diagnóstico por IA",
+        "Módulo Diagnosticar: tese de investigação + grande pergunta estratégica gerada por IA",
+        "Módulo Cenários: mapeamento de forças + 4 cenários estratégicos gerados por IA",
+        "Módulo Output: propostas de mudança numeradas e priorizadas por IA",
+        "Barra de progresso global e navegação ← → entre módulos concluídos",
+        "Persistência de todo o progresso no localStorage",
+        "Relatório consolidado dos 4 módulos com identidade Advisors Club — imprimível como PDF",
+        "Deploy no Cloudflare Pages"
+      ],
+      "tarefas": [
+        {
+          "id": "F2-T1",
+          "titulo": "Módulo Entender — Formulário 9 dimensões",
+          "descricao": "Tela com as 9 dimensões organizadas em acordeão ou abas. Para cada dimensão: perguntas guiadas exibidas progressivamente, campo de texto livre para resposta e indicador de completude. Salvar respostas no localStorage por dimensão",
+          "responsavel": "Frontend Dev",
+          "estimativa": "5 dias",
+          "prioridade": "alta",
+          "dependencias": ["F1-T3", "F1-T4"]
+        },
+        {
+          "id": "F2-T2",
+          "titulo": "Módulo Entender — Análise por IA",
+          "descricao": "Integrar Gemini para analisar respostas das 9 dimensões e retornar JSON: diagnóstico por dimensão (status: forte/médio/crítico, insight, recomendação), síntese geral, top 3 forças e top 3 alertas. Renderizar como cards visuais com indicadores de saúde",
+          "responsavel": "Full Stack Dev",
+          "estimativa": "4 dias",
+          "prioridade": "alta",
+          "dependencias": ["F2-T1", "F1-T5"]
+        },
+        {
+          "id": "F2-T3",
+          "titulo": "Módulo Diagnosticar — Tese e grande pergunta",
+          "descricao": "Formulário para mentorado descrever: principal problema na estratégia atual, o que está no caminho e o que impede vencer. IA transforma em tese de investigação estruturada, identifica o problema real (separando diagnóstico de solução) e formula a grande pergunta estratégica",
+          "responsavel": "Full Stack Dev",
+          "estimativa": "3 dias",
+          "prioridade": "alta",
+          "dependencias": ["F2-T2"]
+        },
+        {
+          "id": "F2-T4",
+          "titulo": "Módulo Cenários — Mapeamento de forças",
+          "descricao": "Interface para listar 5-10 forças relevantes. IA sugere forças pertinentes ao segmento da empresa automaticamente. Para cada força selecionada: avaliação de intensidade (Fraca/Moderada/Forte/Disruptiva), velocidade (Lenta/Crescente/Exponencial) e previsibilidade (Alta/Média/Baixa)",
+          "responsavel": "Frontend Dev",
+          "estimativa": "4 dias",
+          "prioridade": "alta",
+          "dependencias": ["F2-T3"]
+        },
+        {
+          "id": "F2-T5",
+          "titulo": "Módulo Cenários — 4 cenários estratégicos",
+          "descricao": "IA analisa as forças e incertezas mapeadas, seleciona os 2 eixos críticos e gera os 4 cenários (2×2). Cada cenário: nome, narrativa, consequências e implicações estratégicas (o que cresce, o que morre, quem ganha, quem perde, o que muda no consumidor). Visualização como grid 2×2 interativo",
+          "responsavel": "Full Stack Dev",
+          "estimativa": "5 dias",
+          "prioridade": "alta",
+          "dependencias": ["F2-T4", "F1-T5"]
+        },
+        {
+          "id": "F2-T6",
+          "titulo": "Módulo Output — Propostas de mudança",
+          "descricao": "IA consolida todos os módulos anteriores e gera propostas de mudança numeradas (igual ao formato Output.txt: negrito, proposta clara, contexto estratégico). Cada proposta com: descrição, impacto esperado, complexidade de implementação. Mentorado pode marcar como aceita/descartada",
+          "responsavel": "Full Stack Dev",
+          "estimativa": "4 dias",
+          "prioridade": "alta",
+          "dependencias": ["F2-T5"]
+        },
+        {
+          "id": "F2-T7",
+          "titulo": "Navegação e persistência entre módulos",
+          "descricao": "Barra de progresso global mostrando as 4 etapas do MVP. Botões ← → para navegar entre módulos concluídos. Salvar estado completo de cada módulo no localStorage. Capacidade de retomar sessão interrompida do ponto onde parou",
+          "responsavel": "Frontend Dev",
+          "estimativa": "3 dias",
+          "prioridade": "alta",
+          "dependencias": ["F2-T1", "F2-T3", "F2-T4", "F2-T6"]
+        },
+        {
+          "id": "F2-T8",
+          "titulo": "Relatório consolidado imprimível",
+          "descricao": "Página de relatório final compilando os 4 módulos com identidade visual Advisors Club (dark gold premium, logo PNG, fontes DM Sans + Cormorant Garamond). Seções: Diagnóstico 9 dimensões, Grande pergunta estratégica, 4 Cenários, Propostas de mudança. Botão Imprimir com @media print (dark para white)",
+          "responsavel": "Frontend Dev",
+          "estimativa": "3 dias",
+          "prioridade": "alta",
+          "dependencias": ["F2-T7"]
+        },
+        {
+          "id": "F2-T9",
+          "titulo": "Deploy e testes no Cloudflare",
+          "descricao": "Deploy do MVP no Cloudflare Pages. Atualizar analyze.js para suportar os diferentes tipos de análise por módulo (parâmetro moduleType). Testar rate limiting e retry em produção. Validar que GEMINI_API_KEY está ativa",
+          "responsavel": "DevOps",
+          "estimativa": "1 dia",
+          "prioridade": "alta",
+          "dependencias": ["F2-T8"]
+        }
+      ]
+    },
+    {
+      "id": "F3",
+      "nome": "Beta",
+      "objetivo": "Adicionar as 4 etapas complementares (Aprofundar, Missão/Visão, Implicações estratégicas, Plano de futuro), modo Advisor para Caroline ver todas as mentoradas, onboarding guiado e refinamentos de UX",
+      "duracao_estimada": "4 semanas",
+      "entregaveis": [
+        "Módulo Aprofundar: investigação de causas-raiz com hipóteses geradas por IA",
+        "Módulo Missão e Visão: definição guiada com templates, exemplos por segmento e rascunho por IA",
+        "Módulo Implicações estratégicas: O que precisa ser verdade — 3 lentes com refinamento por IA",
+        "Módulo Plano de futuro: mapa estratégico ano 1 + horizonte 2-5 anos",
+        "Módulo Sinais antecipatórios: watchlist com 5-10 indicadores estratégicos",
+        "Modo Advisor: painel da Caroline com visão de todas as mentoradas e progresso",
+        "Onboarding guiado para novos mentorados com introdução à metodologia",
+        "Integração das 8 etapas em relatório completo"
+      ],
+      "tarefas": [
+        {
+          "id": "F3-T1",
+          "titulo": "Módulo Aprofundar — Investigação de causas-raiz",
+          "descricao": "Expandir diagnóstico com perguntas de aprofundamento específicas para as dimensões críticas identificadas no módulo Entender. IA formula hipóteses de causa-raiz para cada desafio e apresenta para validação do mentorado. Resultado: tese de investigação refinada",
+          "responsavel": "Full Stack Dev",
+          "estimativa": "4 dias",
+          "prioridade": "alta",
+          "dependencias": ["F2-T2"]
+        },
+        {
+          "id": "F3-T2",
+          "titulo": "Módulo Missão e Visão",
+          "descricao": "Fluxo guiado em duas partes. Missão: template interativo (Somos... Atuamos... Valorizamos... Diferencial...) com exemplos reais por segmento (conforme Exemplos de Missão.txt). Visão: perguntas sobre o futuro desejado em 5 anos com exemplos reais. IA gera rascunho e permite edição. Resultado salvo para uso no Plano de futuro",
+          "responsavel": "Frontend Dev",
+          "estimativa": "3 dias",
+          "prioridade": "alta",
+          "dependencias": ["F3-T1"]
+        },
+        {
+          "id": "F3-T3",
+          "titulo": "Módulo Implicações estratégicas — O que precisa ser verdade",
+          "descricao": "Para cada proposta do Output, aplicar as 3 lentes: Clientes (atitudes, comportamentos, segmentos, percepção, canais), Empresa (equipe, talentos, tecnologia, custos), Competidores (diretos, adjacentes, substitutos, novos entrantes). IA gera condições em formato afirmativo e mensurável. Interface para separar essenciais de desejáveis e eliminar por exclusão estratégica",
+          "responsavel": "Full Stack Dev",
+          "estimativa": "5 dias",
+          "prioridade": "alta",
+          "dependencias": ["F2-T6"]
+        },
+        {
+          "id": "F3-T4",
+          "titulo": "Módulo Sinais antecipatórios",
+          "descricao": "IA sugere 5-10 sinais para monitorar com base nos cenários e forças identificados. Cada sinal: nome do indicador, fonte sugerida (ex: relatórios de mercado, fusões, regulações), frequência de acompanhamento e ação estratégica se o sinal aparecer. Interface de watchlist que o mentorado pode personalizar",
+          "responsavel": "Full Stack Dev",
+          "estimativa": "3 dias",
+          "prioridade": "media",
+          "dependencias": ["F2-T5"]
+        },
+        {
+          "id": "F3-T5",
+          "titulo": "Módulo Plano de futuro — Mapa estratégico",
+          "descricao": "Ano 1 vira mapa estratégico detalhado: objetivos, métricas de sucesso, iniciativas prioritárias e responsáveis. Anos 2-5 viram plano de futuro: onde a empresa estará, o que estará acontecendo e como saberão que chegaram lá (conforme Próximo passo.txt). IA sugere com base em toda a análise anterior. Visualização em timeline interativa",
+          "responsavel": "Full Stack Dev",
+          "estimativa": "5 dias",
+          "prioridade": "alta",
+          "dependencias": ["F3-T2", "F3-T3"]
+        },
+        {
+          "id": "F3-T6",
+          "titulo": "Modo Advisor — Painel da Caroline",
+          "descricao": "Área autenticada por senha onde Caroline visualiza: lista de mentoradas com foto/nome/empresa e progresso por módulo (8 etapas), acesso ao relatório completo de cada mentorada, campo de notas privadas do advisor por mentorada, e filtro por fase do programa. Sem necessidade de banco de dados nessa fase (usa localStorage de cada sessão)",
+          "responsavel": "Full Stack Dev",
+          "estimativa": "5 dias",
+          "prioridade": "alta",
+          "dependencias": ["F2-T7"]
+        },
+        {
+          "id": "F3-T7",
+          "titulo": "Onboarding guiado para novos mentorados",
+          "descricao": "Tela de boas-vindas com: apresentação das 8 etapas da metodologia com ícone e tempo estimado de cada uma, explicação do que a IA faz em cada módulo, opção de continuar sessão anterior (detectar localStorage existente) ou iniciar nova análise. Tom encorajador e premium consistente com a marca Advisors Club",
+          "responsavel": "Frontend Dev",
+          "estimativa": "2 dias",
+          "prioridade": "media",
+          "dependencias": ["F2-T7"]
+        },
+        {
+          "id": "F3-T8",
+          "titulo": "Relatório completo das 8 etapas",
+          "descricao": "Expandir relatório do MVP para incluir todas as 8 etapas. Estrutura: capa com nome da empresa e data, cada módulo como seção separada, visualização dos 4 cenários como grid, watchlist de sinais, plano de futuro como timeline e propostas numeradas. Botão Imprimir com CSS para impressão premium",
+          "responsavel": "Frontend Dev",
+          "estimativa": "3 dias",
+          "prioridade": "alta",
+          "dependencias": ["F3-T5", "F3-T6", "F3-T7"]
+        },
+        {
+          "id": "F3-T9",
+          "titulo": "Refinamentos de UX e design (claude-designer)",
+          "descricao": "Invocar /claude-designer para revisar a experiência completa das 8 etapas: consistência visual entre módulos novos e antigos, micro-interações de transição, estados de loading específicos por tipo de análise, mensagens de erro amigáveis, responsividade mobile e feedback de progresso mais rico",
+          "responsavel": "Designer + Frontend Dev",
+          "estimativa": "4 dias",
+          "prioridade": "media",
+          "dependencias": ["F3-T8"]
+        }
+      ]
+    },
+    {
+      "id": "F4",
+      "nome": "Scale",
+      "objetivo": "Tornar a plataforma multiusuário com autenticação real e banco de dados persistente, adicionar analytics para Caroline, exportação em múltiplos formatos e estrutura para novos advisors além da Caroline usarem a plataforma",
+      "duracao_estimada": "6 semanas",
+      "entregaveis": [
+        "Autenticação real com Google OAuth ou email/senha (Cloudflare Access ou Supabase Auth)",
+        "Banco de dados persistente no Cloudflare D1 com migration automática do localStorage",
+        "Painel analytics para Caroline: métricas de uso, progresso por mentorada, módulos com maior abandono",
+        "Exportação em múltiplos formatos: PDF (impressão), DOCX, Notion",
+        "Sistema de notificações e lembretes por email (Resend ou Cloudflare Email Workers)",
+        "API white-label documentada para advisors parceiros",
+        "Interface para novos advisors configurarem sua própria metodologia",
+        "Otimizações de performance: cache de análises IA, lazy loading, CDN"
+      ],
+      "tarefas": [
+        {
+          "id": "F4-T1",
+          "titulo": "Autenticação e contas de usuário",
+          "descricao": "Implementar autenticação com Supabase Auth (Google OAuth + email/senha). Fluxo: login → sessão JWT → dados vinculados ao user_id. Migrar dados existentes do localStorage para o banco ao primeiro login da mentorada",
+          "responsavel": "Full Stack Dev",
+          "estimativa": "5 dias",
+          "prioridade": "alta",
+          "dependencias": ["F3-T8"]
+        },
+        {
+          "id": "F4-T2",
+          "titulo": "Banco de dados persistente (Cloudflare D1)",
+          "descricao": "Schema: users (id, email, role, advisor_id), sessions (id, user_id, empresa, started_at), module_data (session_id, module_id, inputs, outputs, status, completed_at), plans (session_id, horizonte, objetivos). Migration script para importar dados de localStorage existentes",
+          "responsavel": "Backend Dev",
+          "estimativa": "6 dias",
+          "prioridade": "alta",
+          "dependencias": ["F4-T1"]
+        },
+        {
+          "id": "F4-T3",
+          "titulo": "Painel analytics para advisor",
+          "descricao": "Dashboard com: número de mentoradas ativas vs inativas, taxa de conclusão por módulo (funil de abandono), tempo médio por etapa, mentoradas com sessões travadas há mais de 7 dias e progresso geral da turma. Gráficos de barras e funil. Exportação como CSV",
+          "responsavel": "Full Stack Dev",
+          "estimativa": "5 dias",
+          "prioridade": "alta",
+          "dependencias": ["F4-T2"]
+        },
+        {
+          "id": "F4-T4",
+          "titulo": "Exportação multi-formato",
+          "descricao": "Além do PDF via impressão: exportação DOCX usando docx.js (formatado profissionalmente), criação automática de página no Notion via Notion API (cada módulo como bloco estruturado), exportação como apresentação HTML usando reveal.js para apresentações em reuniões",
+          "responsavel": "Full Stack Dev",
+          "estimativa": "6 dias",
+          "prioridade": "media",
+          "dependencias": ["F3-T8"]
+        },
+        {
+          "id": "F4-T5",
+          "titulo": "Sistema de notificações e lembretes por email",
+          "descricao": "Emails automáticos via Resend: boas-vindas ao criar conta (apresentação da metodologia), lembrete se ficar 7 dias sem acessar módulo em andamento (com link direto ao ponto de retomada), notificação quando análise de módulo pesado estiver pronta (>30s) e relatório completo disponível",
+          "responsavel": "Backend Dev",
+          "estimativa": "4 dias",
+          "prioridade": "media",
+          "dependencias": ["F4-T1"]
+        },
+        {
+          "id": "F4-T6",
+          "titulo": "API white-label para advisors parceiros",
+          "descricao": "Endpoint REST documentado: POST /api/session (criar sessão), POST /api/module (submeter módulo), GET /api/report (obter relatório). Chave de API por advisor, parâmetros de customização (logo, cores, nome da metodologia), webhook para notificar quando relatório for gerado",
+          "responsavel": "Backend Dev",
+          "estimativa": "7 dias",
+          "prioridade": "media",
+          "dependencias": ["F4-T2"]
+        },
+        {
+          "id": "F4-T7",
+          "titulo": "Multi-advisor com metodologia customizável",
+          "descricao": "Interface de configuração para novos advisors: definir nome da metodologia, número e nome de cada módulo, perguntas guiadas por módulo e system prompt customizado por etapa. A engine IA e o design premium são compartilhados; a metodologia é de cada advisor. Billing por número de análises geradas",
+          "responsavel": "Full Stack Dev",
+          "estimativa": "8 dias",
+          "prioridade": "baixa",
+          "dependencias": ["F4-T6"]
+        },
+        {
+          "id": "F4-T8",
+          "titulo": "Cache de análises e otimização de performance",
+          "descricao": "Cache inteligente: se os inputs de um módulo não mudaram, retornar análise armazenada sem chamar Gemini novamente (economia de tokens e velocidade). Lazy loading dos módulos pesados. Compressão de dados JSON no D1. CDN Cloudflare cache para assets estáticos (logo, fontes, CSS)",
+          "responsavel": "Full Stack Dev",
+          "estimativa": "3 dias",
+          "prioridade": "media",
+          "dependencias": ["F4-T2", "F4-T3"]
+        }
+      ]
+    }
+  ],
+  "resumo_executivo": {
+    "total_fases": 4,
+    "duracao_total_estimada": "18 semanas",
+    "marcos": {
+      "discovery_completo": "Semana 3",
+      "mvp_publicado": "Semana 8",
+      "beta_publicado": "Semana 12",
+      "scale_publicado": "Semana 18"
+    },
+    "stack_tecnica": {
+      "frontend": "HTML/JS SPA — extensão do VERTEX IA existente",
+      "backend_local": "Node.js Express (server.js)",
+      "backend_producao": "Cloudflare Pages Functions",
+      "ia": "Google Gemini 2.5 Flash Lite",
+      "banco_de_dados_mvp": "localStorage",
+      "banco_de_dados_scale": "Cloudflare D1 + Supabase Auth",
+      "deploy": "Cloudflare Pages",
+      "repositorio": "github.com/AlexandreMachado1040/advisors-club-vertex"
+    },
+    "modulos_por_fase": {
+      "mvp": ["Entender", "Diagnosticar", "Cenários", "Output"],
+      "beta": ["Aprofundar", "Missão e Visão", "Implicações", "Sinais", "Plano de futuro"],
+      "scale": ["Autenticação", "Analytics", "Exportação", "Multi-advisor"]
+    },
+    "total_tarefas": 31,
+    "tarefas_por_fase": {
+      "F1_discovery": 6,
+      "F2_mvp": 9,
+      "F3_beta": 9,
+      "F4_scale": 8
+    }
+  }
+}

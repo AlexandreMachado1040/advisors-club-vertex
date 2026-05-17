@@ -1,0 +1,28 @@
+1. Identifique as forças
+
+Liste 5–10 movimentos relevantes.
+
+2. Avalie intensidade
+
+* Fraca
+* Moderada
+* Forte
+* Disruptiva
+
+3. Avalie velocidade
+
+* Lenta
+* Crescente
+* Exponencial
+
+4. Avalie previsibilidade
+
+* Alta
+* Média
+* Baixa
+
+5. Crie cenários
+
+* Conservador
+* Provável
+* Disruptivo
