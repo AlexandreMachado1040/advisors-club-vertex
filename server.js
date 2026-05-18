@@ -86,27 +86,40 @@ app.post('/api/analyze', async (req, res) => {
 
 /* ── Email proxy (local dev) ── */
 app.post('/api/send-email', async (req, res) => {
+  const BREVO_KEY      = process.env.BREVO_API_KEY;
   const RESEND_KEY     = process.env.RESEND_API_KEY;
   const CAROLINE_EMAIL = process.env.CAROLINE_EMAIL || 'alexandreclm@gmail.com';
   const FROM_EMAIL     = process.env.FROM_EMAIL     || 'onboarding@resend.dev';
+  const FROM_NAME      = process.env.FROM_NAME      || 'Caroline Calaça · Advisors Club';
 
-  if (!RESEND_KEY) {
-    return res.status(500).json({ error: 'RESEND_API_KEY não encontrada no .env' });
+  if (!BREVO_KEY && !RESEND_KEY) {
+    return res.status(500).json({ error: 'Configure BREVO_API_KEY ou RESEND_API_KEY no .env' });
   }
 
   const { to, empresa, html } = req.body;
-  const recipients = [to];
-  if (CAROLINE_EMAIL && CAROLINE_EMAIL !== to) recipients.push(CAROLINE_EMAIL);
+  const recipients = [...new Set([to, CAROLINE_EMAIL].filter(Boolean))];
 
   try {
+    if (BREVO_KEY) {
+      const r = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method:  'POST',
+        headers: { 'api-key': BREVO_KEY, 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ sender: { name: FROM_NAME, email: FROM_EMAIL }, to: recipients.map(e => ({ email: e })), subject: `Relatório Advisory — ${empresa}`, htmlContent: html }),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) return res.status(500).json({ error: data.message || `Brevo HTTP ${r.status}` });
+      return res.json({ success: true, provider: 'brevo', id: String(data.messageId || '') });
+    }
+
+    // Fallback Resend
     const r = await fetch('https://api.resend.com/emails', {
       method:  'POST',
       headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ from: `Advisory <${FROM_EMAIL}>`, to: recipients, subject: `Relatório Advisory — ${empresa}`, html }),
+      body:    JSON.stringify({ from: `${FROM_NAME} <${FROM_EMAIL}>`, to: recipients, subject: `Relatório Advisory — ${empresa}`, html }),
     });
     const data = await r.json().catch(() => ({}));
     if (!r.ok) return res.status(500).json({ error: data.message || `Resend HTTP ${r.status}` });
-    res.json({ success: true, id: data.id });
+    res.json({ success: true, provider: 'resend', id: data.id });
   } catch(e) {
     res.status(500).json({ error: e.message });
   }
