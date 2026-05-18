@@ -102,25 +102,28 @@ body::after {
 /* ── BUTTONS ── */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 12px 28px; border-radius: 8px; border: none; cursor: pointer;
+  padding: 12px 32px; border-radius: 40px; border: none; cursor: pointer;
   font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
   letter-spacing: 0.06em; text-transform: uppercase;
-  transition: opacity .2s, transform .15s, background .2s;
+  transition: opacity .2s, transform .2s, box-shadow .2s, background .2s;
   text-decoration: none;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.22);
 }
-.btn:active { transform: scale(0.98); }
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: scale(0.97) translateY(0); }
 .btn-gold {
   background: linear-gradient(135deg, var(--gold), var(--gold-dim));
-  color: var(--dark); box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+  color: var(--dark); box-shadow: 0 6px 24px rgba(201,168,76,0.35);
 }
-.btn-gold:hover { opacity: 0.9; box-shadow: 0 6px 28px rgba(201,168,76,0.35); }
-.btn-gold:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.btn-gold:hover { opacity: 0.93; box-shadow: 0 10px 32px rgba(201,168,76,0.48); }
+.btn-gold:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
 .btn-outline {
-  background: transparent; color: var(--text-muted);
+  background: rgba(255,255,255,0.04); color: var(--text-muted);
   border: 1px solid var(--border);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
 }
-.btn-outline:hover { border-color: var(--border-hard); color: var(--text); }
-.btn-ghost { background: transparent; color: var(--text-muted); border: none; font-size: 12px; }
+.btn-outline:hover { border-color: var(--border-hard); color: var(--text); box-shadow: 0 6px 20px rgba(0,0,0,0.26); }
+.btn-ghost { background: transparent; color: var(--text-muted); border: none; font-size: 12px; box-shadow: none; }
 .btn-ghost:hover { color: var(--gold); }
 
 /* ══════════════════════════════════
@@ -2853,7 +2856,7 @@ function renderResultsOutput(data) {
       <button class="btn btn-outline" onclick="refazerOutput()">↺ Refazer</button>
       <button class="btn btn-outline" onclick="gerarRelatorio()">⎙ Relatório MVP</button>
       <button class="btn btn-gold" onclick="irParaAprofundar()">
-        Continuar para Beta →
+        Continuar →
       </button>
     </div>`;
 }
