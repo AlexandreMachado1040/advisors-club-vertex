@@ -1464,6 +1464,16 @@ const STORAGE_KEY_M1       = 'advisory_m1';
 const STORAGE_KEY_SESSION  = 'advisory_session';
 const STORAGE_KEY_RESPOSTAS = 'advisory_m1_respostas';
 
+function getSessionData() {
+  const sess = JSON.parse(localStorage.getItem(STORAGE_KEY_SESSION) || '{}');
+  return {
+    sessionId:      sess.sessionId || null,
+    mentoradaEmail: sess.mentorado_email || null,
+    empresaNome:    sess.empresa || empresaNome || null,
+    mentoradaNome:  sess.mentorada_nome || null
+  };
+}
+
 /* ─────────────────────────────────────────
    DIMENSÕES — CONFIGURAÇÃO
 ───────────────────────────────────────── */
@@ -1599,11 +1609,10 @@ function showPhase(id) {
 function startEntender() {
   empresaNome = document.getElementById('empresa-nome').value.trim();
   const emailInput = document.getElementById('mentorado-email');
-  if (emailInput?.value?.trim()) {
-    const sess = JSON.parse(localStorage.getItem(STORAGE_KEY_SESSION) || '{}');
-    sess.mentorado_email = emailInput.value.trim();
-    localStorage.setItem(STORAGE_KEY_SESSION, JSON.stringify(sess));
-  }
+  const sess = JSON.parse(localStorage.getItem(STORAGE_KEY_SESSION) || '{}');
+  if (!sess.sessionId) sess.sessionId = crypto.randomUUID();
+  if (emailInput?.value?.trim()) sess.mentorado_email = emailInput.value.trim();
+  localStorage.setItem(STORAGE_KEY_SESSION, JSON.stringify(sess));
 
   // Restaurar respostas salvas
   const saved = localStorage.getItem(STORAGE_KEY_RESPOSTAS);
@@ -1794,10 +1803,13 @@ async function fetchWithRetry(payload, maxTries = 3) {
     setLoadingStatus(`Tentativa ${attempt} de ${maxTries}…`);
 
     try {
+      const sessionData = getSessionData();
+      const enrichedPayload = sessionData.sessionId ? { ...payload, sessionData } : payload;
+
       const res = await fetch(API_URL, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(payload),
+        body:    JSON.stringify(enrichedPayload),
         signal:  abortController.signal
       });
       clearTimeout(timeoutId);
@@ -1900,10 +1912,12 @@ async function analyze() {
   if (empresaNome && parsed.empresa) parsed.empresa.nome = empresaNome;
 
   localStorage.setItem(STORAGE_KEY_M1, JSON.stringify(parsed));
+  const currentSess = JSON.parse(localStorage.getItem(STORAGE_KEY_SESSION) || '{}');
   localStorage.setItem(STORAGE_KEY_SESSION, JSON.stringify({
+    ...currentSess,
     empresa: parsed.empresa?.nome,
     segmento: parsed.empresa?.segmento,
-    iniciado_em: new Date().toISOString()
+    iniciado_em: currentSess.iniciado_em || new Date().toISOString()
   }));
 
   renderResults(parsed);
@@ -3163,7 +3177,7 @@ async function irParaAprofundar() {
   setLoadingModule('Aprofundando o diagnóstico', 'A IA está identificando as causas raiz por trás dos problemas.');
   showPhase('phase-loading');
 
-  const result = await fetchWithRetry({ systemPrompt: SP_APROFUNDAR, userMessage: userMsg, moduleType: 'diagnosticar' });
+  const result = await fetchWithRetry({ systemPrompt: SP_APROFUNDAR, userMessage: userMsg, moduleType: 'diagnosticar', trackingModule: 'aprofundar' });
   if (!result.ok) { showPhase('phase-results-m4'); alert(`Erro: ${result.error}`); return; }
 
   const raw = result.data?.text ?? result.data;
@@ -3276,7 +3290,7 @@ async function gerarMissaoVisao() {
 Síntese do diagnóstico: ${m1.sintese}
 Forças: ${(m1.top3_forcas||[]).map(f=>f.titulo).join(', ')}
 Propostas estratégicas principais: ${props||'(não disponíveis)'}`;
-  const result = await fetchWithRetry({ systemPrompt: SP_MISSAO_VISAO, userMessage: userMsg, moduleType: 'diagnosticar' });
+  const result = await fetchWithRetry({ systemPrompt: SP_MISSAO_VISAO, userMessage: userMsg, moduleType: 'diagnosticar', trackingModule: 'missaovisao' });
   if (!result.ok) { showPhase('phase-input-m6'); if(btn){btn.disabled=false;btn.textContent='✦ Gerar com IA';} alert(`Erro: ${result.error}`); return; }
   const raw=result.data?.text??result.data;
   let p; try { const c=typeof raw==='string'?raw.replace(/^```json\n?/,'').replace(/\n?```$/,'').trim():JSON.stringify(raw); p=typeof raw==='object'?raw:JSON.parse(c); } catch(e) { showPhase('phase-input-m6'); if(btn){btn.disabled=false;btn.textContent='✦ Gerar com IA';} alert('Formato inesperado.'); return; }
@@ -3369,7 +3383,7 @@ async function irParaImplicacoes() {
   setLoadingModule('Analisando implicações','A IA está aplicando as 3 lentes para cada proposta estratégica.');
   showPhase('phase-loading');
   const userMsg = `PROPOSTAS ESTRATÉGICAS:\n${propostas.map(p=>`[${p.numero}] ${p.titulo}: ${p.descricao}`).join('\n\n')}\n\nGere as condições necessárias para cada proposta.`;
-  const result = await fetchWithRetry({ systemPrompt: SP_IMPLICACOES, userMessage: userMsg, moduleType: 'output' });
+  const result = await fetchWithRetry({ systemPrompt: SP_IMPLICACOES, userMessage: userMsg, moduleType: 'output', trackingModule: 'implicacoes' });
   if (!result.ok) { showPhase('phase-results-m6'); alert(`Erro: ${result.error}`); return; }
   const raw=result.data?.text??result.data;
   let parsed;
@@ -3478,7 +3492,7 @@ VISÃO: ${vis||'(não definida)'}
 GRANDE PERGUNTA: ${m2?.grande_pergunta||''}
 PROPOSTAS ESTRATÉGICAS:\n${props}
 Construa o plano de futuro.`;
-  const result = await fetchWithRetry({ systemPrompt: SP_PLANO, userMessage: userMsg, moduleType: 'output' });
+  const result = await fetchWithRetry({ systemPrompt: SP_PLANO, userMessage: userMsg, moduleType: 'output', trackingModule: 'planofuturo' });
   if (!result.ok) { showPhase('phase-results-m7'); alert(`Erro: ${result.error}`); return; }
   const raw=result.data?.text??result.data;
   let parsed;
@@ -3702,7 +3716,7 @@ async function sendReport() {
     const res = await fetch(API_EMAIL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ to: sess.mentorado_email, empresa: nome, html: emailHtml })
+      body: JSON.stringify({ to: sess.mentorado_email, empresa: nome, html: emailHtml, sessionId: sess.sessionId || null })
     });
 
     const data = await res.json();

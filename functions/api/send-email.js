@@ -1,18 +1,3 @@
-/**
- * Cloudflare Pages Function — Envio de e-mail
- *
- * Suporta dois providers (usa o primeiro que tiver chave configurada):
- *   1. Brevo (ex-Sendinblue) — recomendado, permite usar Gmail como remetente
- *   2. Resend — fallback, modo teste envia só para o próprio e-mail da conta
- *
- * Secrets necessários (Cloudflare Pages → Settings → Environment Variables):
- *   BREVO_API_KEY     — chave da conta Brevo (https://app.brevo.com/settings/keys/api)
- *   FROM_EMAIL        — remetente verificado (ex: alexandreclm@gmail.com)
- *   FROM_NAME         — nome do remetente (ex: Caroline Calaça · Advisors Club)
- *   CAROLINE_EMAIL    — e-mail da Caroline (sempre recebe cópia)
- *   RESEND_API_KEY    — fallback se BREVO_API_KEY não estiver configurada
- */
-
 export async function onRequestPost(context) {
   const { request, env } = context;
 
@@ -26,7 +11,7 @@ export async function onRequestPost(context) {
     return json({ error: 'Nenhuma chave de e-mail configurada (BREVO_API_KEY ou RESEND_API_KEY).' }, 500);
   }
 
-  const { to, empresa, html } = await request.json();
+  const { to, empresa, html, sessionId } = await request.json();
 
   if (!to || !to.includes('@')) {
     return json({ error: 'E-mail do destinatário inválido.' }, 400);
@@ -53,6 +38,10 @@ export async function onRequestPost(context) {
       return json({ error: data.message || `Brevo HTTP ${r.status}` }, 500);
     }
 
+    if (env.DB && sessionId) {
+      context.waitUntil(logReport(env.DB, sessionId, to));
+    }
+
     return json({ success: true, provider: 'brevo', id: String(data.messageId || data.id || '') });
   }
 
@@ -73,10 +62,10 @@ export async function onRequestPost(context) {
 
   let { r, data } = await enviarResend(recipients);
 
-  // Fallback Resend: modo teste só permite enviar para a própria conta
   if (!r.ok && (data.message || '').toLowerCase().includes('testing')) {
     ({ r, data } = await enviarResend([CAROLINE_EMAIL]));
     if (r.ok) {
+      if (env.DB && sessionId) context.waitUntil(logReport(env.DB, sessionId, to));
       return json({
         success: true,
         provider: 'resend-fallback',
@@ -87,7 +76,18 @@ export async function onRequestPost(context) {
   }
 
   if (!r.ok) return json({ error: data.message || `Resend HTTP ${r.status}` }, 500);
+
+  if (env.DB && sessionId) context.waitUntil(logReport(env.DB, sessionId, to));
   return json({ success: true, provider: 'resend', id: data.id || '' });
+}
+
+async function logReport(db, sessionId, mentoradaEmail) {
+  try {
+    await db.prepare(`
+      INSERT INTO reports (session_id, mentorada_email, sent_at)
+      VALUES (?, ?, ?)
+    `).bind(sessionId, mentoradaEmail, new Date().toISOString()).run();
+  } catch (_) {}
 }
 
 function json(body, status = 200) {

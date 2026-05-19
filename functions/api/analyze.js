@@ -1,5 +1,14 @@
 const MODEL = 'gemini-2.5-flash-lite';
 
+const MODULE_MAP = {
+  entender: 1, diagnosticar: 2, cenarios: 3, output: 4,
+  aprofundar: 5, missaovisao: 6, implicacoes: 7, planofuturo: 8
+};
+const MODULE_NAMES = {
+  1: 'Entender', 2: 'Diagnosticar', 3: 'Cenários', 4: 'Output',
+  5: 'Aprofundar', 6: 'Missão e Visão', 7: 'Implicações', 8: 'Plano de Futuro'
+};
+
 export async function onRequestPost(context) {
   const { request, env } = context;
   const KEY = env.GEMINI_API_KEY;
@@ -10,7 +19,7 @@ export async function onRequestPost(context) {
     });
   }
 
-  const { systemPrompt, userMessage, moduleType } = await request.json();
+  const { systemPrompt, userMessage, moduleType, trackingModule, sessionData } = await request.json();
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${KEY}`;
 
   const temperaturas = { entender: 0.3, diagnosticar: 0.3, cenarios: 0.5, output: 0.5 };
@@ -22,10 +31,8 @@ export async function onRequestPost(context) {
     generationConfig: { temperature, maxOutputTokens: 8192, responseMimeType: 'application/json' }
   });
 
-  // Tentativa 1
   let r = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
 
-  // Rate limit — 1 retry com espera máxima de 14s (Cloudflare tem limite de 30s)
   if (r.status === 429) {
     const errData = await r.json().catch(() => ({}));
     const msg     = errData.error?.message || '';
@@ -35,7 +42,6 @@ export async function onRequestPost(context) {
     await new Promise(res => setTimeout(res, wait));
     r = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
 
-    // Se ainda 429 após retry — retorna erro com retryAfter para o frontend tratar
     if (r.status === 429) {
       return new Response(JSON.stringify({ error: 'rate_limit', retryAfter: 20 }), {
         status: 429, headers: { 'Content-Type': 'application/json' }
@@ -52,7 +58,40 @@ export async function onRequestPost(context) {
 
   const data = await r.json();
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+
+  // Salva progresso no D1 de forma assíncrona (não bloqueia a resposta)
+  if (env.DB && sessionData?.sessionId) {
+    const trackedModule = trackingModule || moduleType;
+    context.waitUntil(saveProgress(env.DB, sessionData, trackedModule));
+  }
+
   return new Response(JSON.stringify({ text }), {
     headers: { 'Content-Type': 'application/json' }
   });
+}
+
+async function saveProgress(db, sessionData, trackedModule) {
+  const { sessionId, mentoradaEmail, empresaNome, mentoradaNome } = sessionData;
+  const now = new Date().toISOString();
+
+  try {
+    await db.prepare(`
+      INSERT INTO sessions (id, mentorada_nome, mentorada_email, empresa_nome, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        mentorada_nome = COALESCE(excluded.mentorada_nome, mentorada_nome),
+        empresa_nome   = COALESCE(excluded.empresa_nome, empresa_nome),
+        updated_at     = excluded.updated_at
+    `).bind(sessionId, mentoradaNome || null, mentoradaEmail || null, empresaNome || null, now, now).run();
+
+    const moduleNumber = MODULE_MAP[trackedModule];
+    if (moduleNumber) {
+      await db.prepare(`
+        INSERT OR IGNORE INTO module_progress (session_id, module_number, module_name, completed_at)
+        VALUES (?, ?, ?, ?)
+      `).bind(sessionId, moduleNumber, MODULE_NAMES[moduleNumber], now).run();
+    }
+  } catch (_) {
+    // Falha silenciosa — não deve interromper o fluxo da mentorada
+  }
 }
