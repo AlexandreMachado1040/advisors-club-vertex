@@ -225,8 +225,19 @@
     }
 
     .av.tutor {
-      background: linear-gradient(135deg, #c9a84c, #7a5214);
-      color: #000; box-shadow: 0 0 12px rgba(201,168,76,0.2);
+      background: transparent;
+      overflow: hidden;
+      border: 1.5px solid rgba(201,168,76,0.35);
+      box-shadow: 0 0 10px rgba(201,168,76,0.15);
+      padding: 0;
+    }
+
+    .av.tutor img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
     }
 
     .av.user {
@@ -897,7 +908,14 @@ function appendMsg(role, html) {
 
   const av  = document.createElement('div');
   av.className = `av ${role}`;
-  av.textContent = role === 'tutor' ? 'CC' : 'EU';
+  if (role === 'tutor') {
+    const photo = document.createElement('img');
+    photo.src = '/carol.jpg';
+    photo.alt = 'Carol Calaça';
+    av.appendChild(photo);
+  } else {
+    av.textContent = 'EU';
+  }
 
   const bub = document.createElement('div');
   bub.className = 'bubble';
@@ -918,7 +936,9 @@ function showTyping() {
 
   const av  = document.createElement('div');
   av.className = 'av tutor';
-  av.textContent = 'CC';
+  const photo = document.createElement('img');
+  photo.src = '/carol.jpg'; photo.alt = 'Carol Calaça';
+  av.appendChild(photo);
 
   const bub = document.createElement('div');
   bub.className = 'typing-bubble';
