@@ -1113,6 +1113,64 @@ body::after {
   .rel-dims-grid { grid-template-columns: 1fr 1fr; }
   .rel-cens-grid { grid-template-columns: 1fr; }
 }
+
+/* ── CAROLINE CARD ── */
+.carol-card {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 999;
+  background: rgba(13,11,8,0.96);
+  border-top: 1px solid rgba(201,168,76,0.25);
+  backdrop-filter: blur(16px);
+  padding: 16px 28px;
+  display: flex; align-items: flex-start; gap: 16px;
+  transform: translateY(100%);
+  transition: transform .35s cubic-bezier(.4,0,.2,1);
+}
+.carol-card.visible { transform: translateY(0); }
+.carol-avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  border: 2px solid var(--gold);
+  object-fit: cover; flex-shrink: 0;
+  box-shadow: 0 0 0 4px rgba(201,168,76,0.12);
+}
+.carol-body { flex: 1; min-width: 0; }
+.carol-name {
+  font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 5px; display: flex; align-items: center; gap: 8px;
+}
+.carol-wave {
+  display: inline-flex; gap: 2px; align-items: center; height: 12px;
+}
+.carol-wave span {
+  display: block; width: 2px; background: var(--gold); border-radius: 2px;
+  animation: wave .8s ease-in-out infinite;
+}
+.carol-wave span:nth-child(2) { animation-delay: .1s; }
+.carol-wave span:nth-child(3) { animation-delay: .2s; }
+.carol-wave span:nth-child(4) { animation-delay: .3s; }
+@keyframes wave {
+  0%,100% { height: 4px; } 50% { height: 12px; }
+}
+.carol-text {
+  font-size: 13.5px; color: var(--text); line-height: 1.65;
+  font-family: 'DM Sans', sans-serif;
+}
+.carol-text .carol-cursor {
+  display: inline-block; width: 2px; height: 14px;
+  background: var(--gold); margin-left: 2px; vertical-align: middle;
+  animation: blink .7s step-end infinite;
+}
+@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+.carol-close {
+  background: none; border: none; color: var(--text-muted);
+  cursor: pointer; font-size: 20px; padding: 0 0 0 12px;
+  line-height: 1; flex-shrink: 0; transition: color .15s;
+}
+.carol-close:hover { color: var(--text); }
+@media (max-width:600px) {
+  .carol-card { padding: 12px 16px; }
+  .carol-avatar { width: 40px; height: 40px; }
+  .carol-text { font-size: 12px; }
+}
 </style>
 </head>
 <body>
@@ -1780,6 +1838,10 @@ function renderDim(idx) {
 
   renderDimNav();
   document.getElementById('dim-textarea')?.focus();
+
+  // Caroline lê a dimensão atual
+  const dimText = `Dimensão ${idx + 1} de 9: ${dim.nome}. ${dim.desc}. Reflita: ${dim.perguntas.join('. ')}.`;
+  carolineSpeak(dimText);
 }
 
 function onTextareaInput(el) {
@@ -2047,6 +2109,7 @@ function renderResults(data) {
 
   window._vt = window._vt || {};
   window._vt.m1 = sintese;
+  if (sintese) setTimeout(() => carolineSpeak(sintese), 600);
 
   document.getElementById('results-content').innerHTML = `
     <div class="results-empresa">
@@ -2059,7 +2122,7 @@ function renderResults(data) {
     <div class="results-sintese">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
         <div class="results-sintese-label" style="margin-bottom:0">Síntese Diagnóstica</div>
-        <button class="voice-btn" id="voice-btn-m1" onclick="speakText(window._vt?.m1, this)">🔊 Ouvir</button>
+        <button class="voice-btn" id="voice-btn-m1" onclick="carolineSpeak(window._vt?.m1)">🔊 Ouvir</button>
       </div>
       <p class="results-sintese-text">${sintese}</p>
     </div>` : ''}
@@ -2288,6 +2351,7 @@ function renderResultsDiagnosticar(data) {
 
   window._vt = window._vt || {};
   window._vt.m2 = [data.problema_real, data.grande_pergunta].filter(Boolean).join('. ');
+  if (window._vt.m2) setTimeout(() => carolineSpeak(window._vt.m2), 600);
 
   document.getElementById('results-m2-content').innerHTML = `
     <div style="text-align:center;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--border)">
@@ -2298,7 +2362,7 @@ function renderResultsDiagnosticar(data) {
     <div class="grande-pergunta-hero">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
         <div class="grande-pergunta-label" style="margin-bottom:0">A Grande Pergunta Estratégica</div>
-        <button class="voice-btn" onclick="speakText(window._vt?.m2, this)">🔊 Ouvir</button>
+        <button class="voice-btn" onclick="carolineSpeak(window._vt?.m2)">🔊 Ouvir</button>
       </div>
       <p class="grande-pergunta-text">${data.grande_pergunta || ''}</p>
     </div>
@@ -3813,6 +3877,107 @@ async function sendReport() {
     if (btn) { btn.disabled = false; btn.textContent = '✉ Enviar por E-mail'; }
   }
 }
+
+/* ── CAROLINE VOICE ENGINE ── */
+let _carolAudio = null;
+let _carolTimer = null;
+
+async function carolineSpeak(text) {
+  if (!text?.trim()) return;
+  carolineStop(false);
+
+  const card    = document.getElementById('carol-card');
+  const textEl  = document.getElementById('carol-text');
+  const waveEl  = document.getElementById('carol-wave');
+  const nameEl  = document.getElementById('carol-name-label');
+
+  card.classList.add('visible');
+  textEl.innerHTML = '<span class="carol-cursor"></span>';
+  if (waveEl) waveEl.style.display = 'none';
+
+  try {
+    const res = await fetch(TTS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    if (!res.ok) throw new Error('TTS error');
+
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    _carolAudio = new Audio(url);
+
+    _carolAudio.addEventListener('loadedmetadata', () => {
+      const durMs = _carolAudio.duration * 1000;
+      if (waveEl) waveEl.style.display = 'inline-flex';
+      startCarolTypewriter(text, textEl, durMs);
+    });
+
+    _carolAudio.onended = () => {
+      URL.revokeObjectURL(url);
+      _carolAudio = null;
+      if (_carolTimer) { clearInterval(_carolTimer); _carolTimer = null; }
+      if (waveEl) waveEl.style.display = 'none';
+      textEl.innerHTML = text.replace(/\n/g, '<br>');
+    };
+
+    _carolAudio.play().catch(() => {
+      // Autoplay bloqueado: mostra texto mesmo assim
+      textEl.innerHTML = text.replace(/\n/g, '<br>');
+    });
+  } catch(e) {
+    textEl.innerHTML = text.replace(/\n/g, '<br>');
+    if (waveEl) waveEl.style.display = 'none';
+  }
+}
+
+function startCarolTypewriter(text, el, durationMs) {
+  if (_carolTimer) clearInterval(_carolTimer);
+  const words    = text.split(' ');
+  const interval = Math.max(40, durationMs / words.length);
+  let i = 0;
+  el.innerHTML = '<span class="carol-cursor"></span>';
+
+  _carolTimer = setInterval(() => {
+    if (i < words.length) {
+      const cursor = '<span class="carol-cursor"></span>';
+      const shown  = words.slice(0, i + 1).join(' ');
+      el.innerHTML = shown + cursor;
+      i++;
+    } else {
+      clearInterval(_carolTimer);
+      _carolTimer = null;
+      el.innerHTML = text.replace(/\n/g, '<br>');
+    }
+  }, interval);
+}
+
+function carolineStop(hide = true) {
+  if (_carolAudio) { _carolAudio.pause(); URL.revokeObjectURL(_carolAudio.src); _carolAudio = null; }
+  if (_carolTimer) { clearInterval(_carolTimer); _carolTimer = null; }
+  if (hide) {
+    const card = document.getElementById('carol-card');
+    if (card) card.classList.remove('visible');
+  }
+  const wave = document.getElementById('carol-wave');
+  if (wave) wave.style.display = 'none';
+}
 </script>
+
+<!-- ── CAROLINE CARD ── -->
+<div id="carol-card" class="carol-card">
+  <img class="carol-avatar" src="/carol.jpg" alt="Caroline Calaça">
+  <div class="carol-body">
+    <div class="carol-name">
+      <span id="carol-name-label">Caroline Calaça · Advisors Club</span>
+      <span id="carol-wave" class="carol-wave" style="display:none">
+        <span></span><span></span><span></span><span></span>
+      </span>
+    </div>
+    <div class="carol-text" id="carol-text"></div>
+  </div>
+  <button class="carol-close" onclick="carolineStop(true)" title="Fechar">×</button>
+</div>
+
 </body>
 </html>
