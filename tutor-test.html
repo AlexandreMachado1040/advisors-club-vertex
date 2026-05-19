@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carol — Sua Tutora VERTEX</title>
+  <style>
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --gold-dim: rgba(201,168,76,0.12);
+      --dark: #080808;
+      --dark-2: #0f0f0f;
+      --dark-3: #171717;
+      --dark-4: #1f1f1f;
+      --dark-5: #272727;
+      --text: #e2e2e2;
+      --text-muted: #7a7a7a;
+      --border: #222;
+      --border-light: #2c2c2c;
+      --green: #4caf82;
+      --blue: #5b9bd5;
+      --red: #e05555;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      overflow: hidden;
+    }
+
+    .app { height: 100vh; display: flex; flex-direction: column; }
+
+    /* ── Header ── */
+    header {
+      background: var(--dark-2);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent);
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; }
+
+    .brand-mark {
+      width: 36px; height: 36px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #c9a84c 0%, #7a5214 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 900; color: #000; letter-spacing: -0.5px;
+      flex-shrink: 0;
+      box-shadow: 0 0 18px rgba(201,168,76,0.25);
+    }
+
+    .brand-info h1 { font-size: 14px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+    .brand-info p  { font-size: 10.5px; color: var(--text-muted); letter-spacing: 0.3px; }
+
+    .header-right {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 12px;
+    }
+
+    .status-pill {
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(76,175,130,0.25);
+      background: rgba(76,175,130,0.06);
+      font-size: 11px; color: var(--green);
+    }
+
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: breathe 2.4s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    .icon-btn {
+      padding: 5px 12px;
+      border-radius: 7px;
+      border: 1px solid var(--border-light);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .icon-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+    /* ── Pillar Bar ── */
+    .pillar-bar {
+      background: var(--dark-2);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 24px;
+      display: flex; align-items: center; gap: 6px;
+      flex-shrink: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .pillar-bar::-webkit-scrollbar { display: none; }
+
+    .bar-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--text-muted);
+      margin-right: 8px; white-space: nowrap; flex-shrink: 0;
+    }
+
+    .p-chip {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border-light);
+      background: var(--dark-4);
+      font-size: 11.5px; color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.18s;
+      white-space: nowrap; flex-shrink: 0;
+      user-select: none;
+    }
+
+    .p-chip:hover { border-color: var(--chip-color); color: var(--chip-color); background: rgba(var(--chip-rgb), 0.1); }
+    .p-chip:active { transform: scale(0.97); }
+    .p-chip .pl { font-weight: 800; font-size: 12px; }
+
+    /* ── Chat ── */
+    .chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 24px;
+      display: flex; flex-direction: column; gap: 20px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .chat::-webkit-scrollbar { width: 4px; }
+    .chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ── Welcome ── */
+    .welcome {
+      margin: auto;
+      max-width: 460px;
+      text-align: center;
+      padding: 20px 0 20px;
+    }
+
+    .carol-avatar {
+      margin: 0 auto 24px;
+      width: 108px;
+      height: 108px;
+      animation: carol-breathe 5s ease-in-out infinite;
+      filter: drop-shadow(0 4px 24px rgba(201,168,76,0.18));
+    }
+
+    @keyframes carol-breathe {
+      0%, 100% { transform: scale(1);    filter: drop-shadow(0 4px 24px rgba(201,168,76,0.18)); }
+      50%       { transform: scale(1.03); filter: drop-shadow(0 6px 32px rgba(201,168,76,0.28)); }
+    }
+
+    .welcome h2 { font-size: 21px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+
+    .welcome > p {
+      font-size: 13.5px; color: var(--text-muted); line-height: 1.75; margin-bottom: 24px;
+    }
+
+    .suggestions { display: flex; flex-direction: column; gap: 8px; text-align: left; }
+
+    .sug-btn {
+      width: 100%;
+      padding: 11px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border-light);
+      background: var(--dark-3);
+      color: var(--text-muted);
+      font-size: 13px; font-family: inherit;
+      cursor: pointer; transition: all 0.18s;
+      text-align: left; line-height: 1.45;
+    }
+
+    .sug-btn:hover {
+      border-color: rgba(201,168,76,0.35);
+      color: var(--text); background: var(--gold-dim);
+      transform: translateX(3px);
+    }
+
+    /* ── Messages ── */
+    .msg-row { display: flex; gap: 12px; max-width: 760px; width: 100%; }
+    .msg-row.user { margin-left: auto; flex-direction: row-reverse; }
+
+    .av {
+      width: 30px; height: 30px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 800; letter-spacing: -0.5px;
+      flex-shrink: 0; margin-top: 3px;
+    }
+
+    .av.tutor {
+      background: linear-gradient(135deg, #c9a84c, #7a5214);
+      color: #000; box-shadow: 0 0 12px rgba(201,168,76,0.2);
+    }
+
+    .av.user {
+      background: var(--dark-5);
+      border: 1px solid var(--border-light);
+      color: var(--text-muted);
+    }
+
+    .bubble {
+      padding: 13px 17px; border-radius: 14px;
+      font-size: 14px; line-height: 1.72;
+      max-width: calc(100% - 42px);
+    }
+
+    .msg-row.tutor .bubble {
+      background: var(--dark-3);
+      border: 1px solid var(--border-light);
+      border-top-left-radius: 3px;
+      color: var(--text);
+    }
+
+    .msg-row.user .bubble {
+      background: rgba(201,168,76,0.1);
+      border: 1px solid rgba(201,168,76,0.22);
+      border-top-right-radius: 3px;
+      color: var(--text);
+    }
+
+    .bubble p { margin: 0; }
+    .bubble p + p { margin-top: 10px; }
+    .bubble strong { color: var(--gold-light); font-weight: 600; }
+    .bubble em { color: var(--text-muted); font-style: italic; }
+    .bubble ul { margin: 8px 0; padding-left: 18px; }
+    .bubble li { margin: 5px 0; color: var(--text-muted); }
+    .bubble li::marker { color: var(--gold); }
+
+    /* ── Typing indicator ── */
+    .typing-row { display: flex; gap: 12px; max-width: 760px; }
+
+    .typing-bubble {
+      background: var(--dark-3);
+      border: 1px solid var(--border-light);
+      border-radius: 14px; border-top-left-radius: 3px;
+      padding: 14px 18px;
+      display: flex; gap: 5px; align-items: center;
+    }
+
+    .typing-bubble span {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      animation: tdot 1.3s ease-in-out infinite;
+    }
+
+    .typing-bubble span:nth-child(2) { animation-delay: 0.18s; }
+    .typing-bubble span:nth-child(3) { animation-delay: 0.36s; }
+
+    @keyframes tdot {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.35; }
+      40%            { transform: translateY(-7px); opacity: 1; }
+    }
+
+    /* ── Voice Panel ── */
+    .voice-panel {
+      background: var(--dark-2);
+      border-top: 1px solid var(--border);
+      padding: 20px 24px 24px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Transcript preview */
+    .transcript-preview {
+      width: 100%;
+      max-width: 560px;
+      min-height: 36px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-muted);
+      font-style: italic;
+      transition: color 0.2s;
+      line-height: 1.5;
+    }
+
+    .transcript-preview.active { color: var(--text); font-style: normal; }
+
+    /* Mic button area */
+    .mic-area {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    /* Mic button */
+    .mic-btn {
+      position: relative;
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--dark-3);
+      border: 2px solid var(--border-light);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+      outline: none;
+      flex-shrink: 0;
+    }
+
+    .mic-btn:hover { border-color: var(--gold); background: var(--gold-dim); }
+
+    .mic-btn svg { width: 28px; height: 28px; color: var(--text-muted); transition: color 0.2s; }
+    .mic-btn:hover svg { color: var(--gold); }
+
+    /* Listening state */
+    .mic-btn.listening {
+      border-color: var(--red);
+      background: rgba(224,85,85,0.08);
+      animation: mic-pulse 1.5s ease-in-out infinite;
+    }
+
+    .mic-btn.listening svg { color: var(--red); }
+
+    @keyframes mic-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(224,85,85,0.35); }
+      50%       { box-shadow: 0 0 0 14px rgba(224,85,85,0); }
+    }
+
+    /* Speaking state */
+    .mic-btn.speaking {
+      border-color: var(--green);
+      background: rgba(76,175,130,0.08);
+    }
+
+    .mic-btn.speaking svg { color: var(--green); }
+
+    /* Processing state */
+    .mic-btn.processing {
+      border-color: var(--gold);
+      background: var(--gold-dim);
+      cursor: default;
+    }
+
+    .mic-btn.processing svg { color: var(--gold); }
+
+    /* Spin overlay for processing */
+    .spin-ring {
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      border-top-color: var(--gold);
+      animation: spin 0.9s linear infinite;
+      display: none;
+    }
+
+    .mic-btn.processing .spin-ring { display: block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Waveform bars (visible while listening) */
+    .waveform {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 28px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .waveform.active { opacity: 1; }
+
+    .waveform .bar {
+      width: 3px;
+      border-radius: 2px;
+      background: var(--red);
+      animation: wave 0.8s ease-in-out infinite;
+    }
+
+    .waveform .bar:nth-child(1) { animation-delay: 0.0s; }
+    .waveform .bar:nth-child(2) { animation-delay: 0.1s; }
+    .waveform .bar:nth-child(3) { animation-delay: 0.2s; }
+    .waveform .bar:nth-child(4) { animation-delay: 0.1s; }
+    .waveform .bar:nth-child(5) { animation-delay: 0.0s; }
+
+    @keyframes wave {
+      0%, 100% { height: 6px;  opacity: 0.4; }
+      50%       { height: 22px; opacity: 1; }
+    }
+
+    /* Status label */
+    .voice-status {
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+      text-align: center;
+      min-height: 18px;
+    }
+
+    .voice-status.red   { color: var(--red); }
+    .voice-status.green { color: var(--green); }
+    .voice-status.gold  { color: var(--gold); }
+
+    /* Text fallback toggle */
+    .text-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .text-toggle input[type="text"],
+    .text-toggle textarea {
+      flex: 1;
+      background: var(--dark-3);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 9px 14px;
+      color: var(--text);
+      font-size: 13.5px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.18s;
+      resize: none;
+      height: 38px;
+    }
+
+    .text-toggle textarea:focus { border-color: rgba(201,168,76,0.35); }
+
+    .text-send-btn {
+      width: 38px; height: 38px;
+      border-radius: 9px;
+      background: var(--gold);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #000; flex-shrink: 0;
+      transition: all 0.15s;
+      box-shadow: 0 0 12px rgba(201,168,76,0.2);
+    }
+
+    .text-send-btn:hover { background: var(--gold-light); }
+    .text-send-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .text-send-btn svg { width: 15px; height: 15px; }
+
+    .show-text-btn {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      opacity: 0.6;
+      transition: opacity 0.15s;
+    }
+
+    .show-text-btn:hover { opacity: 1; color: var(--gold); }
+
+    .text-row {
+      display: none;
+      width: 100%;
+      max-width: 560px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .text-row.visible { display: flex; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      header { padding: 0 16px; height: 54px; }
+      .pillar-bar { padding: 8px 16px; }
+      .bar-label { display: none; }
+      .chat { padding: 16px; gap: 16px; }
+      .voice-panel { padding: 16px 16px 20px; }
+      .mic-btn { width: 64px; height: 64px; }
+      .mic-btn svg { width: 24px; height: 24px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-mark">CC</div>
+      <div class="brand-info">
+        <h1>CAROL — SUA TUTORA</h1>
+        <p>Método VERTEX · Caroline Calaça · Modo voz</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="status-pill">
+        <div class="status-dot"></div>
+        <span id="statusLabel">ativo</span>
+      </div>
+      <button class="icon-btn" onclick="clearChat()">Limpar</button>
+    </div>
+  </header>
+
+  <!-- Pillar shortcuts -->
+  <div class="pillar-bar">
+    <span class="bar-label">Pilares</span>
+    <button class="p-chip" style="--chip-color:#c9a84c;--chip-rgb:201,168,76" onclick="askPillar('V')">
+      <span class="pl" style="color:#c9a84c">V</span> Visão de Futuro
+    </button>
+    <button class="p-chip" style="--chip-color:#5b9bd5;--chip-rgb:91,155,213" onclick="askPillar('E')">
+      <span class="pl" style="color:#5b9bd5">E</span> Estratégia
+    </button>
+    <button class="p-chip" style="--chip-color:#4caf82;--chip-rgb:76,175,130" onclick="askPillar('R')">
+      <span class="pl" style="color:#4caf82">R</span> Redesenho Org.
+    </button>
+    <button class="p-chip" style="--chip-color:#e08844;--chip-rgb:224,136,68" onclick="askPillar('T')">
+      <span class="pl" style="color:#e08844">T</span> Ativos Ocultos
+    </button>
+    <button class="p-chip" style="--chip-color:#5b9bd5;--chip-rgb:91,155,213" onclick="askPillar('E2')">
+      <span class="pl" style="color:#5b9bd5">E</span> Execução
+    </button>
+    <button class="p-chip" style="--chip-color:#9b5bd5;--chip-rgb:155,91,213" onclick="askPillar('X')">
+      <span class="pl" style="color:#9b5bd5">X</span> X-Factor
+    </button>
+  </div>
+
+  <!-- Chat transcript -->
+  <div class="chat" id="chat">
+    <div class="welcome" id="welcome">
+      <svg class="carol-avatar" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stop-color="#c9a84c" stop-opacity="0.13"/>
+            <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="skin" cx="42%" cy="30%" r="65%">
+            <stop offset="0%"   stop-color="#f0c9a0"/>
+            <stop offset="100%" stop-color="#d4915c"/>
+          </radialGradient>
+          <radialGradient id="hair" cx="50%" cy="10%" r="75%">
+            <stop offset="0%"   stop-color="#2c1a08"/>
+            <stop offset="100%" stop-color="#0a0603"/>
+          </radialGradient>
+          <radialGradient id="iris" cx="35%" cy="30%" r="60%">
+            <stop offset="0%"   stop-color="#5c3810"/>
+            <stop offset="100%" stop-color="#1a0900"/>
+          </radialGradient>
+          <filter id="blur2"><feGaussianBlur stdDeviation="2"/></filter>
+          <filter id="blur1"><feGaussianBlur stdDeviation="1"/></filter>
+          <clipPath id="circle"><circle cx="60" cy="60" r="56"/></clipPath>
+        </defs>
+
+        <!-- Fundo suave -->
+        <circle cx="60" cy="60" r="58" fill="url(#glow)"/>
+        <circle cx="60" cy="60" r="56" fill="#100e0b"/>
+
+        <g clip-path="url(#circle)">
+          <!-- Cabelo (atrás) -->
+          <ellipse cx="60" cy="58" rx="36" ry="46" fill="url(#hair)"/>
+          <!-- Queda do cabelo esquerda -->
+          <path d="M24 72 C18 92 20 115 26 122 C34 126 40 120 38 108 C36 96 34 82 36 70" fill="#180f04"/>
+          <!-- Queda do cabelo direita -->
+          <path d="M96 72 C102 92 100 115 94 122 C86 126 80 120 82 108 C84 96 86 82 84 70" fill="#180f04"/>
+
+          <!-- Pescoço -->
+          <path d="M52 80 Q60 84 68 80 L68 96 Q60 98 52 96 Z" fill="url(#skin)"/>
+          <!-- Sombra pescoço -->
+          <path d="M52 80 Q56 82 60 82 Q64 82 68 80 L68 84 Q60 87 52 84 Z" fill="rgba(0,0,0,0.12)" filter="url(#blur1)"/>
+
+          <!-- Ombros / roupa (muito suave, quase fora do frame) -->
+          <path d="M20 130 Q20 105 60 100 Q100 105 100 130" fill="#1c140a"/>
+          <!-- Detalhe dourado sutil no decote -->
+          <path d="M48 100 Q60 104 72 100" stroke="#c9a84c" stroke-width="0.8" fill="none" opacity="0.5" stroke-linecap="round"/>
+
+          <!-- Rosto -->
+          <ellipse cx="60" cy="58" rx="26" ry="28" fill="url(#skin)"/>
+
+          <!-- Sombra lateral rosto (profundidade) -->
+          <ellipse cx="34" cy="60" rx="10" ry="22" fill="rgba(0,0,0,0.18)" filter="url(#blur2)"/>
+          <ellipse cx="86" cy="60" rx="10" ry="22" fill="rgba(0,0,0,0.18)" filter="url(#blur2)"/>
+
+          <!-- Cabelo da frente (sobre o rosto) -->
+          <path d="M34 50 Q36 28 60 24 Q84 28 86 50 Q78 34 60 32 Q42 34 34 50 Z" fill="url(#hair)"/>
+          <!-- Mecha lateral suave (esquerda) -->
+          <path d="M34 50 Q38 40 46 44 Q40 46 36 56 Z" fill="#200e02" opacity="0.7"/>
+
+          <!-- OLHOS — suaves, sem branco duro -->
+          <!-- Sombra olho esq -->
+          <ellipse cx="49" cy="57" rx="7" ry="5.5" fill="rgba(0,0,0,0.08)" filter="url(#blur1)"/>
+          <!-- Branco olho esq (tom levemente quente) -->
+          <ellipse cx="49" cy="56.5" rx="5.5" ry="4" fill="#f5ede4"/>
+          <!-- Íris esq -->
+          <circle cx="49.5" cy="56.5" r="2.8" fill="url(#iris)"/>
+          <!-- Pupila -->
+          <circle cx="49.5" cy="56.5" r="1.4" fill="#0a0604"/>
+          <!-- Brilho olho esq -->
+          <circle cx="50.4" cy="55.4" r="0.9" fill="white" opacity="0.75"/>
+          <!-- Pálpebra superior esq -->
+          <path d="M43.5 54 Q49.5 51.5 55.5 54" stroke="#1a0f04" stroke-width="1" fill="none" stroke-linecap="round"/>
+          <!-- Cílio leve esq -->
+          <path d="M43.5 54 Q49.5 52 55.5 54" stroke="#0d0704" stroke-width="0.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+
+          <!-- Branco olho dir -->
+          <ellipse cx="71" cy="56.5" rx="5.5" ry="4" fill="#f5ede4"/>
+          <!-- Íris dir -->
+          <circle cx="70.5" cy="56.5" r="2.8" fill="url(#iris)"/>
+          <circle cx="70.5" cy="56.5" r="1.4" fill="#0a0604"/>
+          <circle cx="71.4" cy="55.4" r="0.9" fill="white" opacity="0.75"/>
+          <!-- Pálpebra superior dir -->
+          <path d="M64.5 54 Q70.5 51.5 76.5 54" stroke="#1a0f04" stroke-width="1" fill="none" stroke-linecap="round"/>
+          <path d="M64.5 54 Q70.5 52 76.5 54" stroke="#0d0704" stroke-width="0.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+
+          <!-- Sobrancelhas — finas, arqueadas, naturais -->
+          <path d="M43 51 Q49 48.5 55 50.5" stroke="#1e0f04" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+          <path d="M65 50.5 Q71 48.5 77 51" stroke="#1e0f04" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+
+          <!-- Nariz — apenas sombras, sem linha -->
+          <ellipse cx="57" cy="66" rx="2.5" ry="1.5" fill="rgba(160,90,50,0.2)" filter="url(#blur1)"/>
+          <ellipse cx="63" cy="66" rx="2.5" ry="1.5" fill="rgba(160,90,50,0.2)" filter="url(#blur1)"/>
+
+          <!-- Blush suave -->
+          <ellipse cx="43" cy="65" rx="7" ry="4" fill="rgba(220,120,80,0.12)" filter="url(#blur2)"/>
+          <ellipse cx="77" cy="65" rx="7" ry="4" fill="rgba(220,120,80,0.12)" filter="url(#blur2)"/>
+
+          <!-- Lábios — tom natural, sem contorno duro -->
+          <!-- Lábio superior -->
+          <path d="M52 73 Q56 70.5 60 71 Q64 70.5 68 73 Q64 71.5 60 72 Q56 71.5 52 73 Z" fill="#c07560" opacity="0.85"/>
+          <!-- Lábio inferior -->
+          <path d="M52 73 Q60 78 68 73 Q64 75.5 60 76 Q56 75.5 52 73 Z" fill="#c87060" opacity="0.9"/>
+          <!-- Linha dos lábios -->
+          <path d="M52 73 Q60 71.5 68 73" stroke="#a05040" stroke-width="0.5" fill="none" opacity="0.5"/>
+          <!-- Sorriso suave (linhas de expressão) -->
+          <path d="M51 73.5 Q50 75 51 76" stroke="rgba(180,90,60,0.25)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+          <path d="M69 73.5 Q70 75 69 76" stroke="rgba(180,90,60,0.25)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+
+          <!-- Brinco dourado - sutil -->
+          <circle cx="34.5" cy="64" r="2" fill="#c9a84c" opacity="0.7"/>
+          <circle cx="34.5" cy="64" r="1" fill="#e8c97a" opacity="0.6"/>
+          <circle cx="85.5" cy="64" r="2" fill="#c9a84c" opacity="0.7"/>
+          <circle cx="85.5" cy="64" r="1" fill="#e8c97a" opacity="0.6"/>
+        </g>
+
+        <!-- Anel dourado externo suave -->
+        <circle cx="60" cy="60" r="57" fill="none" stroke="rgba(201,168,76,0.18)" stroke-width="1"/>
+      </svg>
+      <h2>Olá! Sou a Carol, sua tutora.</h2>
+      <p>
+        Pressione o microfone e me faça uma pergunta. Estou aqui para te guiar
+        pelo método VERTEX e transformar o seu negócio com você.
+      </p>
+      <div class="suggestions">
+        <button class="sug-btn" onclick="typeAndSend(this)">O que é o método VERTEX e como ele funciona na prática?</button>
+        <button class="sug-btn" onclick="typeAndSend(this)">Estou com dificuldades para definir a visão de futuro da minha empresa. Por onde começo?</button>
+        <button class="sug-btn" onclick="typeAndSend(this)">Como identifico os ativos ocultos que minha empresa não está aproveitando?</button>
+        <button class="sug-btn" onclick="typeAndSend(this)">Qual a diferença entre um Advisor e um consultor tradicional?</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Voice panel -->
+  <div class="voice-panel">
+
+    <!-- Transcript preview -->
+    <div class="transcript-preview" id="preview">Pressione o microfone para falar…</div>
+
+    <!-- Mic + waveform -->
+    <div class="mic-area">
+      <div class="waveform" id="waveform">
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div>
+      </div>
+
+      <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="Falar">
+        <div class="spin-ring"></div>
+        <!-- Mic icon (idle/listening) -->
+        <svg id="iconMic" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+        <!-- Speaker icon (speaking) -->
+        <svg id="iconSpeak" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             style="display:none">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+      </button>
+
+      <div class="waveform" id="waveform2">
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div>
+      </div>
+    </div>
+
+    <!-- Status -->
+    <div class="voice-status" id="voiceStatus">Clique no microfone para começar</div>
+
+    <!-- Text fallback -->
+    <button class="show-text-btn" onclick="toggleTextRow()">usar texto</button>
+    <div class="text-row" id="textRow">
+      <textarea id="textInp" placeholder="Digite sua pergunta…" rows="1"
+        onkeydown="textKey(event)" oninput="resizeTA(this)"></textarea>
+      <button class="text-send-btn" id="textSendBtn" onclick="sendText()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ── System prompt ── */
+const SYSTEM = `Você é a Carol — Caroline Calaça — falando diretamente com sua mentorada.
+
+Você é empresária, Coach Executiva e Advisor de Negócios com mais de 16 anos de experiência. Fale sempre em primeira pessoa, com calor humano, firmeza estratégica e a autoridade de quem já transformou mais de 1.000 empresas. Você não é um assistente — você é a Carol, a tutora que acompanha de perto.
+
+IMPORTANTE: Suas respostas serão lidas em voz alta. Por isso:
+- Fale como se estivesse numa sessão ao vivo com sua mentorada
+- Use linguagem falada, natural, direta e calorosa
+- Evite listas, asteriscos e formatação markdown — use texto corrido
+- Mantenha respostas entre 80 e 220 palavras
+- Termine sempre com uma pergunta que avance a conversa
+
+SOBRE VOCÊ — CAROLINE CALAÇA:
+Caroline Calaça é empresária, Coach Executiva e Advisor de Negócios com mais de 16 anos de experiência no mercado corporativo. É pioneira no Brasil em Business Coaching com mensuração financeira de resultados. Formação em Psicologia Organizacional (doutoranda), Mestre em Negócios Internacionais pela Universidade de Alcalá (Madri). Mais de 10.000 empresários treinados, mais de 1.000 empresas desenvolvidas, clientes em 15 países incluindo Fiat, JBS e TOTVS.
+
+METODOLOGIA VERTEX — 6 PILARES:
+
+V — Visão de Futuro Compartilhada: Diagnóstico do estado atual e construção de um destino estratégico claro, compartilhado entre dono, sócios e liderança. Envolve entender o modelo de negócio atual, identificar onde o dono quer chegar em 3 a 5 anos, alinhar a visão com toda a liderança e criar um Norte Verdadeiro que guia todas as decisões.
+
+E — Estratégia de Crescimento Integrado: Tradução da visão em plano concreto com foco em diferenciação real. Inclui mapeamento de mercado e concorrência, definição de canais prioritários, revisão do portfólio de produtos e identificação de alavancas de crescimento como expansão, upsell e novos mercados.
+
+R — Redesenho da Arquitetura Organizacional: Reorganização interna para que a empresa consiga executar a estratégia. Envolve mapear funções críticas e gaps de liderança, redesenhar times, criar processos decisórios claros e definir governança e rotinas de gestão.
+
+T — Tracionamento de Ativos Ocultos: Ativação do que a empresa já tem mas não está usando. Análise da base de clientes para recompra e indicação, mapeamento de canais não explorados, identificação de reputação e autoridade não convertidas em receita, e diagnóstico de talentos mal posicionados.
+
+E — Execução com Acompanhamento Estratégico: O que diferencia Advisory de consultoria. O Advisor acompanha a execução com check-ins mensais, revisões trimestrais, ajuste contínuo do plano de ação e suporte para decisões em momentos críticos.
+
+X — X-Factor, Cultura de Crescimento e Sabedoria Estratégica: O fator intangível que sustenta tudo. Desenvolvimento da mentalidade estratégica dos líderes, instalação de rituais de cultura, alinhamento de valores com a estratégia e trabalho com crenças limitantes.
+
+PRODUTOS: Formação Advisor de Negócios, Team Shapers, Método Black, Master Coaching Executivo.
+
+COMO AGIR: Seja conversacional e caloroso. Aplique os pilares a situações reais. Faça perguntas estratégicas. Use exemplos concretos. Responda sempre em português brasileiro.`;
+
+/* ── State ── */
+let history = [];
+let busy    = false;
+let voiceState = 'idle'; // idle | listening | processing | speaking
+
+/* ── Speech Recognition ── */
+const SRClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recog = null;
+let finalTranscript = '';
+
+if (SRClass) {
+  recog = new SRClass();
+  recog.lang = 'pt-BR';
+  recog.continuous = false;
+  recog.interimResults = true;
+
+  recog.onstart = () => {
+    finalTranscript = '';
+    setVoiceState('listening');
+  };
+
+  recog.onresult = (e) => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) finalTranscript += e.results[i][0].transcript;
+      else interim += e.results[i][0].transcript;
+    }
+    setPreview(finalTranscript || interim, !!(finalTranscript || interim));
+  };
+
+  recog.onend = () => {
+    if (voiceState !== 'listening') return;
+    const text = finalTranscript.trim();
+    if (text) sendMessage(text);
+    else setVoiceState('idle');
+  };
+
+  recog.onerror = (e) => {
+    if (e.error === 'no-speech') { setVoiceState('idle'); return; }
+    setVoiceState('idle');
+    setPreview('Não consegui ouvir. Tente novamente.', false);
+  };
+} else {
+  // No speech recognition — show text input automatically
+  document.getElementById('textRow').classList.add('visible');
+  document.querySelector('.show-text-btn').style.display = 'none';
+  document.getElementById('micBtn').style.opacity = '0.3';
+  document.getElementById('micBtn').style.cursor = 'not-allowed';
+  document.getElementById('micBtn').onclick = null;
+  setPreview('Seu navegador não suporta reconhecimento de voz. Use o campo de texto.', false);
+}
+
+/* ── Speech Synthesis ── */
+let currentUtterance = null;
+
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+
+  const clean = text
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/#{1,6}\s/g, '')
+    .replace(/[-•]\s/g, '')
+    .trim();
+
+  const utt = new SpeechSynthesisUtterance(clean);
+  utt.lang = 'pt-BR';
+  utt.rate = 1.05;
+  utt.pitch = 1.0;
+
+  // Prioriza voz feminina em PT-BR
+  const voices = speechSynthesis.getVoices();
+  const femaleKeywords = ['female', 'woman', 'feminino', 'francisca', 'leila',
+                          'luciana', 'vitória', 'vitoria', 'maria', 'ana'];
+  const ptVoiceFemale =
+    voices.find(v => v.lang === 'pt-BR' && femaleKeywords.some(k => v.name.toLowerCase().includes(k))) ||
+    voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('f')) ||
+    voices.find(v => v.lang === 'pt-BR') ||
+    voices.find(v => v.lang.startsWith('pt'));
+  if (ptVoiceFemale) utt.voice = ptVoiceFemale;
+
+  utt.onstart = () => setVoiceState('speaking');
+  utt.onend   = () => setVoiceState('idle');
+  utt.onerror = () => setVoiceState('idle');
+
+  currentUtterance = utt;
+  speechSynthesis.speak(utt);
+}
+
+function stopSpeaking() {
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  currentUtterance = null;
+}
+
+/* ── Voice state machine ── */
+function setVoiceState(state) {
+  voiceState = state;
+  const micBtn   = document.getElementById('micBtn');
+  const iconMic  = document.getElementById('iconMic');
+  const iconSpk  = document.getElementById('iconSpeak');
+  const wave1    = document.getElementById('waveform');
+  const wave2    = document.getElementById('waveform2');
+  const statusEl = document.getElementById('voiceStatus');
+
+  micBtn.className = 'mic-btn ' + (state !== 'idle' ? state : '');
+
+  iconMic.style.display = state === 'speaking' ? 'none' : 'block';
+  iconSpk.style.display = state === 'speaking' ? 'block' : 'none';
+
+  const wavActive = state === 'listening';
+  wave1.classList.toggle('active', wavActive);
+  wave2.classList.toggle('active', wavActive);
+
+  const msgs = {
+    idle:       'Clique no microfone para começar',
+    listening:  'Ouvindo… fale agora',
+    processing: 'Processando…',
+    speaking:   'Clique para interromper a resposta',
+  };
+  const cls = { idle: '', listening: 'red', processing: 'gold', speaking: 'green' };
+
+  statusEl.textContent = msgs[state];
+  statusEl.className   = 'voice-status ' + cls[state];
+}
+
+function setPreview(text, active) {
+  const el = document.getElementById('preview');
+  el.textContent = text || 'Pressione o microfone para falar…';
+  el.className   = 'transcript-preview' + (active ? ' active' : '');
+}
+
+/* ── Mic toggle ── */
+function toggleMic() {
+  if (busy) return;
+
+  if (voiceState === 'speaking') { stopSpeaking(); setVoiceState('idle'); return; }
+  if (voiceState === 'listening') { recog && recog.stop(); return; }
+  if (voiceState === 'idle' && recog) {
+    setPreview('Ouvindo…', false);
+    try { recog.start(); } catch(e) { /* already running */ }
+  }
+}
+
+/* ── Send message ── */
+async function sendMessage(text) {
+  if (busy || !text.trim()) return;
+  busy = true;
+  setVoiceState('processing');
+  setPreview('', false);
+
+  removeWelcome();
+  appendMsg('user', `<p>${esc(text)}</p>`);
+  history.push({ role: 'user', parts: [{ text }] });
+  showTyping();
+
+  try {
+    const res = await fetch('/api/tutor', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ systemPrompt: SYSTEM, history })
+    });
+
+    hideTyping();
+
+    if (res.status === 429) {
+      const msg = 'Muitas requisições seguidas. Aguarde alguns segundos e tente novamente.';
+      appendMsg('tutor', `<p>${msg}</p>`);
+      speak(msg);
+    } else if (!res.ok) {
+      const msg = `Erro de comunicação com o servidor. Código ${res.status}.`;
+      appendMsg('tutor', `<p>${msg}</p>`);
+      speak(msg);
+    } else {
+      const data  = await res.json();
+      const reply = data.text || 'Não consegui gerar uma resposta. Tente novamente.';
+      appendMsg('tutor', mdToHtml(reply));
+      history.push({ role: 'model', parts: [{ text: reply }] });
+      speak(reply);
+    }
+  } catch (err) {
+    hideTyping();
+    const msg = 'Falha de conexão. Verifique sua rede e tente novamente.';
+    appendMsg('tutor', `<p>${msg}</p>`);
+    speak(msg);
+    console.error(err);
+  }
+
+  busy = false;
+}
+
+/* ── UI helpers ── */
+function removeWelcome() { const w = document.getElementById('welcome'); if (w) w.remove(); }
+
+function appendMsg(role, html) {
+  removeWelcome();
+  const chat = document.getElementById('chat');
+  const row  = document.createElement('div');
+  row.className = `msg-row ${role}`;
+
+  const av  = document.createElement('div');
+  av.className = `av ${role}`;
+  av.textContent = role === 'tutor' ? 'CC' : 'EU';
+
+  const bub = document.createElement('div');
+  bub.className = 'bubble';
+  bub.innerHTML = html;
+
+  row.appendChild(av);
+  row.appendChild(bub);
+  chat.appendChild(row);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showTyping() {
+  removeWelcome();
+  const chat = document.getElementById('chat');
+  const row  = document.createElement('div');
+  row.className = 'typing-row';
+  row.id = 'typing';
+
+  const av  = document.createElement('div');
+  av.className = 'av tutor';
+  av.textContent = 'CC';
+
+  const bub = document.createElement('div');
+  bub.className = 'typing-bubble';
+  bub.innerHTML = '<span></span><span></span><span></span>';
+
+  row.appendChild(av);
+  row.appendChild(bub);
+  chat.appendChild(row);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function hideTyping() { const t = document.getElementById('typing'); if (t) t.remove(); }
+
+function esc(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+function mdToHtml(text) {
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g,'<em>$1</em>')
+    .split(/\n\n+/)
+    .map(block => {
+      const lines = block.split('\n');
+      if (lines.every(l => /^[-•]\s/.test(l.trim()))) {
+        return '<ul>' + lines.map(l => `<li>${l.replace(/^[-•]\s/,'')}</li>`).join('') + '</ul>';
+      }
+      return `<p>${lines.join('<br>')}</p>`;
+    })
+    .join('');
+}
+
+/* ── Pillar shortcuts ── */
+function askPillar(code) {
+  const map = {
+    V:   'Me explique o pilar V, Visão de Futuro Compartilhada, do método VERTEX.',
+    E:   'Me explique o pilar E, Estratégia de Crescimento Integrado, do método VERTEX.',
+    R:   'Me explique o pilar R, Redesenho da Arquitetura Organizacional, do método VERTEX.',
+    T:   'Me explique o pilar T, Tracionamento de Ativos Ocultos, do método VERTEX.',
+    E2:  'Me explique o pilar E de Execução com Acompanhamento Estratégico do método VERTEX.',
+    X:   'Me explique o pilar X, o X-Factor, Cultura de Crescimento e Sabedoria Estratégica do método VERTEX.',
+  };
+  sendMessage(map[code] || `Fale sobre o pilar ${code} do método VERTEX.`);
+}
+
+function typeAndSend(btn) { sendMessage(btn.textContent.trim()); }
+
+/* ── Text fallback ── */
+function toggleTextRow() {
+  const row = document.getElementById('textRow');
+  row.classList.toggle('visible');
+  if (row.classList.contains('visible')) document.getElementById('textInp').focus();
+}
+
+function textKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendText(); } }
+function resizeTA(el) { el.style.height='auto'; el.style.height = Math.min(el.scrollHeight,120)+'px'; }
+
+function sendText() {
+  const inp  = document.getElementById('textInp');
+  const text = inp.value.trim();
+  if (!text || busy) return;
+  inp.value = '';
+  inp.style.height = 'auto';
+  sendMessage(text);
+}
+
+/* ── Clear ── */
+function clearChat() {
+  stopSpeaking();
+  history = [];
+  setVoiceState('idle');
+  setPreview('', false);
+  document.getElementById('chat').innerHTML = `
+    <div class="welcome" id="welcome">
+      <svg class="carol-avatar" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="52" r="44" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+        <ellipse cx="50" cy="44" rx="28" ry="36" fill="#1a1008"/>
+        <path d="M22 55 Q18 80 22 95 Q30 102 38 98 Q34 80 34 65" fill="#1a1008"/>
+        <path d="M78 55 Q82 80 78 95 Q70 102 62 98 Q66 80 66 65" fill="#1a1008"/>
+        <rect x="44" y="62" width="12" height="10" rx="4" fill="#c8956a"/>
+        <path d="M30 90 Q30 72 50 70 Q70 72 70 90 Z" fill="#2a1f0e"/>
+        <path d="M30 90 Q30 74 50 72 Q70 74 70 90" fill="#c9a84c" opacity="0.18"/>
+        <ellipse cx="50" cy="44" rx="19" ry="21" fill="#c8956a"/>
+        <path d="M31 36 Q32 20 50 18 Q68 20 69 36 Q65 26 50 25 Q35 26 31 36 Z" fill="#111"/>
+        <path d="M31 36 Q36 28 50 27 Q42 30 36 38 Z" fill="#1a1008"/>
+        <ellipse cx="43" cy="44" rx="3.5" ry="4" fill="#fff"/>
+        <ellipse cx="57" cy="44" rx="3.5" ry="4" fill="#fff"/>
+        <circle cx="43.8" cy="44.5" r="2.2" fill="#2b1a00"/>
+        <circle cx="57.8" cy="44.5" r="2.2" fill="#2b1a00"/>
+        <circle cx="44.6" cy="43.5" r="0.7" fill="#fff"/>
+        <circle cx="58.6" cy="43.5" r="0.7" fill="#fff"/>
+        <path d="M39 39.5 Q43 37.5 47 39" stroke="#2b1a00" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <path d="M53 39 Q57 37.5 61 39.5" stroke="#2b1a00" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <path d="M49 47 Q50 50 51 47" stroke="#a06840" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <path d="M44 54 Q50 58 56 54" stroke="#8b3a2a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <circle cx="31" cy="49" r="2" fill="#c9a84c"/>
+        <circle cx="69" cy="49" r="2" fill="#c9a84c"/>
+        <path d="M40 70 Q50 74 60 70" stroke="#c9a84c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      <h2>Olá! Sou a Carol, sua tutora.</h2>
+      <p>Pressione o microfone e me faça uma pergunta. Estou aqui para te guiar
+      pelo método VERTEX e transformar o seu negócio com você.</p>
+      <div class="suggestions">
+        <button class="sug-btn" onclick="typeAndSend(this)">O que é o método VERTEX e como ele funciona na prática?</button>
+        <button class="sug-btn" onclick="typeAndSend(this)">Estou com dificuldades para definir a visão de futuro da minha empresa. Por onde começo?</button>
+        <button class="sug-btn" onclick="typeAndSend(this)">Como identifico os ativos ocultos que minha empresa não está aproveitando?</button>
+        <button class="sug-btn" onclick="typeAndSend(this)">Qual a diferença entre um Advisor e um consultor tradicional?</button>
+      </div>
+    </div>`;
+}
+
+// Load voices after page loads (some browsers need this)
+if (window.speechSynthesis) {
+  speechSynthesis.onvoiceschanged = () => { speechSynthesis.getVoices(); };
+}
+</script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 # Segredos
 .env
 .env.*
+.dev.vars
 
 # Dependências
 node_modules/
