@@ -1114,6 +1114,31 @@ body::after {
   .rel-cens-grid { grid-template-columns: 1fr; }
 }
 
+/* ── MIC INPUT ── */
+.input-mode-bar {
+  display: flex; align-items: center; gap: 12px; margin-top: 10px;
+}
+.mic-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  border-radius: 40px; padding: 8px 18px; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted);
+  transition: all .2s; box-shadow: 0 3px 12px rgba(0,0,0,0.18);
+}
+.mic-btn:hover { border-color: var(--border-hard); color: var(--text); }
+.mic-btn.recording {
+  background: rgba(220,60,60,0.12); border-color: rgba(220,60,60,0.5);
+  color: #e06060; box-shadow: 0 0 0 4px rgba(220,60,60,0.1);
+  animation: mic-pulse 1.2s ease-in-out infinite;
+}
+@keyframes mic-pulse {
+  0%,100% { box-shadow: 0 0 0 4px rgba(220,60,60,0.1); }
+  50%      { box-shadow: 0 0 0 8px rgba(220,60,60,0.05); }
+}
+.mic-status { font-size: 12px; color: #e06060; flex: 1; }
+.mic-interim { color: var(--text-muted); font-style: italic; }
+
 /* ── CAROLINE CARD ── */
 .carol-card {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 999;
@@ -1818,6 +1843,10 @@ function renderDim(idx) {
         placeholder="Descreva livremente a situação atual da empresa nesta dimensão. Não precisa responder cada pergunta — use-as apenas como guia para o seu raciocínio."
         oninput="onTextareaInput(this)"
       >${val}</textarea>
+    </div>
+    <div class="input-mode-bar">
+      <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎤 Falar</button>
+      <span class="mic-status" id="mic-status"></span>
       <div class="textarea-count" id="textarea-count">${val.length} caracteres</div>
     </div>
 
@@ -1849,6 +1878,7 @@ function onTextareaInput(el) {
 }
 
 function navDim(dir) {
+  stopVoiceInput();
   saveCurrentDim();
   const next = currentDim + dir;
   if (next >= 0 && next < DIMENSOES.length) {
@@ -3875,6 +3905,122 @@ async function sendReport() {
     alert(`❌ Erro de conexão: ${e.message}`);
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = '✉ Enviar por E-mail'; }
+  }
+}
+
+/* ── VOICE INPUT ── */
+const STT_URL = TTS_URL.replace('/tts', '/stt');
+let _recognition  = null;
+let _isRecording  = false;
+let _mediaRec     = null;
+let _audioChunks  = [];
+
+function toggleMic() {
+  _isRecording ? stopVoiceInput() : startVoiceInput();
+}
+
+function startVoiceInput() {
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (SpeechRec) {
+    // ── Web Speech API (Chrome/Edge/Safari) ─────────────────────────
+    _recognition = new SpeechRec();
+    _recognition.lang = 'pt-BR';
+    _recognition.continuous = true;
+    _recognition.interimResults = true;
+
+    _recognition.onstart = () => { _isRecording = true; updateMicUI(true); };
+
+    _recognition.onresult = (e) => {
+      const ta = document.getElementById('dim-textarea');
+      if (!ta) return;
+      let confirmed = ta.dataset.confirmed || '';
+      let interim   = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) {
+          confirmed += e.results[i][0].transcript + ' ';
+          ta.dataset.confirmed = confirmed;
+        } else {
+          interim += e.results[i][0].transcript;
+        }
+      }
+      ta.value = confirmed + interim;
+      onTextareaInput(ta);
+      const st = document.getElementById('mic-status');
+      if (st) st.innerHTML = interim
+        ? `<span class="mic-interim">"${interim}"</span>`
+        : '● Gravando…';
+    };
+
+    _recognition.onerror = (e) => {
+      if (e.error !== 'no-speech' && e.error !== 'aborted') stopVoiceInput();
+    };
+
+    _recognition.onend = () => {
+      if (_isRecording) _recognition.start(); // reconecta automaticamente
+    };
+
+    _recognition.start();
+
+  } else {
+    // ── Fallback: MediaRecorder → ElevenLabs STT ───────────────────
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+      _isRecording = true;
+      _audioChunks = [];
+      _mediaRec = new MediaRecorder(stream);
+
+      _mediaRec.ondataavailable = e => { if (e.data.size > 0) _audioChunks.push(e.data); };
+
+      _mediaRec.onstop = async () => {
+        updateMicUI(false);
+        stream.getTracks().forEach(t => t.stop());
+        const blob = new Blob(_audioChunks, { type: 'audio/webm' });
+        await transcribeWithElevenLabs(blob);
+      };
+
+      _mediaRec.start();
+      updateMicUI(true);
+    }).catch(() => {
+      alert('Não foi possível acessar o microfone.');
+    });
+  }
+}
+
+function stopVoiceInput() {
+  _isRecording = false;
+  if (_recognition) { _recognition.abort(); _recognition = null; }
+  if (_mediaRec && _mediaRec.state !== 'inactive') _mediaRec.stop();
+  const ta = document.getElementById('dim-textarea');
+  if (ta) delete ta.dataset.confirmed;
+  updateMicUI(false);
+}
+
+function updateMicUI(recording) {
+  const btn = document.getElementById('mic-btn');
+  const st  = document.getElementById('mic-status');
+  if (btn) {
+    btn.innerHTML  = recording ? '⏹ Parar' : '🎤 Falar';
+    btn.classList.toggle('recording', recording);
+  }
+  if (st) st.innerHTML = recording ? '● Gravando…' : '';
+}
+
+async function transcribeWithElevenLabs(blob) {
+  const st = document.getElementById('mic-status');
+  if (st) st.textContent = 'Transcrevendo…';
+  try {
+    const form = new FormData();
+    form.append('audio', blob, 'audio.webm');
+    const res  = await fetch(STT_URL, { method: 'POST', body: form });
+    const data = await res.json();
+    const ta   = document.getElementById('dim-textarea');
+    if (ta && data.text) {
+      ta.value += (ta.value ? ' ' : '') + data.text;
+      onTextareaInput(ta);
+    }
+    if (st) st.textContent = '';
+  } catch(e) {
+    if (st) st.textContent = 'Erro na transcrição.';
   }
 }
 
