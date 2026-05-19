@@ -827,47 +827,77 @@ if (SRClass) {
   setPreview('Seu navegador não suporta reconhecimento de voz. Use o campo de texto.', false);
 }
 
-/* ── Speech Synthesis ── */
-let currentUtterance = null;
+/* ── Speech — ElevenLabs (primário) + Web Speech (fallback) ── */
+let currentAudio = null;
 
-function speak(text) {
-  if (!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-
-  const clean = text
+function cleanForSpeech(text) {
+  return text
     .replace(/\*\*(.*?)\*\*/g, '$1')
     .replace(/\*(.*?)\*/g, '$1')
     .replace(/#{1,6}\s/g, '')
     .replace(/[-•]\s/g, '')
     .trim();
+}
 
-  const utt = new SpeechSynthesisUtterance(clean);
-  utt.lang = 'pt-BR';
-  utt.rate = 1.05;
+async function speak(text) {
+  stopSpeaking();
+  const clean = cleanForSpeech(text);
+
+  try {
+    const res = await fetch('/api/speak', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: clean })
+    });
+
+    // 503 = ElevenLabs não configurada → usa fallback silenciosamente
+    if (res.status === 503) { speakFallback(clean); return; }
+
+    if (!res.ok) { speakFallback(clean); return; }
+
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    currentAudio = audio;
+
+    audio.onplay  = () => setVoiceState('speaking');
+    audio.onended = () => { URL.revokeObjectURL(url); currentAudio = null; setVoiceState('idle'); };
+    audio.onerror = () => { URL.revokeObjectURL(url); currentAudio = null; speakFallback(clean); };
+
+    await audio.play();
+
+  } catch (err) {
+    console.warn('[speak] ElevenLabs indisponível, usando fallback:', err.message);
+    speakFallback(clean);
+  }
+}
+
+function speakFallback(text) {
+  if (!window.speechSynthesis) { setVoiceState('idle'); return; }
+  window.speechSynthesis.cancel();
+
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang  = 'pt-BR';
+  utt.rate  = 1.05;
   utt.pitch = 1.0;
 
-  // Prioriza voz feminina em PT-BR
   const voices = speechSynthesis.getVoices();
-  const femaleKeywords = ['female', 'woman', 'feminino', 'francisca', 'leila',
-                          'luciana', 'vitória', 'vitoria', 'maria', 'ana'];
-  const ptVoiceFemale =
-    voices.find(v => v.lang === 'pt-BR' && femaleKeywords.some(k => v.name.toLowerCase().includes(k))) ||
-    voices.find(v => v.lang === 'pt-BR' && v.name.toLowerCase().includes('f')) ||
+  const femaleKw = ['female','woman','feminino','francisca','leila','luciana','vitória','vitoria','maria','ana'];
+  const v =
+    voices.find(v => v.lang === 'pt-BR' && femaleKw.some(k => v.name.toLowerCase().includes(k))) ||
     voices.find(v => v.lang === 'pt-BR') ||
     voices.find(v => v.lang.startsWith('pt'));
-  if (ptVoiceFemale) utt.voice = ptVoiceFemale;
+  if (v) utt.voice = v;
 
   utt.onstart = () => setVoiceState('speaking');
   utt.onend   = () => setVoiceState('idle');
   utt.onerror = () => setVoiceState('idle');
-
-  currentUtterance = utt;
   speechSynthesis.speak(utt);
 }
 
 function stopSpeaking() {
+  if (currentAudio) { currentAudio.pause(); currentAudio.src = ''; currentAudio = null; }
   if (window.speechSynthesis) window.speechSynthesis.cancel();
-  currentUtterance = null;
 }
 
 /* ── Voice state machine ── */
