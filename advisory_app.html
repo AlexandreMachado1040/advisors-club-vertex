@@ -129,6 +129,19 @@ body::after {
 .btn-ghost { background: transparent; color: var(--text-muted); border: none; font-size: 12px; box-shadow: none; }
 .btn-ghost:hover { color: var(--gold); }
 
+/* ── VOICE BUTTON ── */
+.voice-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(201,168,76,0.1); border: 1px solid var(--border-hard);
+  border-radius: 40px; padding: 6px 14px; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold);
+  transition: all .2s; flex-shrink: 0;
+}
+.voice-btn:hover { background: rgba(201,168,76,0.18); box-shadow: 0 4px 14px rgba(201,168,76,0.2); }
+.voice-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.voice-btn.playing { background: rgba(201,168,76,0.22); border-color: var(--gold); }
+
 /* ══════════════════════════════════
    PHASE — ONBOARDING
 ══════════════════════════════════ */
@@ -1464,6 +1477,58 @@ const STORAGE_KEY_M1       = 'advisory_m1';
 const STORAGE_KEY_SESSION  = 'advisory_session';
 const STORAGE_KEY_RESPOSTAS = 'advisory_m1_respostas';
 
+const TTS_URL = (
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1' ||
+  window.location.protocol === 'file:'
+) ? 'http://localhost:3000/api/tts' : '/api/tts';
+
+let _currentAudio = null;
+
+async function speakText(text, btnEl) {
+  if (!text?.trim()) return;
+
+  // Se já está tocando, para
+  if (_currentAudio && !_currentAudio.paused) {
+    _currentAudio.pause();
+    _currentAudio = null;
+    document.querySelectorAll('.voice-btn.playing').forEach(b => {
+      b.classList.remove('playing');
+      b.innerHTML = '🔊 Ouvir';
+      b.disabled = false;
+    });
+    return;
+  }
+
+  if (btnEl) { btnEl.disabled = true; btnEl.innerHTML = '⏳ Gerando…'; }
+
+  try {
+    const res = await fetch(TTS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+
+    if (!res.ok) { throw new Error('Erro ao gerar áudio'); }
+
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    _currentAudio = new Audio(url);
+
+    if (btnEl) { btnEl.disabled = false; btnEl.innerHTML = '⏹ Parar'; btnEl.classList.add('playing'); }
+
+    _currentAudio.play();
+    _currentAudio.onended = () => {
+      URL.revokeObjectURL(url);
+      if (btnEl) { btnEl.innerHTML = '🔊 Ouvir'; btnEl.classList.remove('playing'); }
+      _currentAudio = null;
+    };
+  } catch(e) {
+    if (btnEl) { btnEl.disabled = false; btnEl.innerHTML = '🔊 Ouvir'; }
+    alert('Erro ao gerar áudio: ' + e.message);
+  }
+}
+
 function getSessionData() {
   const sess = JSON.parse(localStorage.getItem(STORAGE_KEY_SESSION) || '{}');
   return {
@@ -1980,6 +2045,9 @@ function renderResults(data) {
 
   const segTexto = [seg, porte].filter(Boolean).map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' · ');
 
+  window._vt = window._vt || {};
+  window._vt.m1 = sintese;
+
   document.getElementById('results-content').innerHTML = `
     <div class="results-empresa">
       <div class="results-tag">Diagnóstico Estratégico · Módulo 01 · Entender</div>
@@ -1989,7 +2057,10 @@ function renderResults(data) {
 
     ${sintese ? `
     <div class="results-sintese">
-      <div class="results-sintese-label">Síntese Diagnóstica</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="results-sintese-label" style="margin-bottom:0">Síntese Diagnóstica</div>
+        <button class="voice-btn" id="voice-btn-m1" onclick="speakText(window._vt?.m1, this)">🔊 Ouvir</button>
+      </div>
       <p class="results-sintese-text">${sintese}</p>
     </div>` : ''}
 
@@ -2215,6 +2286,9 @@ function renderResultsDiagnosticar(data) {
   const m1   = getM1();
   const nome = m1?.empresa?.nome || empresaNome || 'Empresa';
 
+  window._vt = window._vt || {};
+  window._vt.m2 = [data.problema_real, data.grande_pergunta].filter(Boolean).join('. ');
+
   document.getElementById('results-m2-content').innerHTML = `
     <div style="text-align:center;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--border)">
       <div class="results-tag">Diagnóstico Estratégico · Módulo 02 · Diagnosticar</div>
@@ -2222,7 +2296,10 @@ function renderResultsDiagnosticar(data) {
     </div>
 
     <div class="grande-pergunta-hero">
-      <div class="grande-pergunta-label">A Grande Pergunta Estratégica</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="grande-pergunta-label" style="margin-bottom:0">A Grande Pergunta Estratégica</div>
+        <button class="voice-btn" onclick="speakText(window._vt?.m2, this)">🔊 Ouvir</button>
+      </div>
       <p class="grande-pergunta-text">${data.grande_pergunta || ''}</p>
     </div>
 
